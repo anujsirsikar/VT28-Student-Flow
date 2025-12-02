@@ -187,7 +187,7 @@ def run_simulation(students, instructors):
 
         # iterate over the student list:
         '''
-        Check student's next event
+        Check student's next event  (also for the events for which this applies, if you can double up, check on that as well)
         1) if next event starts a new training block, and multiple options exist, check the student spread and place student 
         in the block that makes most sense. So if just finished Contacts, either place in instrument ground school or contacts 
         (maybe later we can also place in forms)
