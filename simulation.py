@@ -1,4 +1,4 @@
-# @author Anuj Sirsikar and Timothy Kedrowski
+# @author Anuj Sirsikar and Timothy Kedrowski and Lauren Leckelt
 # simulates a student going through the primary syllabus in flight school
 
 # have it read from an excel spreadsheet? -> yes, to make a list of students
@@ -51,6 +51,7 @@ class Sim(Mediums):
         self.currentLoad = 0
         self.stop = 23 # represents 2300
         self.breakTime = 0.5 #hours
+        self.failureRate = 0.02 # 98% chance that the given sim is working 
 class Oft(Sim):                           # subclass of Sim
     def __init__(self, name):
         super().__init__()
@@ -87,6 +88,8 @@ class Aircraft(Mediums):
         self.start = 7  # represents 0700
         self.stop = 23 # represents 2300 
         self.breakTime = 1 # hours
+        self.failureRate = 0.25  # 75% chance given aircraft is working
+        self.usePerDay = 0  # no more than 4 times per day
 
 
 class FlightStudent:
@@ -97,18 +100,30 @@ class FlightStudent:
         self.mediumAssigned = None
         self.startDate = startDate
         self.currentDate = startDate         # last date they were active/completed an event
-        self.available_date = startDate      # earliest calendar date student can attempt next event
         self.next_event_index = 0            # index into flattened syllabus events
         self.daysInProcess = 0
-        self.dwellTime = 0                   # total days waiting due to resource shortage (weekdays only)
+        self.daysSinceLastEvent = None # lastCompletedEventDate - currentDate. If it's >= 15, they need a warmup flight
+        self.totalWaitTime = 0                   # total days waiting due to resource shortage (weekdays only)
         self.lastCompletedEventDate = None
-        self.status = status
+        self.status = status   # active, completed, med down, leave, (pool?)
         self.completionDate = None
         self.completed_blocks = set()
-    
+        self.nightHours = 0  # need at least 5 hours of night flying
+        # should we include a student failure rate?
+
     # toString function
     def __str__(self):
         return f"Student: {self.studentID}"
+
+class Instructor:
+    def __init__(self, name, sectionLead, formationQ):
+        self.name = name
+        self.sectionLead = sectionLead  # boolean value  (12)
+        self.formationQ = formationQ # boolean value (I'm guessing this means formation qualified) (13)
+        self.failureRate = 0.30  # only 70% of the instructors are available to instruct (30% chance they can't)
+        # Add this later:
+        # self.onwing = (studentID)  <- add this to the constructor's parameters
+        # should instructors have a status too?
 
 # This code will address the flight schedule and different events and the resources they need
 class TrainingBlock:
@@ -132,238 +147,56 @@ class Event:
 
     # Note: You can have more than one event in a day (especially for sims and flights) [but for first iteration, do one per day]
 
-# SIMULATION LOGIC (with help from ChatGPT)
-def run_simulation(students, syllabus):
+# HELPER FUNCTIONS
+def is_valid_day(day):
+    # not a weekend, 96 (long weekend), or a holiday period
+    pass
 
-    # Flatten all blocks into one ordered list of events
-    all_events = []
-    for block in syllabus:
-        for evt in block.events:
-            all_events.append(evt)
+def isResourceAvailable(event, resourceList):
+    # check everything including dwellTime and how many times used that day, etc ...
+    pass
 
-    # Precompute mapping: trainingDay → list of event indices
-    training_day_map = {}
-    for idx, evt in enumerate(all_events):
-        td = evt.trainingDay
-        if td not in training_day_map:
-            training_day_map[td] = []
-        training_day_map[td].append(idx)
+def isInstructorAvailble(event, instructors):  #needOnwing?
+    pass
 
-    # Current simulation date is the earliest student start date
-    current_date = min(s.startDate for s in students)
+def notToday():
+    # when a student is unable to complete an event on a given day
+    pass
 
-    # Group students by classID for synchronized Monday starts
-    class_groups = defaultdict(list)
-    for s in students:
-        class_groups[s.classID].append(s)
+def schedule(student, instrictor, event, resource):
+    # if all good
+    pass
 
-    # Track which students have begun training
-    students_not_started = set(students)
-    students_started = set()
-    class_started = set()    # tracks which classes have already started
-    last_class_start_monday = None  # enforces one class per week
+# IMPORTANT: how to keep track of how many students in each training block? Should we make them classes? Because we 
+#            need to look at all the counts to decide where to place students after they complete contacts, and then 
+#            also for scheduling for forms (need two students and two instructors)
+# My opinion:
+# 1) we need a function that keeps track of resources and their scheduling 
 
-
-    # Helper: is weekend?
-    def is_weekend(d):
-        return d.weekday() >= 5  # 5 = Saturday, 6 = Sunday
-
-    # Helper: check if a resource list has an available item
-    def get_available_resource(resource_list):
-        for r in resource_list:
-            if r.currentLoad < r.capacity:   # resource still has slots
-                return r
-        return None
-
-    # Simulation loop runs until all students complete all events
-    last_training_day = max(training_day_map.keys())
-
-    print("==== BEGIN SIMULATION ====\n")
-
-    # Map event index → block
-    event_to_block = {}
-    for block in syllabus:
-        for evt in block.events:
-            event_to_block[id(evt)] = block
-
+# SIMULATION LOGIC 
+def run_simulation(students, instructors):
     while True:
-
-        # if all students are finished, break
-        if all(s.next_event_index >= len(all_events) for s in students):
-            break
-
-        # Skip weekends
-        if is_weekend(current_date):
-            print(f"{current_date} → Weekend (no training).")
-            current_date += timedelta(days=1)
-            continue
+        # go day by day
+        # sort student list at the start of each day by daysSinceLastEvent
+        if students is None:
+            break # if all students finished 
+        if is_valid_day(date) is False:
+            continue 
         
+        # if it's the 1st or 3rd Monday of the month, start a new class...
 
-        # Allow class groups to start only on Mondays
-        if current_date.weekday() == 0:  # Monday
-            # Determine if a class already started this week
-            if last_class_start_monday is None or (current_date - last_class_start_monday).days >= 7:
-
-                # Find classIDs whose students are eligible to start
-                eligible_classes = []
-                for classID, group in class_groups.items():
-                    # If this class hasn't started
-                    if classID not in class_started:
-                        # And at least one student has startDate <= today
-                        if any(s.startDate <= current_date and s in students_not_started for s in group):
-                            eligible_classes.append(classID)
-
-                if eligible_classes:
-                    # sort so that lowest classID gets priority
-                    eligible_classes.sort()
-                    # Choose ONE classID to start this week
-                    classID_to_start = eligible_classes[0]   # deterministic, but you can randomize if you want
-
-                    # Start all students in that class
-                    for s in class_groups[classID_to_start]:
-                        if s in students_not_started and s.startDate <= current_date:
-                            s.currentDate = current_date
-                            students_not_started.remove(s)
-                            students_started.add(s)
-                            print(f"Class {classID_to_start}: Student {s.studentID} STARTS syllabus on {current_date}")
-
-                    # Record that this class started
-                    class_started.add(classID_to_start)
-                    last_class_start_monday = current_date
-
-
-        print(f"\n=== {current_date} ===")
-
-        # Process students FIFO
-        for student in list(students):
-            # Skip students whose class hasn't started yet
-            if student not in students_started:
-                continue
-
-            # if student is already done
-            if student.next_event_index >= len(all_events):
-                continue
-
-            # determine trainingDay of student's next event
-            next_event = all_events[student.next_event_index]
-            td = next_event.trainingDay
-
-            # retrieve all events due on that trainingDay
-            todays_event_indices = training_day_map.get(td, [])
-
-            # Check if all required resources across all today's events are AVAILABLE
-            all_available = True
-            chosen_resources = []  # resource instance chosen for each event
-
-            for evt_index in todays_event_indices:
-                evt = all_events[evt_index]
-                r = get_available_resource(evt.resources)
-
-                if r is None:
-                    all_available = False
-                    break
-
-                chosen_resources.append(r)
-
-            # If ANY event not available → student dwells
-            if not all_available:
-                student.dwellTime += 1
-                print(f"Student {student.studentID}: No resources → dwell +1 (total {student.dwellTime})")
-                continue
-
-            # Otherwise: assign resources and complete the events
-            for r in chosen_resources:
-                r.currentLoad += 1
-            
-            print(f"Student {student.studentID} COMPLETES training day {td}: "
-                  f"{[all_events[i].name for i in todays_event_indices]}")
-        
-            # Advance student to the event after this training day
-            student.next_event_index = max(todays_event_indices) + 1
-            student.lastCompletedEventDate = current_date
-            student.currentDate = current_date
-
-            # Update block counts
-            for evt_index in todays_event_indices:
-                evt = all_events[evt_index]
-                block = event_to_block[id(evt)]
-                
-                # If student just started this block
-                if block.name not in student.completed_blocks:
-                    block.numStudents += 1
-                    student.completed_blocks.add(block.name)
-
-            # After advancing student's next_event_index
-            # Check if student has completed all events in the block(s) of today's events
-            for evt_index in todays_event_indices:
-                evt = all_events[evt_index]
-                block = event_to_block[id(evt)]
-                # If student has completed all events in the block, decrement active count
-                block_event_ids = {id(e) for e in block.events}
-                student_event_ids_done = {id(all_events[i]) for i in range(student.next_event_index)}
-                if block_event_ids.issubset(student_event_ids_done):
-                    if block.numStudents > 0:
-                        block.numStudents -= 1
-
-
-            # If finished all events
-            if student.next_event_index >= len(all_events):
-                student.completionDate = current_date
-                print(f"Student {student.studentID} COMPLETED FULL SYLLABUS on {current_date}")
-
-        # Reset all resource status at end of day
-        for evt in all_events:
-            for r in evt.resources:
-                r.currentLoad = 0
-
-        # After processing students and resetting resource loads
+        # iterate over the student list:
         '''
-        sys.stdout.write("\033[H\033[J")  # Clear console (works in most terminals)
-        
-        # this way you just see numbers
-        print(f"Simulation date: {current_date}")
-        print(f"Systems Ground School: {syllabus[0].numStudents}")
-        print(f"Contacts: {syllabus[1].numStudents}")
-        print(f"Aero: {syllabus[2].numStudents}")
-        print(f"Instruments Ground School: {syllabus[3].numStudents}")
-        print(f"Instruments: {syllabus[4].numStudents}")
-        print(f"Forms: {syllabus[5].numStudents}")
-        print(f"Capstone: {syllabus[6].numStudents}")
-        
-        # this way you see blocks so it's more visual
-        def print_block_status(blocks):
-            # blocks: list of tuples (block_name, block_obj)
-            max_bar_length = 20  # max width of the bar
-            for name, block in blocks:
-                # scale bar to max length if needed
-                bar_length = min(block.numStudents, max_bar_length)
-                bar = "█" * bar_length
-                print(f"{name:25}: {bar} ({block.numStudents})")
-        blocks = [
-            ("Systems Ground School", syllabus[0]),
-            ("Contacts", syllabus[1]),
-            ("Aero", syllabus[2]),
-            ("Instruments Ground School", syllabus[3]),
-            ("Instruments", syllabus[4]),
-            ("Forms", syllabus[5]),
-            ("Capstone", syllabus[6])
-        ]
-        print(f"\n--- {current_date} Status ---")
-        print_block_status(blocks)
-
-        time.sleep(0.25)  # pause for half a second so you can watch updates
+        Check student's next event
+        1) if next event starts a new training block, and multiple options exist, check the student spread and place student 
+        in the block that makes most sense. So if just finished Contacts, either place in instrument ground school or contacts 
+        (maybe later we can also place in forms)
+        2) Once next event is decided, check if resources available -> isResourceAvailable(event, resourceList)... something like that
+        3) if resource is an aircraft & available, check if instructor availble -> isInstructorAvailble(event, instructors, needOnwing?)
+        4) if student is unable to complete event, add a day to daysSinceLastEvent and totalWaitTime, otherwise schedule the student
+        5) if all good -> schdule(student, instrictor, event, resource) [updates all variables that need to be updated]
         '''
-        # Next day
-        current_date += timedelta(days=1)
-
-    print("\n==== END OF SIMULATION ====\n")
-
-    # FINAL REPORT
-    for s in students:
-        print(f"Student {s.studentID}:")
-        print(f"  Completion Date : {s.completionDate}")
-        print(f"  Dwell Time (days): {s.dwellTime}")
-        print("")
+        # Make sure to account for hours and resource rest time 
 
 
 
@@ -516,14 +349,14 @@ def main():
     instrumentsEvents.append(Event("I3205", 89, oft_sims, activityTimeList[88]))
     instrumentsEvents.append(Event("I3206", 90, oft_sims, activityTimeList[89]))
     instrumentsEvents.append(Event("I6301", 91, vtd_sims, activityTimeList[90]))
-    instrumentsEvents.append(Event("I4201", 92, aircrafts, activityTimeList[91]))
-    instrumentsEvents.append(Event("I4202", 93, aircrafts, activityTimeList[92]))
-    instrumentsEvents.append(Event("I4203", 94, aircrafts, activityTimeList[93]))
-    instrumentsEvents.append(Event("I4204", 95, aircrafts, activityTimeList[94]))
-    instrumentsEvents.append(Event("I4301", 96, aircrafts, activityTimeList[95]))
-    instrumentsEvents.append(Event("I4302", 97, aircrafts, activityTimeList[96]))
-    instrumentsEvents.append(Event("I4303", 98, aircrafts, activityTimeList[97]))
-    instrumentsEvents.append(Event("I4304", 99, aircrafts, activityTimeList[98]))
+    instrumentsEvents.append(Event("I4201", 92, aircrafts, activityTimeList[91]))  # can do two in one day
+    instrumentsEvents.append(Event("I4202", 93, aircrafts, activityTimeList[92]))  # can do two in one day  
+    instrumentsEvents.append(Event("I4203", 94, aircrafts, activityTimeList[93]))  # can do two in one day
+    instrumentsEvents.append(Event("I4204", 95, aircrafts, activityTimeList[94]))  # can do two in one day
+    instrumentsEvents.append(Event("I4301", 96, aircrafts, activityTimeList[95]))  # can do two in one day
+    instrumentsEvents.append(Event("I4302", 97, aircrafts, activityTimeList[96]))  # can do two in one day
+    instrumentsEvents.append(Event("I4303", 98, aircrafts, activityTimeList[97]))  # can do two in one day
+    instrumentsEvents.append(Event("I4304", 99, aircrafts, activityTimeList[98]))  # can do two in one day
     instrumentsEvents.append(Event("I4490", 100, aircrafts, activityTimeList[99]))
     instrumentsEvents.append(Event("N4101", 101, aircrafts, activityTimeList[100]))
     instrumentsEvents.append(Event("FAM4601", 102, aircrafts, activityTimeList[101]))
