@@ -84,7 +84,7 @@ class Aircraft(Mediums):
         self.name = name
         self.status = 0 # 0 = available and 1 = occupied
         self.capacity = capacity
-        self.currentLoad = 0
+        #self.currentLoad = 0  # i think we can delete this
         self.start = 7  # represents 0700
         self.stop = 23 # represents 2300 
         self.breakTime = 1 # hours
@@ -105,7 +105,7 @@ class FlightStudent:
         self.daysSinceLastEvent = None # lastCompletedEventDate - currentDate. If it's >= 15, they need a warmup flight
         self.totalWaitTime = 0                   # total days waiting due to resource shortage (weekdays only)
         self.lastCompletedEventDate = None
-        self.status = status   # active, completed, med down, leave, (pool?)
+        self.status = status   # active, completed, med down, leave, (pool?), waiting
         self.completionDate = None
         self.completed_blocks = set()
         self.nightHours = 0  # need at least 5 hours of night flying
@@ -150,21 +150,113 @@ class Event:
 # HELPER FUNCTIONS
 def is_valid_day(day):
     # not a weekend, 96 (long weekend), or a holiday period
-    pass
+    '''
+    Thanksgiving -> 27-30nov25
+    Christmas -> 25-28dec25
+    New Years -> 01-04jan26
+    July 4th -> 03-06jul26
+    Columbus day -> 11-13oct25
+    MLK day -> 17-19jan26
+    President's day -> 14-16Feb26
+    Memorial day -> 23-25may26
+    Juneteenth -> 19-21jun26
+    Labor day -> 5-7sep26
+    Veterans day -> 11nov25 
+
+    Holiday leave periods:
+    1) 15dec-28dec
+    2) 29dec-11jan
+
+    '''
+    # IMPORTANT: maybe we only assign student the first holiday period of leave or we assign half the first period 
+    #            and the other half the second period of leave. We can swap each time we class someone up or there 
+    #            could be an even more effecient way. But then we would also have to note which leave period the 
+    #            student falls into as a parameter for this function. 
+    """
+    Returns True if the given date (a datetime.date object) is a valid working day.
+    Invalid days include:
+      - Weekends (Saturday, Sunday)
+      - Fixed holiday periods (same month/day every year)
+      - Specific long-weekend patterns (same month/day every year)
+      - Annual holiday leave periods (15–28 Dec, 29 Dec–11 Jan)
+    """
+    # --- Weekend check ---
+    if day.weekday() >= 5:  # 5 = Saturday, 6 = Sunday
+        return False
+    # Month/day helper
+    m, d = day.month, day.day
+    # --- Holiday ranges (month/day, month/day) ---
+    holiday_ranges = [
+        '''
+        These change every fiscal year. Maybe this can also be info that gets read in from a file
+        '''
+        # Long weekends and federal holidays
+        ((11, 27), (11, 30)),  # Thanksgiving
+        ((12, 25), (12, 28)),  # Christmas
+        ((1, 1),  (1, 4)),     # New Years
+        ((7, 3),  (7, 6)),     # July 4th
+        ((10, 11), (10, 13)),  # Columbus Day
+        ((1, 17), (1, 19)),    # MLK Day
+        ((2, 14),  (2, 16)),   # President's Day
+        ((5, 23),  (5, 25)),   # Memorial Day
+        ((6, 19),  (6, 21)),   # Juneteenth
+        ((9, 5),  (9, 7)),     # Labor Day
+        ((11, 11), (11, 11)),  # Veterans Day (single day)
+        # Holiday leave periods (every year)
+        ((12, 15), (12, 28)),  # Holiday leave 1
+        # Holiday leave 2 spans across years → handle separately below
+    ]
+    # Check normal (same-year) ranges
+    for (m1, d1), (m2, d2) in holiday_ranges:
+        if (m > m1 or (m == m1 and d >= d1)) and (m < m2 or (m == m2 and d <= d2)):
+            return False
+    # --- Cross-year holiday leave period: 29 Dec → 11 Jan ---
+    # Case 1: late December
+    if m == 12 and d >= 29:
+        return False
+    # Case 2: early January
+    if m == 1 and d <= 11:
+        return False
+    # If none of the invalid conditions triggered:
+    return True
+
 
 def isResourceAvailable(event, resourceList):
     # check everything including dwellTime and how many times used that day, etc ...
+    '''
+    1) given the event, identify which type of resource is needed
+    2) look through a list of that type of resource and see if any of them are available
+    3) if none are, return false
+    4) if a resource is availble, then we have to do some work...
+        a) check if there is enough time in the day given the length of the event 
+        b) then block off the aircraft for the time of the event plus its required dwelltime
+        c) if the resource is an aircraft, then we need to also check if an instructor is available too
+        d) after we have checked everything, and everything is all good, return true
+    '''
     pass
 
 def isInstructorAvailble(event, instructors):  #needOnwing?
+    # handle forms flight events seperatley bc need to check quals and need two instructors 
+    '''
+    1) if a forms event
+        a) need a section lead and a forms qualled guy
+    2) otherwise, if an instructor is available, assign them
+
+    Not really taking onwings into account right now. Also I don't know if this is the best way, haven't thought about it. 
+
+    We may have to do something completely different for forms, because we need two students who are on the same event. 
+    But I do think that the two students fly all their forms flights together; not sure if the instructors have to be the same though...
+    '''
     pass
 
-def notToday():
+def notToday(student):
     # when a student is unable to complete an event on a given day
-    pass
+    student.daysSinceLastEvent += 1
+    student.totalWaitTime += 1 
 
 def schedule(student, instrictor, event, resource):
     # if all good
+    # take night hours into account
     pass
 
 # IMPORTANT: how to keep track of how many students in each training block? Should we make them classes? Because we 
@@ -175,6 +267,11 @@ def schedule(student, instrictor, event, resource):
 
 # SIMULATION LOGIC 
 def run_simulation(students, instructors):
+    '''
+    This just came to my attention:
+    but this loop is going to have to run more often than just once a "day". 
+    I THINK IT WILL HAVE TO RUN EVERY 0.1 HOUR UNTIL THE END OF THE WORKING DAY (23) AND THEN START BACK UP AT 0530 THE NEXT DAY.
+    '''
     while True:
         # go day by day
         # sort student list at the start of each day by daysSinceLastEvent
@@ -190,13 +287,14 @@ def run_simulation(students, instructors):
         Check student's next event  (also for the events for which this applies, if you can double up, check on that as well)
         1) if next event starts a new training block, and multiple options exist, check the student spread and place student 
         in the block that makes most sense. So if just finished Contacts, either place in instrument ground school or contacts 
-        (maybe later we can also place in forms)
+        (maybe later we can also place in forms) 
         2) Once next event is decided, check if resources available -> isResourceAvailable(event, resourceList)... something like that
         3) if resource is an aircraft & available, check if instructor availble -> isInstructorAvailble(event, instructors, needOnwing?)
         4) if student is unable to complete event, add a day to daysSinceLastEvent and totalWaitTime, otherwise schedule the student
         5) if all good -> schdule(student, instrictor, event, resource) [updates all variables that need to be updated]
         '''
         # Make sure to account for hours and resource rest time 
+        # at the end, update student.currentdate and student.daysInProcess
 
 
 
