@@ -5,17 +5,23 @@ To set up on Mac (need homebrew installed)
 
 brew install python@3.10
 
-python 3.10 -m venv ortools_env
-source ortools_env/bin/activate
 
-pip install ortools
+CREATE ENVIRONMENT - mac
 
+python3.10 -m venv ortools-env
 
-To activate environmnent on Mac:
+ACTIVATE - mac
 
 source ortools-env/bin/activate
 
+INSTALL OR-TOOLS - mac
 
-To deactivate the environment (allowing new python again)
+pip install ortools
+
+DISABLE/EXIT -- mac
 
 deactivate
+
+RE-ENABLE - mac
+
+source ortools-env/bin/activate
