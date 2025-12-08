@@ -13,8 +13,6 @@
 #   Event 1 on Day 4
 
 
-
-
 from ortools.sat.python import cp_model
 
 # ------------------ Inputs ----------------------
@@ -28,7 +26,6 @@ def is_valid_day(day):
     return day not in [5, 6]  # no weekend
 
 valid_days = [d for d in days if is_valid_day(d)]
-
 
 # ------------------ Model -----------------------
 model = cp_model.CpModel()
@@ -81,16 +78,19 @@ for s in range(num_students):
 model.Minimize(latest_start)
 
 
-
 # ------------------ Solve -----------------------
 solver = cp_model.CpSolver()
 solver.parameters.max_time_in_seconds = 5
 result = solver.Solve(model)
 
 # ------------------ Output ----------------------
+print((num_students))
 for s in range(num_students):
     print(f"\nStudent {s}:")
     for e in range(events_per_student):
         for d in days:
             if solver.Value(x[s,e,d]):
                 print(f"  Event {e} on Day {d}")
+
+
+
