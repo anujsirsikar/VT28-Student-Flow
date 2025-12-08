@@ -9,7 +9,9 @@ from collections import deque
 import time
 import sys
 from collections import defaultdict
-from eventList import getActivityTime
+from eventList import getActivityTime, Event, TrainingBlock
+from stuAndInsrtr import FlightStudent
+from resources import Classroom, Utd, Oft, Vtd, Mr, Aircraft
     
     # Will need a function that iterates over the resource list to check if there are resources available to fulfill the event.
     # Each event should also have a variable that indicates whether or not an event has available resources. 
