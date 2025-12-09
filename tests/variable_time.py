@@ -81,6 +81,8 @@ def schedule_one_day(students, day, classrooms, cars):
     car_day_hours   = {c: DAYTIME_HOURS for c in cars}
     car_night_hours = {c: NIGHT_HOURS  for c in cars}
 
+    print(classroom_hours.items())
+
     instructors_available = int(INSTRUCTORS * INSTRUCTOR_AVAILABLE_RATE)
     instructor_hours = {i: INSTRUCTOR_DAILY_HOURS for i in range(instructors_available)}
 
