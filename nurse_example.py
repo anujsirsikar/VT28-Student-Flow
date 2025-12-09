@@ -12,7 +12,7 @@ def main() -> None:
     # The optimal assignment maximizes the number of fulfilled shift requests.
     num_nurses = 5
     num_shifts = 3
-    num_days = 365
+    num_days = 7
     all_nurses = range(num_nurses)
     all_shifts = range(num_shifts)
     all_days = range(num_days)

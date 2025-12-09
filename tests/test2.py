@@ -4,14 +4,14 @@ import random
 from datetime import timedelta, date
 
 # -------------------- Parameters -------------------------
-NUM_INITIAL_STUDENTS = 80
-NEW_STUDENTS_EVERY = 14        # every 2 weeks
-NEW_STUDENTS_COUNT = 6
-EVENTS_PER_STUDENT = 80
+starting_students = 80      ##number of students already classes up
+class_up_frequency = 14        # every 2 weeks in days
+class_up_per_week = 6          #number students classing up per week. Should be able to make this a list and read in. 
+EVENTS_PER_STUDENT = 80         # random number I made up, Will have to check size of list in program (which will allow for events to be added)
 
-CLASSROOMS = 17
-SLOTS_PER_CLASSROOM_PER_DAY = 4
-TOTAL_SLOTS_PER_DAY = CLASSROOMS * SLOTS_PER_CLASSROOM_PER_DAY  # 68/day
+aircraft = 17           # just a base level with no contraints. 
+num_flight_aircraft_per_Day = 4
+slots_per_Day = aircraft * num_flight_aircraft_per_Day  # 68/day
 
 INSTRUCTORS = 20
 INSTRUCTOR_CAPACITY_PER_DAY = 3
@@ -32,7 +32,7 @@ students = []
 sid_counter = 0
 
 # initial students
-for _ in range(NUM_INITIAL_STUDENTS):
+for _ in range(starting_students):
     students.append(Student(sid_counter, 0))
     sid_counter += 1
 
@@ -46,8 +46,8 @@ current_date = date.today()
 for day in range(SIMULATION_DAYS):
 
     # Add new students every 2 weeks
-    if day % NEW_STUDENTS_EVERY == 0 and day != 0:
-        for _ in range(NEW_STUDENTS_COUNT):
+    if day % class_up_frequency == 0 and day != 0:
+        for _ in range(class_up_per_week):
             students.append(Student(sid_counter, day))
             sid_counter += 1
 
@@ -61,7 +61,7 @@ for day in range(SIMULATION_DAYS):
     total_instructor_capacity = sum(inst[1] for inst in instructors_available)
 
     # the true limit is whichever runs out first
-    available_slots_today = min(TOTAL_SLOTS_PER_DAY, total_instructor_capacity)
+    available_slots_today = min(slots_per_Day, total_instructor_capacity)
 
     # ---------- Student Priority (longest since last event wins) ----------
     waiting_list = sorted(
