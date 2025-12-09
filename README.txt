@@ -5,7 +5,6 @@ To set up on Mac (need homebrew installed)
 
 brew install python@3.10
 
-
 CREATE ENVIRONMENT - mac
 
 python3.10 -m venv ortools-env

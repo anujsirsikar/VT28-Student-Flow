@@ -12,7 +12,7 @@ def main() -> None:
     # The optimal assignment maximizes the number of fulfilled shift requests.
     num_nurses = 5
     num_shifts = 3
-    num_days = 7
+    num_days = 365
     all_nurses = range(num_nurses)
     all_shifts = range(num_shifts)
     all_days = range(num_days)
@@ -88,7 +88,7 @@ def main() -> None:
                             print("Nurse", n, "works shift", s, "(not requested).")
             print()
         print(
-            f"Number of shift requests met = {solver.ObjectiveValue}",
+            f"Number of shift requests met = {solver.objective_value}",
             f"(out of {num_nurses * min_shifts_per_nurse})",
         )
     else:
@@ -96,9 +96,9 @@ def main() -> None:
 
     # Statistics.
     print("\nStatistics")
-    print(f"  - conflicts: {solver.NumConflicts}")
-    print(f"  - branches : {solver.NumBranches}")
-    print(f"  - wall time: {solver.WallTime}s")
+    print(f"  - conflicts: {solver.num_conflicts}")
+    print(f"  - branches : {solver.num_branches}")
+    print(f"  - wall time: {solver.wall_time}s")
 
 
 if __name__ == "__main__":
