@@ -179,43 +179,63 @@ instructor_rate = 0.9
 instructor_daily_hours = 12
 
 
+
+
 def schedule_one_day(students, day, sims, aircraft):
+
+    # events that will be attempted to schedule for each student
     events_to_attempt = []
 
+    # go through each student and see which event they need to do next. Then try to schedule that event
     for s in students:
         nxt = s.next_event()
-        if nxt and s.finish_day is None:
+        if nxt and s.finish_day is None: # if they have an event and are not finished add it to the attempted events
             events_to_attempt.append((s,nxt))
     
+    # calculating the hours that are avaible for each sim (so we can deduct the hours)
     sim_hours = {c: daytime_hours for c in sims}
     aircraft_day_hours = {c: daytime_hours for c in aircraft}
 
+    # makes an array of availible instructs
     instructors_available = int(instructors * instructor_rate)
+    
+    # need to change to account for an instructor rest period
     instructor_hours = {i: instructor_daily_hours for i in range(instructors_available)}
 
     random.shuffle(events_to_attempt) ## change to sorting with students wait time. 
 
+    # looking at student and the event they are scheduled for
     for s, ev in events_to_attempt:
 
+        #getting how long the event it. 
         need = ev.duration
 
+        # choosing the resource to use .
         if ev.resource == "sims":
             pool = sim_hours
         else:
-            pool = =aircraft_day_hours ## here check if sunset or daytime event
+            pool =aircraft_day_hours ## here check if sunset or daytime event
 
+        # making a list of all of the rooms that can be used for the event based on the hours left.
         rooms = [r for r,hrs in pool.items() if hrs > need]
         if not rooms:
             continue
-
+        
+        # making a list of all of the instructors that can be used for the event based on hours left. 
         inst = [i for i, h in instructor_hours.items() if h>=need]
         if not inst: 
             continue
 
+        # prob will not be random and will be based on an order or wait time. Aircraft and classrooms can just be next availible. 
+
         r = random.choice(rooms)
         i = random.choice(inst)
 
+        # subtract the used hours from the resource
         pool[r] -= need
+
+
+        ### FUNCTION IS NOT DONE. NEED TO ADD MORE LINES OF CODE. 
 
 
 
