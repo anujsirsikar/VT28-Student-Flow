@@ -57,5 +57,13 @@ class Aircraft():
         self.status = 0 # 0 = available and 1 = occupied
         self.capacity = capacity
         self.use_per_day = 0  # no more than 4 times per day
+        #self.currentLoad = 0  # i think we can delete this
+        self.start = 7  # represents 0700
+        self.day_stop = 18
+        self.night_start = 18
+        self.stop = 23 # represents 2300 
+        self.breakTime = 1 # hours
+        self.failureRate = 0.25  # 75% chance given aircraft is working
+        self.usePerDay = 0  # no more than 4 times per day
 
 # now can write all the functions that alter the resources

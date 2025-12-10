@@ -173,70 +173,125 @@ def run_simulation(students, instructors):
         # Make sure to account for hours and resource rest time 
         # at the end, update student.currentdate and student.daysInProcess
 
-daytime_hours = 11 ## 7 to 6
+aircraft_daytime_hours = 11 ## 7 to 6
+sim_hours = 18.5
 instructors = 40
 instructor_rate = 0.9
 instructor_daily_hours = 12
 
 
+# def schedule_one_day(students, day, sims, aircraft):
 
+#     # events that will be attempted to schedule for each student
+#     events_to_attempt = []
 
-def schedule_one_day(students, day, sims, aircraft):
-
-    # events that will be attempted to schedule for each student
-    events_to_attempt = []
-
-    # go through each student and see which event they need to do next. Then try to schedule that event
-    for s in students:
-        nxt = s.next_event()
-        if nxt and s.finish_day is None: # if they have an event and are not finished add it to the attempted events
-            events_to_attempt.append((s,nxt))
+#     # go through each student and see which event they need to do next. Then try to schedule that event
+#     for s in students:
+#         nxt = s.next_event()
+#         if nxt and s.finish_day is None: # if they have an event and are not finished add it to the attempted events
+#             events_to_attempt.append((s,nxt))
     
-    # calculating the hours that are avaible for each sim (so we can deduct the hours)
-    sim_hours = {c: daytime_hours for c in sims}
-    aircraft_day_hours = {c: daytime_hours for c in aircraft}
+#     # calculating the hours that are avaible for each sim (so we can deduct the hours)
+#     sim_hours = {c: daytime_hours for c in sims}
+#     aircraft_day_hours = {c: daytime_hours for c in aircraft}
 
-    # makes an array of availible instructs
-    instructors_available = int(instructors * instructor_rate)
+#     # makes an array of availible instructs
+#     instructors_available = int(instructors * instructor_rate)
     
-    # need to change to account for an instructor rest period
-    instructor_hours = {i: instructor_daily_hours for i in range(instructors_available)}
+#     # need to change to account for an instructor rest period
+#     instructor_hours = {i: instructor_daily_hours for i in range(instructors_available)}
 
-    random.shuffle(events_to_attempt) ## change to sorting with students wait time. 
+#     random.shuffle(events_to_attempt) ## change to sorting with students wait time. 
 
-    # looking at student and the event they are scheduled for
-    for s, ev in events_to_attempt:
+#     # looking at student and the event they are scheduled for
+#     for s, ev in events_to_attempt:
 
-        #getting how long the event it. 
-        need = ev.duration
+#         #getting how long the event it. 
+#         need = ev.duration
 
-        # choosing the resource to use .
-        if ev.resource == "sims":
-            pool = sim_hours
-        else:
-            pool =aircraft_day_hours ## here check if sunset or daytime event
+#         # choosing the resource to use .
+#         if ev.resource == "sims":
+#             pool = sim_hours
+#         else:
+#             pool =aircraft_day_hours ## here check if sunset or daytime event
 
-        # making a list of all of the rooms that can be used for the event based on the hours left.
-        rooms = [r for r,hrs in pool.items() if hrs > need]
-        if not rooms:
-            continue
+#         # making a list of all of the rooms that can be used for the event based on the hours left.
+#         rooms = [r for r,hrs in pool.items() if hrs > need]
+#         if not rooms:
+#             continue
         
-        # making a list of all of the instructors that can be used for the event based on hours left. 
-        inst = [i for i, h in instructor_hours.items() if h>=need]
-        if not inst: 
-            continue
+#         # making a list of all of the instructors that can be used for the event based on hours left. 
+#         inst = [i for i, h in instructor_hours.items() if h>=need]
+#         if not inst: 
+#             continue
 
-        # prob will not be random and will be based on an order or wait time. Aircraft and classrooms can just be next availible. 
+#         # prob will not be random and will be based on an order or wait time. Aircraft and classrooms can just be next availible. 
 
-        r = random.choice(rooms)
-        i = random.choice(inst)
+#         r = random.choice(rooms)
+#         i = random.choice(inst)
 
-        # subtract the used hours from the resource
-        pool[r] -= need
+#         # subtract the used hours from the resource
+#         pool[r] -= need
 
 
-        ### FUNCTION IS NOT DONE. NEED TO ADD MORE LINES OF CODE. 
+#         ### FUNCTION IS NOT DONE. NEED TO ADD MORE LINES OF CODE. 
 
+
+SEED = 42
+random.seed(SEED)
+
+START_DATE = date
+WEEKS_TO_SIMULATE = 52
+DAYS_TO_SIMULATE = WEEKS_TO_SIMULATE * 7
+
+NUM_INITIAL_STUDENTS = len(range(100))
+
+NEW_STUDENTS_EVERY = 14
+NEW_STUDEDNT_COUNT = 6 ## this will need to be altered
+
+# Output files
+SCHEDULE_CSV = "schedule.csv"
+STUDENT_STATS_CSV = "student_stats.csv"
+
+schedule_entries = []
+
+next_sid = 0
+## assume students are already sorted in longest wait time to shortest. AKA scheduleing based on order in list
+def one_day(students, instructors, day, Utd, Oft, Vtd, Mr, Aircraft, Classroom, grndSchool, contacts, aero, inst, forms, capstone):
+    today = day
+
+    for s in students:
+        s._daily_events_done = 0
+
+    instructors_availible = []
+    instructor_ids = range(20) ## will create a list of instructors later (from csv)
+    for iid in instructor_ids:
+        if random.random() < 0.9: # instructor availibility stat
+            instructors_availible.append([iid, 10]) ## arbitrary number of hours an instructor can work a day
+    total_inst_capacity = sum(i[1] for i in instructors_availible)
+
+    avail_class = 10
+    avail_utd = 10
+    avail_oft = 10
+    avail_vtd = 10
+    avail_mr = 10
+    avail_aircraft = 18
+
+    class_uid = [f"C{i}" for i in range(avail_class)]
+    utd_uid = [f"Utd{i}" for i in range(avail_utd)]
+    oft_uid = [f"Oft{i}" for i in range(avail_oft)]
+    vtd_uid = [f"Vtd{i}" for i in range(avail_vtd)]
+    mr_uid = [f"Mr{i}" for i in range(avail_mr)]
+    aircraft_uid = [f"AC{i}" for i in ragne(avail_aircraft)]
+
+    for student in s:
+        while student.daily_events_done < 1: ## 1 being the max amount a student can be scheduled per day
+            instructors_availible = [iv for iv in instructors_availible if iv[1] > 0]
+            if not instructors_availible:
+                break
+
+            ## decide event type
+            
 
 
 
@@ -433,9 +488,10 @@ def main():
     # Combine into syllabus
     syllabus = [block1, block2, block3, block4, block5, block6, block7]
    
-
+    print(syllabus)
+    
     # Run the simulation
-    run_simulation(students, syllabus)
+    # run_simulation(students, syllabus)
 
 
 

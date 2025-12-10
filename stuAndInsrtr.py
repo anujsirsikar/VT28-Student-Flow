@@ -4,21 +4,23 @@ from collections import deque
 
 class FlightStudent:
     # constructor
-    def __init__(self, student_id, class_id, start_date, status, syllabus):
-        self.student_id = student_id
-        self.class_id = class_id
-        self.medium_assigned = None
-        self.start_date = start_date
-        self.current_date = start_date         # last date they were active/completed an event
-        self.days_in_process = 0
-        self.days_since_last_event = None # lastCompletedEventDate - currentDate. If it's >= 15, they need a warmup flight
-        self.total_wait_time = 0                   # total days waiting due to resource shortage (weekdays only)
-        self.last_complete_event_date = None
+    def __init__(self, studentID, classID, startDate, status):
+        self.studentID = studentID
+        self.classID = classID
+        self.mediumAssigned = None
+        self.startDate = startDate
+        self.currentDate = startDate         # last date they were active/completed an event
+        self.next_event_index = 0            # index into flattened syllabus events
+        self.daysInProcess = 0
+        self.daily_events_done = 0
+        self.daysSinceLastEvent = None # lastCompletedEventDate - currentDate. If it's >= 15, they need a warmup flight
+        self.totalWaitTime = 0                   # total days waiting due to resource shortage (weekdays only)
+        self.lastCompletedEventDate = None
         self.status = status   # active, completed, med down, leave, (pool?), waiting
-        self.completion_date = None
-        self.uncompleted_events = syllabus  # syllabus should be a deque of all the events in primary
-        self.night_hours = 0  # need at least 5 hours of night flying
-        # should we include a student failure rate?
+        self.completionDate = None
+        self.completed_blocks = [0,0,0,0,0,0,0]
+        self.nightHours = 0  # need at least 5 hours of night flying
+        # should we include a student failu/setre rate?
 
     # toString function
     def __str__(self):
