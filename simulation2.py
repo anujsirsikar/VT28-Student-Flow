@@ -1,7 +1,7 @@
 
-import pandas as pd
+#import pandas as pd
 import random
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 
 
@@ -256,9 +256,12 @@ STUDENT_STATS_CSV = "student_stats.csv"
 schedule_entries = []
 
 next_sid = 0
-## assume students are already sorted in longest wait time to shortest. AKA scheduleing based on order in list
-def one_day(students, instructors, day, Utd, Oft, Vtd, Mr, Aircraft, Classroom, grndSchool, contacts, aero, inst, forms, capstone):
+
+def one_day(students, instructors, day, utd, oft, vtd, mr, aircraft, classroom, grndSchool, contacts, aero, inst, forms, capstone):
     today = day
+
+    # sort the student by longest time since last event
+    students.sort(key=lambda s: s.daysSinceLastEvent, reverse=True)
 
     for s in students:
         s._daily_events_done = 0
@@ -266,23 +269,16 @@ def one_day(students, instructors, day, Utd, Oft, Vtd, Mr, Aircraft, Classroom, 
     instructors_availible = []
     instructor_ids = range(20) ## will create a list of instructors later (from csv)
     for iid in instructor_ids:
-        if random.random() < 0.9: # instructor availibility stat
+        if random.random() < (1-Instructor.failure_rate): # instructor availibility stat
             instructors_availible.append([iid, 10]) ## arbitrary number of hours an instructor can work a day
     total_inst_capacity = sum(i[1] for i in instructors_availible)
 
-    avail_class = 10
-    avail_utd = 10
-    avail_oft = 10
-    avail_vtd = 10
-    avail_mr = 10
-    avail_aircraft = 18
-
-    class_uid = [f"C{i}" for i in range(avail_class)]
-    utd_uid = [f"Utd{i}" for i in range(avail_utd)]
-    oft_uid = [f"Oft{i}" for i in range(avail_oft)]
-    vtd_uid = [f"Vtd{i}" for i in range(avail_vtd)]
-    mr_uid = [f"Mr{i}" for i in range(avail_mr)]
-    aircraft_uid = [f"AC{i}" for i in ragne(avail_aircraft)]
+    class_uid = [f"C{i}" for i in range(Classroom.amount)]
+    utd_uid = [f"Utd{i}" for i in range(Utd.amount)]
+    oft_uid = [f"Oft{i}" for i in range(Oft.amount)]
+    vtd_uid = [f"Vtd{i}" for i in range(Vtd.amount)]
+    mr_uid = [f"Mr{i}" for i in range(Mr.amount)]
+    aircraft_uid = [f"AC{i}" for i in ragne(Aircraft.amount)]
 
     for student in s:
         while student.daily_events_done < 1: ## 1 being the max amount a student can be scheduled per day
@@ -488,7 +484,11 @@ def main():
     # Combine into syllabus
     syllabus = [block1, block2, block3, block4, block5, block6, block7]
    
-    print(syllabus)
+    #print(syllabus)
+
+    for i in syllabus:
+        for j in i.events:
+            print(j)
     
     # Run the simulation
     # run_simulation(students, syllabus)

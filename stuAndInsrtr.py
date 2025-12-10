@@ -4,23 +4,26 @@ from collections import deque
 
 class FlightStudent:
     # constructor
-    def __init__(self, studentID, classID, startDate, status):
-        self.studentID = studentID
-        self.classID = classID
-        self.mediumAssigned = None
-        self.startDate = startDate
-        self.currentDate = startDate         # last date they were active/completed an event
+    def __init__(self, student_id, class_id, start_date, status):
+        self.student_id = student_id
+        self.class_id = class_id
+        self.medium_assigned = None
+        self.start_date = start_date
+        self.current_date = start_date         # last date they were active/completed an event
         self.next_event_index = 0            # index into flattened syllabus events
-        self.daysInProcess = 0
+        self.days_in_process = 0
         self.daily_events_done = 0
-        self.daysSinceLastEvent = None # lastCompletedEventDate - currentDate. If it's >= 15, they need a warmup flight
-        self.totalWaitTime = 0                   # total days waiting due to resource shortage (weekdays only)
-        self.lastCompletedEventDate = None
+        self.days_since_last_event = None # lastCompletedEventDate - currentDate. If it's >= 15, they need a warmup flight
+        self.total_wait_time = 0                   # total days waiting due to resource shortage (weekdays only)
+        self.last_completed_event_date = None
         self.status = status   # active, completed, med down, leave, (pool?), waiting
-        self.completionDate = None
+        self.completion_date = None
         self.completed_blocks = [0,0,0,0,0,0,0]
-        self.nightHours = 0  # need at least 5 hours of night flying
+        self.night_hours = 0  # need at least 5 hours of night flying
         # should we include a student failu/setre rate?
+        self.current_id = 0
+        #self.uncompleted_events = syllabus
+
 
     # toString function
     def __str__(self):
@@ -28,8 +31,11 @@ class FlightStudent:
 
     # returns the student's next event
     def next_event(self):
-        return self.uncompleted_events[0]
-        
+        return self.uncompleted_events[current_id]
+    
+    def event_complete(self):
+        self.current_id += 1
+
 
 class Instructor:
     failure_rate = 0.30 # only 70% of the instructors are available to instruct (30% chance they can't)

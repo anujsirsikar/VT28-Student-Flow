@@ -18,6 +18,9 @@ class Event:
         self.resources = resources  # a list (of no defined size) that contains all the resources that could be used for this event
         self.activity_time = activity_time # in hours
 
+    def __str__(self):
+        return f"event: {self.name}"
+
 # returns the times associated with each event
 def getActivityTime():
 

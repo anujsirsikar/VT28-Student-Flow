@@ -52,7 +52,6 @@ class Aircraft():
     break_time = 1
     failure_rate = 0.25 # 75% chance given aircraft is working
     def __init__(self, name, capacity=1):
-        super().__init__("Aircraft")
         self.name = name
         self.status = 0 # 0 = available and 1 = occupied
         self.capacity = capacity
