@@ -3,32 +3,32 @@
 
 # This code will address the flight schedule and different events and the resources they need
 class TrainingBlock:
-    def __init__(self, name, numEvents, events, totalDays, totalActivityTime):
+    def __init__(self, name, num_events, events, total_days, total_activity_time):
         self.name = name # name of the block (i.e. aero, contacts, etc...)
-        self.numEvents = numEvents
+        self.num_events = num_events
         self.events = events  # a list of the actual event objects
-        self.totalDays = totalDays
-        self.totalActivityTime = totalActivityTime   # in hours
-        self.numStudents = 0 
+        self.total_days = total_days
+        self.total_activity_time = total_activity_time   # in hours
+        self.num_students = 0 
 
 class Event:
-    def __init__(self, name, trainingDay, resources, activityTime):
+    def __init__(self, name, training_day, resources, activity_time):
         self.name = name # i.e. FAM2101, etc...
-        self.trainingDay = trainingDay
+        self.training_day = training_day
         self.resources = resources  # a list (of no defined size) that contains all the resources that could be used for this event
-        self.activityTime = activityTime # in hours
+        self.activity_time = activity_time # in hours
 
 # returns the times associated with each event
 def getActivityTime():
 
     event_times = {
         # sysGrndSchoolEvents
-        "G0101": 7.3, "G6001": 7.3, "G0107": 4.5, "SY0101": 4.5, "SY0102": 4.5,
-        "SY0106": 1.9, "SY0112": 3.5, "SY0190": 2.9, "SY0203": 2.9, "SY0206": 2.5,
-        "G0106": 2.5, "SY0290": 6.5, "G0104": 6.5, "G0105": 6.5, "SY0301": 5.5,
-        "PR0101": 5.5, "PR0102B": 5.5, "PR0103": 5.5, "PR0104": 5.5, "PR0105": 5.5,
-        "FAM1106": 2.5, "FAM1190": 3.5, "FAM1203": 3.5, "FAM1290": 7.0, "G0201": 7.0,
-        "G0103": 7.0, "G0290": 7.0, "G0102": 7.0,
+        "G0101": 3.65, "G6001": 3.65, "G0107": 1.5, "SY0101": 1.5, "SY0102": 1.5,
+        "SY0106": 1.9, "SY0112": 3.5, "SY0190": 1.45, "SY0203": 1.45, "SY0206": 1.25,
+        "G0106": 1.25, "SY0290": 2.167, "G0104": 2.167, "G0105": 2.167, "SY0301": 1.83,
+        "PR0101": 1.83, "PR0102B": 1.83, "PR0103": 1.83, "PR0104": 1.83, "PR0105": 1.83,
+        "FAM1106": 2.5, "FAM1190": 1.75, "FAM1203": 1.75, "FAM1290": 2.33, "G0201": 2.33,
+        "G0103": 2.33, "G0290": 3.5, "G0102": 3.5,
 
         # contactsEvents
         "FAM2101": 1.3, "FAM2102": 1.3, "FAM2201": 1.3, "FAM2202": 1.3,

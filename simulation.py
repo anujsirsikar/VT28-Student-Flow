@@ -12,6 +12,10 @@ from collections import defaultdict
 from eventList import getActivityTime, Event, TrainingBlock
 from stuAndInsrtr import FlightStudent
 from resources import Classroom, Utd, Oft, Vtd, Mr, Aircraft
+
+import pandas as pd
+import random
+import matplotlib.pyplot as plt
     
     # Will need a function that iterates over the resource list to check if there are resources available to fulfill the event.
     # Each event should also have a variable that indicates whether or not an event has available resources. 
@@ -166,6 +170,78 @@ def run_simulation(students, instructors):
         # Make sure to account for hours and resource rest time 
         # at the end, update student.currentdate and student.daysInProcess
 
+
+daytime_hours = 11 ## 7 to 6
+nighttime_hours = 5
+instructors = 40
+instructor_rate = 0.9
+instructor_daily_hours = 12
+
+def schedule_one_day(students, day, classrooms, sims, aircraft):
+
+    # events that will be attempted to schedule for each student
+    events_to_attempt = []
+
+    # sort the student by longest time since last event
+    students.sort(key=lambda s: s.daysSinceLastEvent, reverse=True)
+
+    # go through each student and see which event they need to do next. Then try to schedule that event
+    for s in students:
+        nxt = s.next_event()
+        if nxt and s.completion_date is None: # if they have an event and are not finished add it to the attempted events
+            events_to_attempt.append((s,nxt))
+    
+    # calculating the hours that are avaible for each sim (so we can deduct the hours)
+    sim_hours = {c: Sim.daily_hours for c in sims}  
+    aircraft_day_hours = {c: (Aircraft.daily_hours - daytime_hours) for c in aircraft}
+    # aircraft_night_hours = {c: (aircraft.daily_hours - nighttime_hours) for c in aircraft}    # not sure if this is the right way to this
+    classroom_hours = {c: Classroom.daily_hours for c in classrooms}
+
+    # makes an array of availible instructors/sims/aircraft
+    instructors_available = int(instructors * (1-Instructor.failure_rate))
+    sims_available = int(Sim.amount * (1-Sim.failure_rate))   # I think we are going to have to specify which sims are not working 
+    aircraft_available = int(Aircraft.amount * (1-Aircraft.failure_rate))
+    
+    # need to change to account for an instructor rest period
+    instructor_hours = {i: instructor_daily_hours for i in range(instructors_available)}
+
+    # i think we should sort the students before we search for their next event so that the events are already in order
+    # random.shuffle(events_to_attempt) ## change to sorting with students wait time. 
+
+    # looking at student and the event they are scheduled for
+    for s, ev in events_to_attempt:
+
+        #getting how long the event it. 
+        need = ev.activity_time
+
+        # choosing the resource to use .
+        if ev.resource == "sims":      # might have to check specific sims here, not sure
+            pool = sim_hours
+        elif ev.resource == "classroom":
+            pool = classroom_hours
+        else:
+            pool = aircraft_day_hours ## here check if sunset or daytime event
+
+        # making a list of all of the rooms that can be used for the event based on the hours left.
+        rooms = [r for r,hrs in pool.items() if hrs > need]
+        if not rooms:
+            continue
+        
+        # making a list of all of the instructors that can be used for the event based on hours left. 
+        inst = [i for i, h in instructor_hours.items() if h>=need]
+        if not inst: 
+            continue
+
+        # prob will not be random and will be based on an order or wait time. Aircraft and classrooms can just be next availible. 
+
+        r = random.choice(rooms)
+        i = random.choice(inst)  # only need an instructor if the resource is an aircraft
+
+        # subtract the used hours from the resource
+        pool[r] -= need
+
+
+        ### FUNCTION IS NOT DONE. NEED TO ADD MORE LINES OF CODE. 
 
 
 
