@@ -129,7 +129,7 @@ def schedule(student, instrictor, event, resource):
 
 def class_in_progress(event, classrooms):
     for c in classrooms:
-        if event = c.event:
+        if event == c.event:
             # check to see if room is full
             if c.current_num < c.capacity:
                 return classrooms.index(c)
@@ -184,8 +184,8 @@ nighttime_hours = 5
 instructors = 40
 instructor_rate = 0.9
 instructor_daily_hours = 12
-
-def schedule_one_day(students, instructors, day, utd, oft, vtd, mr, aircraft, classroom, grndSchool, contacts, aero, inst, forms, capstone):
+'''
+def schedule_one_day(students, instructors, utd, oft, vtd, mr, aircraft, classroom, grndSchool, contacts, aero, inst, forms, capstone):
     # events that will be attempted to schedule for each student
     events_to_attempt = []
 
@@ -225,10 +225,10 @@ def schedule_one_day(students, instructors, day, utd, oft, vtd, mr, aircraft, cl
         needed_time = ev.activity_time
         needed_resource = ev.resource
 
-        if needed_resource = "classroom":
+        if needed_resource == "classroom":
             # Just thinking, and we need to account for whether the classroom is at capacity. And then if down the event
             # list, this event pops up again, we need to use the same classroom...
-            helper = 0:
+            helper = 0
             # going to have to keep classrooms as objects
             for c in classroom: # classroom is a list of classroom objects 
                 # 1) check if the event is already assigned to a classroom
@@ -244,8 +244,8 @@ def schedule_one_day(students, instructors, day, utd, oft, vtd, mr, aircraft, cl
                     helper = 1
                     break
                 else:
-                    if need_time <= c.daily_hours:
-                        c.daily_hours = c.daily_hours - need_time
+                    if needed_time <= c.daily_hours:
+                        c.daily_hours = c.daily_hours - needed_time
                         c.event = ev
                         c.current_num += 1
                         s.event_complete()
@@ -254,13 +254,15 @@ def schedule_one_day(students, instructors, day, utd, oft, vtd, mr, aircraft, cl
             if helper == 0:
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
-            s.total_wait_time += 1
+            s.total_wait_time += 1  #delete this
 
-        elif needed_resource = "utd":
+#### ADD BLOCK SPECIFIC WAIT TINME
+
+        elif needed_resource == "utd":
             helper = 0   # if stays zero, then not scheduled
             for hours in utd_hours.values():
                 if need_time <= hours:
-                    hours = hours - need_time
+                    hours = hours - need_time #ADD BREAK TIOKE
                     # schedule the student
                     s.event_complete()
                     helper = 1
@@ -269,8 +271,8 @@ def schedule_one_day(students, instructors, day, utd, oft, vtd, mr, aircraft, cl
                 # not scheduled
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
-            s.total_wait_time += 1
-        elif needed_resource = "oft":
+            s.total_wait_time += 1 # DELETE
+        elif needed_resource == "oft":
             helper = 0   # if stays zero, then not scheduled
             for hours in oft_hours.values():
                 if need_time <= hours:
@@ -284,7 +286,7 @@ def schedule_one_day(students, instructors, day, utd, oft, vtd, mr, aircraft, cl
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
             s.total_wait_time += 1
-        elif needed_resource = "vtd":
+        elif needed_resource == "vtd":
             helper = 0   # if stays zero, then not scheduled
             for hours in vtd_hours.values():
                 if need_time <= hours:
@@ -298,7 +300,7 @@ def schedule_one_day(students, instructors, day, utd, oft, vtd, mr, aircraft, cl
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
             s.total_wait_time += 1
-        elif needed_resource = "mr":
+        elif needed_resource == "mr":
             helper = 0   # if stays zero, then not scheduled
             for hours in mr_hours.values():
                 if need_time <= hours:
@@ -316,6 +318,7 @@ def schedule_one_day(students, instructors, day, utd, oft, vtd, mr, aircraft, cl
             # gonna need an aircraft and an instructor
             # Later: add in stuff about day or night...
             helper = 0
+            ## make sure actuallly values not copies
             for hours in aircraft_day_hours.values():
                 done = 0
                 if need_time <= hours:
@@ -341,12 +344,22 @@ def schedule_one_day(students, instructors, day, utd, oft, vtd, mr, aircraft, cl
         c.event = None
         c.daily_hours = 12
 
-
+'''
 def main():
-    students = deque() # this will be a deque of students (for the future: be able to read in an excel sheet and then initialize student objects to populate this)
+    students = [] # this will be a deque of students (for the future: be able to read in an excel sheet and then initialize student objects to populate this)
     # Let's make some students
-    for i in range(1):
-        students.append(FlightStudent(i, i//8, date.today(), "waiting")) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
+    print(date.today())
+    for i in range(5):
+        new_student = FlightStudent(i, i, "waiting")
+        new_student.totalWaitTime = i
+        students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
+
+    print(students)
+
+    students.sort(key=lambda s: s.days_since_last_event, reverse=True)
+
+    print(i for i in students)
+
 
     # Resources
     classrooms = [Classroom(f"CL{i+1}") for i in range(6)]
@@ -538,7 +551,7 @@ def main():
    
 
     # Run the simulation
-    run_simulation(students, syllabus)
+    # run_simulation(students, syllabus)
 
 
 
