@@ -127,6 +127,14 @@ def schedule(student, instrictor, event, resource):
     # take night hours into account
     pass
 
+def class_in_progress(event, classrooms):
+    for c in classrooms:
+        if event = c.event:
+            # check to see if room is full
+            if c.current_num < c.capacity:
+                return classrooms.index(c)
+    return 99
+
 # IMPORTANT: how to keep track of how many students in each training block? Should we make them classes? Because we 
 #            need to look at all the counts to decide where to place students after they complete contacts, and then 
 #            also for scheduling for forms (need two students and two instructors)
@@ -177,72 +185,161 @@ instructors = 40
 instructor_rate = 0.9
 instructor_daily_hours = 12
 
-def schedule_one_day(students, day, classrooms, sims, aircraft):
-
+def schedule_one_day(students, instructors, day, utd, oft, vtd, mr, aircraft, classroom, grndSchool, contacts, aero, inst, forms, capstone):
     # events that will be attempted to schedule for each student
     events_to_attempt = []
 
     # sort the student by longest time since last event
-    students.sort(key=lambda s: s.daysSinceLastEvent, reverse=True)
+    students.sort(key=lambda s: s.days_since_last_event, reverse=True)
 
-    # go through each student and see which event they need to do next. Then try to schedule that event
+    # can (for 97% of the time) only do one event a day -> unless multiple events taking place on the same training day
     for s in students:
+        s.daily_events_done = 0  # unsure if I need this
         nxt = s.next_event()
+        # NEED TO SOMEHOW ACCOUNT FOR EVENTS THAT TAKE PLACE ON THE SAME TRAINING DAY (make a function that combines all the events for a single training day into one big event)
         if nxt and s.completion_date is None: # if they have an event and are not finished add it to the attempted events
             events_to_attempt.append((s,nxt))
-    
-    # calculating the hours that are avaible for each sim (so we can deduct the hours)
-    sim_hours = {c: Sim.daily_hours for c in sims}  
-    aircraft_day_hours = {c: (Aircraft.daily_hours - daytime_hours) for c in aircraft}
-    # aircraft_night_hours = {c: (aircraft.daily_hours - nighttime_hours) for c in aircraft}    # not sure if this is the right way to this
-    classroom_hours = {c: Classroom.daily_hours for c in classrooms}
 
-    # makes an array of availible instructors/sims/aircraft
-    instructors_available = int(instructors * (1-Instructor.failure_rate))
-    sims_available = int(Sim.amount * (1-Sim.failure_rate))   # I think we are going to have to specify which sims are not working 
-    aircraft_available = int(Aircraft.amount * (1-Aircraft.failure_rate))
-    
-    # need to change to account for an instructor rest period
-    instructor_hours = {i: instructor_daily_hours for i in range(instructors_available)}
+    # Filter out failed devices
+    working_utds = [sim for sim in utd if random.random() > Sim.failure_rate]
+    working_ofts = [sim for sim in oft if random.random() > Sim.failure_rate]
+    working_vtds = [sim for sim in vtd if random.random() > Sim.failure_rate]
+    working_mrs  = [sim for sim in mr  if random.random() > Sim.failure_rate]
+    working_aircraft = [ac for ac in aircraft if random.random() > Aircraft.failure_rate]
 
-    # i think we should sort the students before we search for their next event so that the events are already in order
-    # random.shuffle(events_to_attempt) ## change to sorting with students wait time. 
+    utd_hours = {sim: Sim.daily_hours for sim in working_utds}
+    oft_hours = {sim: Sim.daily_hours for sim in working_ofts}
+    vtd_hours = {sim: Sim.daily_hours for sim in working_vtds}
+    mr_hours  = {sim: Sim.daily_hours for sim in working_mrs}
+    aircraft_day_hours = {ac: (Aircraft.daily_hours - daytime_hours) for ac in working_aircraft}
+    #classroom_hours = {c: Classroom.daily_hours for c in classroom}
+
+    # instructors now
+    # want to leave these as objects because we will need to check their quals later on and check onwings 
+    instructors_available = [instructor for instructor in instructors if random.random() > Instructor.failure_rate]
+    instructor_hours = {instructor: Instructor.daily_hours for instructor in instructors_available}
 
     # looking at student and the event they are scheduled for
     for s, ev in events_to_attempt:
-
         #getting how long the event it. 
-        need = ev.activity_time
+        needed_time = ev.activity_time
+        needed_resource = ev.resource
 
-        # choosing the resource to use .
-        if ev.resource == "sims":      # might have to check specific sims here, not sure
-            pool = sim_hours
-        elif ev.resource == "classroom":
-            pool = classroom_hours
+        if needed_resource = "classroom":
+            # Just thinking, and we need to account for whether the classroom is at capacity. And then if down the event
+            # list, this event pops up again, we need to use the same classroom...
+            helper = 0:
+            # going to have to keep classrooms as objects
+            for c in classroom: # classroom is a list of classroom objects 
+                # 1) check if the event is already assigned to a classroom
+                #   If it is...
+                #   a) and there is space in the class, schedule the student and dont need to play around with the classroom's hours, just its current_num
+                #   b) if there is no space, go check if another classroom is available
+                # 2) if it isn't, then just assign it to a classroom if possible, and update hours and the classroom's current_num
+                fate = class_in_progress(ev, classroom)
+                if fate != 99:
+                    assigned_classroom = classroom[fate]
+                    s.event_complete()
+                    assigned_classroom.current_num += 1
+                    helper = 1
+                    break
+                else:
+                    if need_time <= c.daily_hours:
+                        c.daily_hours = c.daily_hours - need_time
+                        c.event = ev
+                        c.current_num += 1
+                        s.event_complete()
+                        helper = 1
+                        break
+            if helper == 0:
+                s.days_since_last_event += 1
+                s.total_wait_time += 1
+            s.total_wait_time += 1
+
+        elif needed_resource = "utd":
+            helper = 0   # if stays zero, then not scheduled
+            for hours in utd_hours.values():
+                if need_time <= hours:
+                    hours = hours - need_time
+                    # schedule the student
+                    s.event_complete()
+                    helper = 1
+                    break
+            if helper == 0:
+                # not scheduled
+                s.days_since_last_event += 1
+                s.total_wait_time += 1
+            s.total_wait_time += 1
+        elif needed_resource = "oft":
+            helper = 0   # if stays zero, then not scheduled
+            for hours in oft_hours.values():
+                if need_time <= hours:
+                    hours = hours - need_time
+                    # schedule the student
+                    s.event_complete()
+                    helper = 1
+                    break
+            if helper == 0:
+                # not scheduled
+                s.days_since_last_event += 1
+                s.total_wait_time += 1
+            s.total_wait_time += 1
+        elif needed_resource = "vtd":
+            helper = 0   # if stays zero, then not scheduled
+            for hours in vtd_hours.values():
+                if need_time <= hours:
+                    hours = hours - need_time
+                    # schedule the student
+                    s.event_complete()
+                    helper = 1
+                    break
+            if helper == 0:
+                # not scheduled
+                s.days_since_last_event += 1
+                s.total_wait_time += 1
+            s.total_wait_time += 1
+        elif needed_resource = "mr":
+            helper = 0   # if stays zero, then not scheduled
+            for hours in mr_hours.values():
+                if need_time <= hours:
+                    hours = hours - need_time
+                    # schedule the student
+                    s.event_complete()
+                    helper = 1
+                    break
+            if helper == 0:
+                # not scheduled
+                s.days_since_last_event += 1
+                s.total_wait_time += 1
+            s.total_wait_time += 1
         else:
-            pool = aircraft_day_hours ## here check if sunset or daytime event
-
-        # making a list of all of the rooms that can be used for the event based on the hours left.
-        rooms = [r for r,hrs in pool.items() if hrs > need]
-        if not rooms:
-            continue
-        
-        # making a list of all of the instructors that can be used for the event based on hours left. 
-        inst = [i for i, h in instructor_hours.items() if h>=need]
-        if not inst: 
-            continue
-
-        # prob will not be random and will be based on an order or wait time. Aircraft and classrooms can just be next availible. 
-
-        r = random.choice(rooms)
-        i = random.choice(inst)  # only need an instructor if the resource is an aircraft
-
-        # subtract the used hours from the resource
-        pool[r] -= need
-
-
-        ### FUNCTION IS NOT DONE. NEED TO ADD MORE LINES OF CODE. 
-
+            # gonna need an aircraft and an instructor
+            # Later: add in stuff about day or night...
+            helper = 0
+            for hours in aircraft_day_hours.values():
+                done = 0
+                if need_time <= hours:
+                    for time in instructor_hours.values():
+                        if need_time <= time:
+                            hours = hours - need_time
+                            time = time - need_time
+                            s.event_complete()
+                            helper = 1
+                            done = 1
+                            break
+                    if done == 1:
+                        break
+            if helper == 0:
+                # not scheduled
+                s.days_since_last_event += 1
+                s.total_wait_time += 1
+            s.total_wait_time += 1
+    
+    # need to reset the classroom variables after each day
+    for c in classroom:
+        c.current_num = 0
+        c.event = None
+        c.daily_hours = 12
 
 
 def main():
@@ -265,6 +362,7 @@ def main():
 
     # Initialize a list of event objects for each block
     sysGrndSchoolEvents = []
+    # MAKE THE RESOURCES A STRING!!!
     sysGrndSchoolEvents.append(Event("G0101", 1, classrooms, activity_time_dict["G0101"]/2))
     sysGrndSchoolEvents.append(Event("G6001", 1, classrooms, activity_time_dict["G6001"]/2))
     sysGrndSchoolEvents.append(Event("G0107", 2, classrooms, activity_time_dict["G0107"]/3))

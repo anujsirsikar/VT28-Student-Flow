@@ -19,7 +19,7 @@ class Event:
         self.activity_time = activity_time # in hours
 
     def __str__(self):
-        return f"event: {self.name}"
+        return self.name
 
 # returns the times associated with each event
 def getActivityTime():

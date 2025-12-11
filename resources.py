@@ -11,6 +11,9 @@ class Classroom():
         self.name = name
         self.status = 0 # 0 = available and 1 = occupied
         self.capacity = capacity
+        self.current_num = 0
+        self.event = None
+        self.daily_hours = 12
   
 # Subclass of Mediums
 class Sim():
