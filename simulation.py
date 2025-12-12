@@ -432,16 +432,15 @@ def main():
     students = [] # this will be a deque of students (for the future: be able to read in an excel sheet and then initialize student objects to populate this)
     # Let's make some students
 
-    # user_input = input("Enter a number of initial students (default 10): ")
+    user_input = input("Enter a number of initial students (default 10): ")
     
-    # try:
-    #     value = int(user_input)
-    # except ValueError:
-    #     value = default_value
+    try:
+        value = int(user_input)
+    except ValueError:
+        value = default_value
 
-    # if value > 100:
-    #     value = 100
-    value = 2
+    if value > 100:
+        value = 100
 
     for i in range(value):
         new_student = FlightStudent(i, i//8, date.today())
@@ -457,45 +456,45 @@ def main():
 
     result = []
 
-    # user_input = input("Enter a number of days (default 10): ")
+    user_input = input("Enter a number of days (default 10): ")
 
-    # try: 
-    #     value = int(user_input)
-    # except ValueError:
-    #     value = default_value
+    try: 
+        value = int(user_input)
+    except ValueError:
+        value = default_value
 
-    # if value > 365:
-    #     value = 365
-
-    value = 365
+    if value > 365:
+        value = 365
 
     # for i in syllabus:
     #     print(i)
 
     for i in range(value):
         current = date.today() + timedelta(days=i)
-        print(current)
         schedule = schedule_one_day(students, current, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus)
         result.append(schedule)
-        for j in schedule:
-            print(j)
 
-    # for i in result:
-    #     for j in i:
-    #         print(j)
+    for i in result:
+        for j in i:
+            print(j)
 
 
     for s in students:
-        dates = sorted(s.completed_dates)
+        # dates = sorted(s.completed_dates)
+        dates = sorted(s.completed_dates, key=lambda d: (d is None, d))
         date_to_compare = s.start_date
         wait_times = []
 
         for i in dates:
+            if i is None:
+                wait_times.append(None)
+                # do NOT update date_to_compare
+                continue
             wait_times.append((i-date_to_compare).days)
             date_to_compare = i
 
-        print(wait_times)
-        print(s.completed_dates)
+        print("Time to complete each block", wait_times)
+        print("Dates each block was completed", s.completed_dates)
 
 
 
