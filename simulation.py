@@ -16,6 +16,7 @@ import csv
 import pandas as pd
 import random
 import matplotlib.pyplot as plt
+import os
     
     # Will need a function that iterates over the resource list to check if there are resources available to fulfill the event.
     # Each event should also have a variable that indicates whether or not an event has available resources. 
@@ -180,6 +181,7 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
         # NEED TO SOMEHOW ACCOUNT FOR EVENTS THAT TAKE PLACE ON THE SAME TRAINING DAY (make a function that combines all the events for a single training day into one big event)
         if nxt and s.completion_date is None: # if they have an event and are not finished add it to the attempted events
             events_to_attempt.append((s,nxt))
+    print(events_to_attempt)
 
     # Filter out failed devices. Note this changes every day
     working_utds = [sim for sim in utd if random.random() > Sim.failure_rate]
@@ -194,7 +196,8 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
     oft_hours = {sim: Sim.daily_hours for sim in working_ofts}
     vtd_hours = {sim: Sim.daily_hours for sim in working_vtds}
     mr_hours  = {sim: Sim.daily_hours for sim in working_mrs}
-    aircraft_day_hours = {ac: (Aircraft.daily_hours - daytime_hours) for ac in working_aircraft}
+    # format is Aircraft Object: [Daily Hours Availible, Night Hours Availible, Total uses that day]
+    aircraft_hours = {ac: [daytime_hours, nighttime_hours, 0] for ac in working_aircraft}
 
     # format object: [hours, event, current capacity check, [capacity_event_one, capacity_event_two, etc...]]
     classroom_hours_events = {c: [Classroom.daily_hours, None, -1, [0, 0, 0, 0]] for c in classroom}
@@ -216,7 +219,7 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
             fate = class_in_progress(ev, classroom_hours_events)
             if fate != 99:
                 successfull_events.append([s,ev, day, str(fate) + " Class: " + str(classroom_hours_events[fate][2]) + " Student: " + str(classroom_hours_events[fate][3][classroom_hours_events[fate][2]])])
-                s.event_complete()
+                s.event_complete(day)
                 classroom_hours_events[fate][3][classroom_hours_events[fate][2]] += 1
                 helper = 1
             else:
@@ -234,7 +237,7 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
                 #     helper = 1
                 #     break
                 # else:
-                    if needed_time <= classroom_hours_events[c][0]:
+                    if needed_time <= classroom_hours_events[c][0] or str(ev) == "IN1411/IN1412/IN1413A" or str(ev) == "NA1105/NA1106":
                         classroom_hours_events[c][0] -= needed_time
                         classroom_hours_events[c][1] = ev
                         capacity_index = classroom_hours_events[c][2]
@@ -242,7 +245,7 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
                         classroom_hours_events[c][2] += 1
                         successfull_events.append([s,ev, day, str(c) + " Class: " + str(classroom_hours_events[c][2]) + " Student: " + str(classroom_hours_events[c][3][classroom_hours_events[c][2]])])
                         classroom_hours_events[c][3][classroom_hours_events[c][2]] += 1
-                        s.event_complete()
+                        s.event_complete(day)
                         helper = 1
                         sorted_classroom = sorted(classroom_hours_events.items(), key=lambda item: item[1][0], reverse=True)
                         classroom_hours_events = dict(sorted_classroom)
@@ -260,7 +263,7 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
                     utd_hours[u] -=  (needed_time + Sim.break_time) #ADD BREAK Time
                     # schedule the student
                     successfull_events.append([s,ev, day, u])
-                    s.event_complete()
+                    s.event_complete(day)
                     helper = 1
                     break
             if helper == 0:
@@ -275,7 +278,7 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
                     oft_hours[o] -= (needed_time + Sim.break_time)
                     # schedule the student
                     successfull_events.append([s,ev, day, o])
-                    s.event_complete()
+                    s.event_complete(day)
                     helper = 1
                     break
             if helper == 0:
@@ -290,7 +293,7 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
                     vtd_hours[v] -= (needed_time + Sim.break_time)
                     # schedule the student
                     successfull_events.append([s,ev, day, v])
-                    s.event_complete()
+                    s.event_complete(day)
                     helper = 1
                     break
             if helper == 0:
@@ -302,10 +305,10 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
             helper = 0   # if stays zero, then not scheduled
             for m in mr_hours:
                 if needed_time <= mr_hours[m]:
-                    mr_hours -= (needed_time + Sim.break_time)
+                    mr_hours[m] -= (needed_time + Sim.break_time)
                     # schedule the student
                     successfull_events.append([s,ev, day, m])
-                    s.event_complete()
+                    s.event_complete(day)
                     helper = 1
                     break
             if helper == 0:
@@ -318,16 +321,19 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
             # Later: add in stuff about day or night...
             aircraft_found = 0
             ## make sure actuallly values not copies
-            for ac in aircraft_day_hours:
-                print(type(ac))
+            for ac in aircraft_hours:
                 instructor_found = 0
-                if needed_time <= aircraft_day_hours[ac] and ac.use_per_day < 4:
+
+                check = 0
+
+                if needed_time <= aircraft_hours[ac][0] and aircraft_hours[ac][2] < 4:
                     for inst in instructor_hours:
                         if needed_time <= instructor_hours[inst]:
-                            aircraft_day_hours[ac] -= (needed_time + Aircraft.break_time)
+                            aircraft_hours[ac][0] -= (needed_time + Aircraft.break_time)
                             instructor_hours[inst] -= (needed_time + Instructor.break_time)
                             successfull_events.append([s,ev, day, ac,inst])
-                            s.event_complete()
+                            s.event_complete(day)
+                            aircraft_hours[ac][2] += 1
                             aircraft_found = 1
                             instructor_found = 1
                             break
@@ -385,15 +391,15 @@ def main():
     aircrafts = "aircraft"
 
     # Initialize a list of event objects for each block
-    sysGrndSchoolEvents = make_events(r"data\sysGrnd.csv", "system ground")
-    print("sys grnd: ", sysGrndSchoolEvents)
+    sysGrndSchoolEvents = make_events(os.path.join("data", "sysGrnd.csv"), "system ground")
+    # print("sys grnd: ", sysGrndSchoolEvents)
     # FAM1301, FAM4101, FAM4102, FAM4103, FAM4104, FAM4303, FAM4304 are the required onwing events
-    contactsEvents = make_events(r"data\contacts.csv", "contacts")
-    aeroEvents = make_events(r"data\aero.csv", "contacts")
-    instrGrndSchoolEvents = make_events(r"data\instrGrnd.csv", "instrument ground")
-    instrumentsEvents = make_events(r"data\instr.csv", "instruments")
-    formsEvents = make_events(r"data\forms.csv", "forms")
-    capstoneEvents = make_events(r"data\capstone.csv", "capstone")
+    contactsEvents = make_events(os.path.join("data", "contacts.csv"), "contacts")
+    aeroEvents = make_events(os.path.join("data","aero.csv"), "contacts")
+    instrGrndSchoolEvents = make_events(os.path.join("data", "instrGrnd.csv"), "instrument ground")
+    instrumentsEvents = make_events(os.path.join("data", "instr.csv"), "instruments")
+    formsEvents = make_events(os.path.join("data", "forms.csv"), "forms")
+    capstoneEvents = make_events(os.path.join("data", "capstone.csv"), "capstone")
     
 
     # Initialize the training blocks
@@ -419,22 +425,23 @@ def main():
     # Run the simulation
     # run_simulation(students, syllabus)/
 
+    FlightStudent.syllabus1 = syllabus
 
     default_value=10
 
     students = [] # this will be a deque of students (for the future: be able to read in an excel sheet and then initialize student objects to populate this)
     # Let's make some students
 
-    user_input = input("Enter a number of initial students (default 10): ")
+    # user_input = input("Enter a number of initial students (default 10): ")
     
-    try:
-        value = int(user_input)
-    except ValueError:
-        value = default_value
+    # try:
+    #     value = int(user_input)
+    # except ValueError:
+    #     value = default_value
 
-    if value > 100:
-        value = 100
-
+    # if value > 100:
+    #     value = 100
+    value = 2
 
     for i in range(value):
         new_student = FlightStudent(i, i//8, date.today())
@@ -450,23 +457,47 @@ def main():
 
     result = []
 
-    user_input = input("Enter a number of days (default 10): ")
+    # user_input = input("Enter a number of days (default 10): ")
 
-    try: 
-        value = int(user_input)
-    except ValueError:
-        value = default_value
+    # try: 
+    #     value = int(user_input)
+    # except ValueError:
+    #     value = default_value
 
-    if value > 365:
-        value = 365
+    # if value > 365:
+    #     value = 365
+
+    value = 365
+
+    # for i in syllabus:
+    #     print(i)
 
     for i in range(value):
         current = date.today() + timedelta(days=i)
-        result.append(schedule_one_day(students, current, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus))
-
-    for i in result:
-        for j in i:
+        print(current)
+        schedule = schedule_one_day(students, current, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus)
+        result.append(schedule)
+        for j in schedule:
             print(j)
+
+    # for i in result:
+    #     for j in i:
+    #         print(j)
+
+
+    for s in students:
+        dates = sorted(s.completed_dates)
+        date_to_compare = s.start_date
+        wait_times = []
+
+        for i in dates:
+            wait_times.append((i-date_to_compare).days)
+            date_to_compare = i
+
+        print(wait_times)
+        print(s.completed_dates)
+
+
 
 if __name__ == "__main__":
     main()

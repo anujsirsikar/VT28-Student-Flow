@@ -73,4 +73,11 @@ class Aircraft():
         self.breakTime = 1               # hours
         self.failureRate = 0.25          # 75% chance given aircraft is working
 
+
+    def __str__(self):
+        return f"Aircraft: {self.name}"
+    
+    def __repr__(self):
+        return str(self)
+
 # now can write all the functions that alter the resources

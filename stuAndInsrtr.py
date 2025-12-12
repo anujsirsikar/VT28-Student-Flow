@@ -7,8 +7,8 @@ from datetime import date
 class FlightStudent:
     # constructor
 
-    syllabus1 = None
-    syllabus2 = None
+    syllabus1 = []
+    syllabus2 = []
 
     def __init__(self, student_id, class_id, start_date):
         self.student_id = student_id
@@ -20,7 +20,8 @@ class FlightStudent:
         self.last_completed_event_date = None
         # self.status = "active"   # active, completed, med down, leave, (pool?), waiting
         self.completion_date = None
-        self.completed_blocks = [0,0,0,0,0,0,0]    # 0 = uncompleted, 1 = completed, 2 = in-progress
+        self.completed_blocks = [0,0,0,0,0,0,0]    # 0 = uncompleted, 1 = completed
+        self.completed_dates = [None, None, None, None, None, None]
         self.current_block = 0                     # Block one starts at zero for indexing
         self.next_event_index = 0                  # index into flattened syllabus events
         self.aero_first = False
@@ -41,10 +42,10 @@ class FlightStudent:
         return self.current_block, self.next_event_index
     
     
-    def event_complete(self):
-        finish_numbers = [27, 38, 3, 19, 24, 9, 7]
-        if finish_numbers[self.current_block] <= self.next_event_index:
+    def event_complete(self, day):
+        if len(self.syllabus1[self.current_block])-1 <= self.next_event_index:
             self.completed_blocks[self.current_block] = 1
+            self.completed_dates[self.current_block] = day
             self.current_block += 1
             self.next_event_index = 0
         else:
@@ -64,3 +65,9 @@ class Instructor:
         # Add this later:
         # self.onwing = (studentID)  <- add this to the constructor's parameters
         # should instructors have a status too?
+
+    def __str__(self):
+        return f"Instructor: {self.name}"
+    
+    def __repr__(self):
+        return str(self)

@@ -19,12 +19,14 @@ class Event:
         self.resource = resource
         # need to add this:
         self.block = block 
+        self.night_event = False
+        self.can_be_night_event = True
 
     def __str__(self):
         return self.name
 
     def __repr__(self):
-        return str(self)
+        return str(self) + str(self.block) + str(self.resource) + str(self.activity_time)
 
 # returns the times associated with each event
 def getActivityTime():
