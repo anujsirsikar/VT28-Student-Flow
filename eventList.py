@@ -12,15 +12,18 @@ class TrainingBlock:
         self.num_students = 0 
 
 class Event:
-    def __init__(self, name, training_day, resources, activity_time):
+    def __init__(self, name, training_day, resource, activity_time):
         self.name = name # i.e. FAM2101, etc...
         self.training_day = training_day
-        self.resources = resources  # a list (of no defined size) that contains all the resources that could be used for this event
+        # self.resources = resources  # a list (of no defined size) that contains all the resources that could be used for this event
         self.activity_time = activity_time # in hours
+        self.resource = resource
 
     def __str__(self):
         return self.name
 
+    def __repr__(self):
+        return str(self)
 # returns the times associated with each event
 def getActivityTime():
 

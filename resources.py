@@ -14,6 +14,9 @@ class Classroom():
         self.current_num = 0
         self.event = None
         self.daily_hours = 12
+
+    def __repr__(self):
+        return self.name
   
 # Subclass of Mediums
 class Sim():
@@ -23,6 +26,14 @@ class Sim():
     break_time = 0.5
     def __init__(self, capacity=1):
         self.capacity = capacity
+        self.name = "sim"
+
+    def __str__(self):
+        return f"Name: {self.name}"
+    
+    def __repr__(self):
+        return str(self)
+
 class Oft(Sim):                           # subclass of Sim
     amount = 6
     def __init__(self, name):

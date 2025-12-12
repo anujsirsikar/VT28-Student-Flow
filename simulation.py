@@ -10,8 +10,8 @@ import time
 import sys
 from collections import defaultdict
 from eventList import getActivityTime, Event, TrainingBlock
-from stuAndInsrtr import FlightStudent
-from resources import Classroom, Utd, Oft, Vtd, Mr, Aircraft
+from stuAndInsrtr import FlightStudent, Instructor
+from resources import Classroom, Utd, Oft, Vtd, Mr, Aircraft, Sim
 
 import pandas as pd
 import random
@@ -129,10 +129,17 @@ def schedule(student, instrictor, event, resource):
 
 def class_in_progress(event, classrooms):
     for c in classrooms:
-        if event == c.event:
-            # check to see if room is full
-            if c.current_num < c.capacity:
-                return classrooms.index(c)
+        if event == classrooms[c][1]:
+            capacity_index = classrooms[c][2]
+            capacity = classrooms[c][3][capacity_index]
+            if capacity < c.capacity:
+                return c
+
+    # for c in classrooms:
+    #     if event == c.event:
+    #         # check to see if room is full
+    #         if c.current_num < c.capacity:
+    #             return classrooms.index(c)
     return 99
 
 # IMPORTANT: how to keep track of how many students in each training block? Should we make them classes? Because we 
@@ -184,38 +191,46 @@ nighttime_hours = 5
 instructors = 40
 instructor_rate = 0.9
 instructor_daily_hours = 12
-'''
-def schedule_one_day(students, instructors, utd, oft, vtd, mr, aircraft, classroom, grndSchool, contacts, aero, inst, forms, capstone):
+
+def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus):# grndSchool, contacts, aero, inst, forms, capstone):
     # events that will be attempted to schedule for each student
     events_to_attempt = []
+    successfull_events = []
 
     # sort the student by longest time since last event
-    students.sort(key=lambda s: s.days_since_last_event, reverse=True)
+    if day != date.today():
+        students.sort(key=lambda s: s.days_since_last_event, reverse=True)
 
     # can (for 97% of the time) only do one event a day -> unless multiple events taking place on the same training day
     for s in students:
-        s.daily_events_done = 0  # unsure if I need this
-        nxt = s.next_event()
+        # s.daily_events_done = 0  # unsure if I need this
+        block, event = s.next_event()
+        nxt = syllabus[block][event]
         # NEED TO SOMEHOW ACCOUNT FOR EVENTS THAT TAKE PLACE ON THE SAME TRAINING DAY (make a function that combines all the events for a single training day into one big event)
         if nxt and s.completion_date is None: # if they have an event and are not finished add it to the attempted events
             events_to_attempt.append((s,nxt))
 
-    # Filter out failed devices
+    # Filter out failed devices. Note this changes every day
     working_utds = [sim for sim in utd if random.random() > Sim.failure_rate]
     working_ofts = [sim for sim in oft if random.random() > Sim.failure_rate]
     working_vtds = [sim for sim in vtd if random.random() > Sim.failure_rate]
     working_mrs  = [sim for sim in mr  if random.random() > Sim.failure_rate]
     working_aircraft = [ac for ac in aircraft if random.random() > Aircraft.failure_rate]
 
+
+    ## these are objects where the mapping is Object: hours ex. UTD object: 17.5
     utd_hours = {sim: Sim.daily_hours for sim in working_utds}
     oft_hours = {sim: Sim.daily_hours for sim in working_ofts}
     vtd_hours = {sim: Sim.daily_hours for sim in working_vtds}
     mr_hours  = {sim: Sim.daily_hours for sim in working_mrs}
     aircraft_day_hours = {ac: (Aircraft.daily_hours - daytime_hours) for ac in working_aircraft}
-    #classroom_hours = {c: Classroom.daily_hours for c in classroom}
+
+    # format object: [hours, event, current capacity check, [capacity_event_one, capacity_event_two, etc...]]
+    classroom_hours_events = {c: [Classroom.daily_hours, None, -1, [0, 0, 0, 0]] for c in classroom}
 
     # instructors now
     # want to leave these as objects because we will need to check their quals later on and check onwings 
+    ## these are objects where the mapping is Object: hours ex. UTD object: 17.5
     instructors_available = [instructor for instructor in instructors if random.random() > Instructor.failure_rate]
     instructor_hours = {instructor: Instructor.daily_hours for instructor in instructors_available}
 
@@ -226,44 +241,62 @@ def schedule_one_day(students, instructors, utd, oft, vtd, mr, aircraft, classro
         needed_resource = ev.resource
 
         if needed_resource == "classroom":
+
+
+            
             # Just thinking, and we need to account for whether the classroom is at capacity. And then if down the event
             # list, this event pops up again, we need to use the same classroom...
             helper = 0
             # going to have to keep classrooms as objects
-            for c in classroom: # classroom is a list of classroom objects 
+
+            fate = class_in_progress(ev, classroom_hours_events)
+            if fate != 99:
+                successfull_events.append([s,ev, day, str(fate) + " Class: " + str(classroom_hours_events[fate][2]) + " Student: " + str(classroom_hours_events[fate][3][classroom_hours_events[fate][2]])])
+                s.event_complete()
+                classroom_hours_events[fate][3][classroom_hours_events[fate][2]] += 1
+                helper = 1
+            else:
+                for c in classroom_hours_events: # classroom is a list of classroom objects 
                 # 1) check if the event is already assigned to a classroom
                 #   If it is...
                 #   a) and there is space in the class, schedule the student and dont need to play around with the classroom's hours, just its current_num
                 #   b) if there is no space, go check if another classroom is available
                 # 2) if it isn't, then just assign it to a classroom if possible, and update hours and the classroom's current_num
-                fate = class_in_progress(ev, classroom)
-                if fate != 99:
-                    assigned_classroom = classroom[fate]
-                    s.event_complete()
-                    assigned_classroom.current_num += 1
-                    helper = 1
-                    break
-                else:
-                    if needed_time <= c.daily_hours:
-                        c.daily_hours = c.daily_hours - needed_time
-                        c.event = ev
-                        c.current_num += 1
+                # fate = class_in_progress(ev, classroom)
+                # if fate != 99:
+                #     assigned_classroom = classroom[fate]
+                #     s.event_complete()
+                #     assigned_classroom.current_num += 1
+                #     helper = 1
+                #     break
+                # else:
+                    if needed_time <= classroom_hours_events[c][0]:
+                        classroom_hours_events[c][0] -= needed_time
+                        classroom_hours_events[c][1] = ev
+                        capacity_index = classroom_hours_events[c][2]
+                        classroom_hours_events[c][3][capacity_index] = 1
+                        classroom_hours_events[c][2] += 1
+                        successfull_events.append([s,ev, day, str(c) + " Class: " + str(classroom_hours_events[c][2]) + " Student: " + str(classroom_hours_events[c][3][classroom_hours_events[c][2]])])
+                        classroom_hours_events[c][3][classroom_hours_events[c][2]] += 1
                         s.event_complete()
                         helper = 1
+                        sorted_classroom = sorted(classroom_hours_events.items(), key=lambda item: item[1][0], reverse=True)
+                        classroom_hours_events = dict(sorted_classroom)
                         break
             if helper == 0:
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
-            s.total_wait_time += 1  #delete this
+            
 
 #### ADD BLOCK SPECIFIC WAIT TINME
 
         elif needed_resource == "utd":
             helper = 0   # if stays zero, then not scheduled
-            for hours in utd_hours.values():
-                if need_time <= hours:
-                    hours = hours - need_time #ADD BREAK TIOKE
+            for u in utd_hours:
+                if needed_time <= utd_hours[u]:
+                    utd_hours[u] -=  (needed_time + Sim.break_time) #ADD BREAK Time
                     # schedule the student
+                    successfull_events.append([s,ev, day, u])
                     s.event_complete()
                     helper = 1
                     break
@@ -271,13 +304,14 @@ def schedule_one_day(students, instructors, utd, oft, vtd, mr, aircraft, classro
                 # not scheduled
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
-            s.total_wait_time += 1 # DELETE
+                
         elif needed_resource == "oft":
             helper = 0   # if stays zero, then not scheduled
-            for hours in oft_hours.values():
-                if need_time <= hours:
-                    hours = hours - need_time
+            for o in oft_hours:
+                if needed_time <= oft_hours[o]:
+                    oft_hours[o] -= (needed_time + Sim.break_time)
                     # schedule the student
+                    successfull_events.append([s,ev, day, o])
                     s.event_complete()
                     helper = 1
                     break
@@ -285,13 +319,14 @@ def schedule_one_day(students, instructors, utd, oft, vtd, mr, aircraft, classro
                 # not scheduled
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
-            s.total_wait_time += 1
+                
         elif needed_resource == "vtd":
             helper = 0   # if stays zero, then not scheduled
-            for hours in vtd_hours.values():
-                if need_time <= hours:
-                    hours = hours - need_time
+            for v in vtd_hours:
+                if needed_time <= vtd_hours[v]:
+                    vtd_hours[v] -= (needed_time + Sim.break_time)
                     # schedule the student
+                    successfull_events.append([s,ev, day, v])
                     s.event_complete()
                     helper = 1
                     break
@@ -299,13 +334,14 @@ def schedule_one_day(students, instructors, utd, oft, vtd, mr, aircraft, classro
                 # not scheduled
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
-            s.total_wait_time += 1
+                
         elif needed_resource == "mr":
             helper = 0   # if stays zero, then not scheduled
-            for hours in mr_hours.values():
-                if need_time <= hours:
-                    hours = hours - need_time
+            for m in mr_hours:
+                if needed_time <= mr_hours[m]:
+                    mr_hours -= (needed_time + Sim.break_time)
                     # schedule the student
+                    successfull_events.append([s,ev, day, m])
                     s.event_complete()
                     helper = 1
                     break
@@ -313,61 +349,51 @@ def schedule_one_day(students, instructors, utd, oft, vtd, mr, aircraft, classro
                 # not scheduled
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
-            s.total_wait_time += 1
-        else:
+            
+        else: ##aircraft
             # gonna need an aircraft and an instructor
             # Later: add in stuff about day or night...
-            helper = 0
+            aircraft_found = 0
             ## make sure actuallly values not copies
-            for hours in aircraft_day_hours.values():
-                done = 0
-                if need_time <= hours:
-                    for time in instructor_hours.values():
-                        if need_time <= time:
-                            hours = hours - need_time
-                            time = time - need_time
+            for ac in aircraft_day_hours:
+                instructor_found = 0
+                if needed_time <= aircraft_day_hours[ac]:
+                    for inst in instructor_hours:
+                        if needed_time <= instructor_hours[inst]:
+                            aircraft_day_hours[ac] -= (needed_time + Aircraft.break_time)
+                            instructor_hours[inst] -= (needed_time + Instructor.break_time)
+                            successfull_events.append([s,ev, day, ac,inst])
                             s.event_complete()
-                            helper = 1
-                            done = 1
+                            aircraft_found = 1
+                            instructor_found = 1
                             break
-                    if done == 1:
+                    if instructor_found == 1:
                         break
-            if helper == 0:
+            if aircraft_found == 0:
                 # not scheduled
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
-            s.total_wait_time += 1
+
+    return successfull_events
+            
     
-    # need to reset the classroom variables after each day
-    for c in classroom:
-        c.current_num = 0
-        c.event = None
-        c.daily_hours = 12
+    # # need to reset the classroom variables after each day
+    # for c in classroom:
+    #     c.current_num = 0
+    #     c.event = None
+    #     c.daily_hours = 12
 
-'''
+
 def main():
-    students = [] # this will be a deque of students (for the future: be able to read in an excel sheet and then initialize student objects to populate this)
-    # Let's make some students
-    print(date.today())
-    for i in range(5):
-        new_student = FlightStudent(i, i, "waiting")
-        new_student.totalWaitTime = i
-        students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
-
-    print(students)
-
-    students.sort(key=lambda s: s.days_since_last_event, reverse=True)
-
-    print(i for i in students)
 
 
     # Resources
-    classrooms = [Classroom(f"CL{i+1}") for i in range(6)]
-    utd_sims = [Utd(f"UTD{i+1}") for i in range(6)]
-    oft_sims = [Oft(f"OFT{i+1}") for i in range(6)]
-    vtd_sims = [Vtd(f"VTD{i+1}") for i in range(18)]
-    mr_sims = [Mr(f"MR{i+1}") for i in range(2)]
-    aircrafts = [Aircraft(f"AC{i+1}") for i in range(18)]
+    classrooms = "classroom"
+    utd_sims = "utd"
+    oft_sims = "oft"
+    vtd_sims = "vtd"
+    mr_sims = "mr"
+    aircrafts = "aircraft"
 
     # keep track of each event's activity time
     activity_time_dict = getActivityTime()
@@ -547,13 +573,67 @@ def main():
     block7 = TrainingBlock("Capstone", 8, capstoneEvents, 8, 12.3)
 
     # Combine into syllabus
-    syllabus = [block1, block2, block3, block4, block5, block6, block7]
-   
-
+    syllabus_old = [block1, block2, block3, block4, block5, block6, block7]
+ 
+    syllabus = [sysGrndSchoolEvents, contactsEvents, aeroEvents, instrGrndSchoolEvents, instrumentsEvents, formsEvents, capstoneEvents]
+    # Resources
+    classrooms_list = [Classroom(f"CL{i+1}") for i in range(6)]
+    utd_sims_list = [Utd(f"UTD{i+1}") for i in range(6)]
+    oft_sims_list = [Oft(f"OFT{i+1}") for i in range(6)]
+    vtd_sims_list = [Vtd(f"VTD{i+1}") for i in range(18)]
+    mr_sims_list = [Mr(f"MR{i+1}") for i in range(2)]
+    aircraft_list = [Aircraft(f"AC{i+1}") for i in range(18)]
     # Run the simulation
-    # run_simulation(students, syllabus)
+    # run_simulation(students, syllabus)/
 
 
+    default_value=10
+
+    students = [] # this will be a deque of students (for the future: be able to read in an excel sheet and then initialize student objects to populate this)
+    # Let's make some students
+
+    user_input = input("Enter a number of initial students (default 10): ")
+    
+    try:
+        value = int(user_input)
+    except ValueError:
+        value = default_value
+
+    if value > 100:
+        value = 100
+
+
+    for i in range(value):
+        new_student = FlightStudent(i, i//8, date.today())
+        new_student.days_since_last_event = i
+        students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
+
+
+    instructors = []
+
+    for i in range(20):
+        new_instructor = Instructor(i, True, True)
+        instructors.append(new_instructor)
+
+    result = []
+
+    user_input = input("Enter a number of days (default 10): ")
+
+    try: 
+        value = int(user_input)
+    except ValueError:
+        value = default_value
+
+    if value > 365:
+        value = 365
+
+    for i in range(value):
+        current = date.today() + timedelta(days=i)
+        result.append(schedule_one_day(students, current, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus))
+
+    for i in result:
+        for j in i:
+            print(j)
 
 if __name__ == "__main__":
     main()
