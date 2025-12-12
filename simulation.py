@@ -12,7 +12,7 @@ from collections import defaultdict
 from eventList import getActivityTime, Event, TrainingBlock
 from stuAndInsrtr import FlightStudent, Instructor
 from resources import Classroom, Utd, Oft, Vtd, Mr, Aircraft, Sim
-
+import csv
 import pandas as pd
 import random
 import matplotlib.pyplot as plt
@@ -117,11 +117,6 @@ def isInstructorAvailble(event, instructors):  #needOnwing?
     '''
     pass
 
-def notToday(student):
-    # when a student is unable to complete an event on a given day
-    student.daysSinceLastEvent += 1
-    student.totalWaitTime += 1 
-
 def schedule(student, instrictor, event, resource):
     # if all good
     # take night hours into account
@@ -134,12 +129,6 @@ def class_in_progress(event, classrooms):
             capacity = classrooms[c][3][capacity_index]
             if capacity < c.capacity:
                 return c
-
-    # for c in classrooms:
-    #     if event == c.event:
-    #         # check to see if room is full
-    #         if c.current_num < c.capacity:
-    #             return classrooms.index(c)
     return 99
 
 # IMPORTANT: how to keep track of how many students in each training block? Should we make them classes? Because we 
@@ -150,11 +139,6 @@ def class_in_progress(event, classrooms):
 
 # SIMULATION LOGIC 
 def run_simulation(students, instructors):
-    '''
-    This just came to my attention:
-    but this loop is going to have to run more often than just once a "day". 
-    I THINK IT WILL HAVE TO RUN EVERY 0.1 HOUR UNTIL THE END OF THE WORKING DAY (23) AND THEN START BACK UP AT 0530 THE NEXT DAY.
-    '''
     counter = 0 # turning off infinite loop until simulation works
     while True:  
         # go day by day
@@ -171,19 +155,7 @@ def run_simulation(students, instructors):
             break
         # if it's the 1st or 3rd Monday of the month, start a new class...
 
-        # iterate over the student list:
-        '''
-        Check student's next event  (also for the events for which this applies, if you can double up, check on that as well)
-        1) if next event starts a new training block, and multiple options exist, check the student spread and place student 
-        in the block that makes most sense. So if just finished Contacts, either place in instrument ground school or contacts 
-        (maybe later we can also place in forms) 
-        2) Once next event is decided, check if resources available -> isResourceAvailable(event, resourceList)... something like that
-        3) if resource is an aircraft & available, check if instructor availble -> isInstructorAvailble(event, instructors, needOnwing?)
-        4) if student is unable to complete event, add a day to daysSinceLastEvent and totalWaitTime, otherwise schedule the student
-        5) if all good -> schdule(student, instrictor, event, resource) [updates all variables that need to be updated]
-        '''
-        # Make sure to account for hours and resource rest time 
-        # at the end, update student.currentdate and student.daysInProcess
+        # run the schedule_one_day() function for every valid day
 
 
 daytime_hours = 11 ## 7 to 6
@@ -201,7 +173,6 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
     if day != date.today():
         students.sort(key=lambda s: s.days_since_last_event, reverse=True)
 
-    # can (for 97% of the time) only do one event a day -> unless multiple events taking place on the same training day
     for s in students:
         # s.daily_events_done = 0  # unsure if I need this
         block, event = s.next_event()
@@ -241,14 +212,7 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
         needed_resource = ev.resource
 
         if needed_resource == "classroom":
-
-
-            
-            # Just thinking, and we need to account for whether the classroom is at capacity. And then if down the event
-            # list, this event pops up again, we need to use the same classroom...
             helper = 0
-            # going to have to keep classrooms as objects
-
             fate = class_in_progress(ev, classroom_hours_events)
             if fate != 99:
                 successfull_events.append([s,ev, day, str(fate) + " Class: " + str(classroom_hours_events[fate][2]) + " Student: " + str(classroom_hours_events[fate][3][classroom_hours_events[fate][2]])])
@@ -287,7 +251,6 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
             
-
 #### ADD BLOCK SPECIFIC WAIT TINME
 
         elif needed_resource == "utd":
@@ -356,8 +319,9 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
             aircraft_found = 0
             ## make sure actuallly values not copies
             for ac in aircraft_day_hours:
+                print(type(ac))
                 instructor_found = 0
-                if needed_time <= aircraft_day_hours[ac]:
+                if needed_time <= aircraft_day_hours[ac] and ac.use_per_day < 4:
                     for inst in instructor_hours:
                         if needed_time <= instructor_hours[inst]:
                             aircraft_day_hours[ac] -= (needed_time + Aircraft.break_time)
@@ -383,10 +347,35 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
     #     c.event = None
     #     c.daily_hours = 12
 
+# reads in events from a csv file and makes event objects per block and puts that in a list
+def make_events(file_path, block):
+    # keep track of each event's activity time
+    activity_time_dict = getActivityTime()
+    events = []
+    csv_data = file_path
+    # Read CSV into rows
+    rows = []
+    with open(file_path, "r") as f:
+        next(f)  # skip header
+        for line in f:
+            event_id, training_day, resource = [x.strip() for x in line.split(",")]
+            rows.append((event_id, int(training_day), resource))
+    # ---------- GROUP EVENTS BY TRAINING DAY ----------
+    grouped = defaultdict(lambda: {"names": [], "resource": None, "time": 0.0})
+    for event_id, day, resource in rows:
+        grouped[day]["names"].append(event_id)
+        grouped[day]["resource"] = resource
+        grouped[day]["time"] += activity_time_dict[event_id]
+    # ---------- CREATE FINAL COMBINED EVENT OBJECTS ----------
+    for day, data in sorted(grouped.items()):
+        merged_name = "/".join(data["names"])
+        total_time = data["time"]
+        resource = data["resource"]
+        events.append(Event(merged_name, day, resource, total_time, block))
+    return events
+
 
 def main():
-
-
     # Resources
     classrooms = "classroom"
     utd_sims = "utd"
@@ -395,173 +384,17 @@ def main():
     mr_sims = "mr"
     aircrafts = "aircraft"
 
-    # keep track of each event's activity time
-    activity_time_dict = getActivityTime()
-
-
     # Initialize a list of event objects for each block
-    sysGrndSchoolEvents = []
-    # MAKE THE RESOURCES A STRING!!!
-    sysGrndSchoolEvents.append(Event("G0101", 1, classrooms, activity_time_dict["G0101"]/2))
-    sysGrndSchoolEvents.append(Event("G6001", 1, classrooms, activity_time_dict["G6001"]/2))
-    sysGrndSchoolEvents.append(Event("G0107", 2, classrooms, activity_time_dict["G0107"]/3))
-    sysGrndSchoolEvents.append(Event("SY0101", 2, classrooms, activity_time_dict["SY0101"]/3))
-    sysGrndSchoolEvents.append(Event("SY0102", 2, classrooms, activity_time_dict["SY0102"]/3))
-    sysGrndSchoolEvents.append(Event("SY0106", 3, classrooms, activity_time_dict["SY0106"]))
-    sysGrndSchoolEvents.append(Event("SY0112", 4, classrooms, activity_time_dict["SY0112"]))
-    sysGrndSchoolEvents.append(Event("SY0190", 5, classrooms, activity_time_dict["SY0190"]/2))
-    sysGrndSchoolEvents.append(Event("SY0203", 5, classrooms, activity_time_dict["SY0203"]/2))
-    sysGrndSchoolEvents.append(Event("SY0206", 6, classrooms, activity_time_dict["SY0206"]/2))
-    sysGrndSchoolEvents.append(Event("G0106", 6, classrooms, activity_time_dict["G0106"]/2))
-    sysGrndSchoolEvents.append(Event("SY0290", 7, classrooms, activity_time_dict["SY0290"]/3))
-    sysGrndSchoolEvents.append(Event("G0104", 7, classrooms, activity_time_dict["G0104"]/3))
-    sysGrndSchoolEvents.append(Event("G0105", 7, classrooms, activity_time_dict["G0105"]/3))
-    sysGrndSchoolEvents.append(Event("SY0301", 8, classrooms, activity_time_dict["SY0301"]/3))
-    sysGrndSchoolEvents.append(Event("PR0101", 8, classrooms, activity_time_dict["PR0101"]/3))
-    sysGrndSchoolEvents.append(Event("PR0102B", 8, classrooms, activity_time_dict["PR0102B"]/3))
-    sysGrndSchoolEvents.append(Event("PR0103", 9, classrooms, activity_time_dict["PR0103"]/3))
-    sysGrndSchoolEvents.append(Event("PR0104", 9, classrooms, activity_time_dict["PR0104"]/3))
-    sysGrndSchoolEvents.append(Event("PR0105", 9, classrooms, activity_time_dict["PR0105"]/3))
-    sysGrndSchoolEvents.append(Event("FAM1106", 10, classrooms, activity_time_dict["FAM1106"]))
-    sysGrndSchoolEvents.append(Event("FAM1190", 11, classrooms, activity_time_dict["FAM1190"]/2))
-    sysGrndSchoolEvents.append(Event("FAM1203", 11, classrooms, activity_time_dict["FAM1203"]/2))
-    sysGrndSchoolEvents.append(Event("FAM1290", 12, classrooms, activity_time_dict["FAM1290"]/3))
-    sysGrndSchoolEvents.append(Event("G0201", 12, classrooms, activity_time_dict["G0201"]/3))
-    sysGrndSchoolEvents.append(Event("G0103", 12, classrooms, activity_time_dict["G0103"]/3))
-    sysGrndSchoolEvents.append(Event("G0290", 13, classrooms, activity_time_dict["G0290"]/2))
-    sysGrndSchoolEvents.append(Event("G0102", 13, classrooms, activity_time_dict["G0102"]/2))
-
+    sysGrndSchoolEvents = make_events(r"data\sysGrnd.csv", "system ground")
+    print("sys grnd: ", sysGrndSchoolEvents)
+    # FAM1301, FAM4101, FAM4102, FAM4103, FAM4104, FAM4303, FAM4304 are the required onwing events
+    contactsEvents = make_events(r"data\contacts.csv", "contacts")
+    aeroEvents = make_events(r"data\aero.csv", "contacts")
+    instrGrndSchoolEvents = make_events(r"data\instrGrnd.csv", "instrument ground")
+    instrumentsEvents = make_events(r"data\instr.csv", "instruments")
+    formsEvents = make_events(r"data\forms.csv", "forms")
+    capstoneEvents = make_events(r"data\capstone.csv", "capstone")
     
-    contactsEvents = []
-
-    contactsEvents.append(Event("FAM2101", 14, utd_sims, activity_time_dict["FAM2101"]))
-    contactsEvents.append(Event("FAM2102", 15, utd_sims, activity_time_dict["FAM2102"]))
-    contactsEvents.append(Event("FAM2201", 16, utd_sims, activity_time_dict["FAM2201"]))
-    contactsEvents.append(Event("FAM2202", 17, utd_sims, activity_time_dict["FAM2202"]))
-    contactsEvents.append(Event("IN1104", 18, classrooms, activity_time_dict["IN1104"]))
-    contactsEvents.append(Event("I2101", 19, utd_sims, activity_time_dict["I2101"]))
-    contactsEvents.append(Event("I2102", 20, utd_sims, activity_time_dict["I2102"]))
-    contactsEvents.append(Event("I2103", 21, utd_sims, activity_time_dict["I2103"]))
-    contactsEvents.append(Event("FAM3101", 22, oft_sims, activity_time_dict["FAM3101"]))
-    contactsEvents.append(Event("FAM3102", 23, oft_sims, activity_time_dict["FAM3102"]))
-    contactsEvents.append(Event("FAM3103", 24, oft_sims, activity_time_dict["FAM3103"]))
-    contactsEvents.append(Event("FAM6101", 25, vtd_sims, activity_time_dict["FAM6101"]))
-    contactsEvents.append(Event("FAM6102", 26, vtd_sims, activity_time_dict["FAM6102"]))
-    contactsEvents.append(Event("FAM6201", 27, vtd_sims, activity_time_dict["FAM6201"]))
-    contactsEvents.append(Event("FAM6202", 28, vtd_sims, activity_time_dict["FAM6202"]))
-    contactsEvents.append(Event("FAM6203", 29, vtd_sims, activity_time_dict["FAM6203"]))
-    contactsEvents.append(Event("FAM6301", 30, vtd_sims, activity_time_dict["FAM6301"]))
-    contactsEvents.append(Event("FAM6302", 31, vtd_sims, activity_time_dict["FAM6302"]))
-    contactsEvents.append(Event("FAM1301", 32, aircrafts, activity_time_dict["FAM1301"])) # onwing
-    contactsEvents.append(Event("FAM4101", 33, aircrafts, activity_time_dict["FAM4101"])) # onwing
-    contactsEvents.append(Event("FAM4102", 34, aircrafts, activity_time_dict["FAM4102"])) # onwing
-    contactsEvents.append(Event("FAM4103", 35, aircrafts, activity_time_dict["FAM4103"])) # onwing
-    contactsEvents.append(Event("FAM4104", 36, aircrafts, activity_time_dict["FAM4104"])) # onwing
-    contactsEvents.append(Event("FAM3201", 37, oft_sims, activity_time_dict["FAM3201"]))
-    contactsEvents.append(Event("FAM3202", 38, oft_sims, activity_time_dict["FAM3202"]))
-    contactsEvents.append(Event("FAM3301", 39, oft_sims, activity_time_dict["FAM3301"]))
-    contactsEvents.append(Event("FAM6401", 40, vtd_sims, activity_time_dict["FAM6401"]))
-    contactsEvents.append(Event("FAM6402", 41, vtd_sims, activity_time_dict["FAM6402"]))
-    contactsEvents.append(Event("FAM4201", 42, aircrafts, activity_time_dict["FAM4201"]))
-    contactsEvents.append(Event("FAM4202", 43, aircrafts, activity_time_dict["FAM4202"]))
-    contactsEvents.append(Event("FAM1206", 44, classrooms, activity_time_dict["FAM1206"]))
-    contactsEvents.append(Event("FAM4203", 45, aircrafts, activity_time_dict["FAM4203"]))
-    contactsEvents.append(Event("FAM4204", 46, aircrafts, activity_time_dict["FAM4204"]))
-    contactsEvents.append(Event("FAM4301", 47, aircrafts, activity_time_dict["FAM4301"]))
-    contactsEvents.append(Event("FAM4302", 48, aircrafts, activity_time_dict["FAM4302"]))
-    contactsEvents.append(Event("FAM4303", 49, aircrafts, activity_time_dict["FAM4303"])) # onwing
-    contactsEvents.append(Event("FAM4304", 50, aircrafts, activity_time_dict["FAM4304"])) # onwing
-    contactsEvents.append(Event("FAM4490", 51, aircrafts, activity_time_dict["FAM4490"]))
-    contactsEvents.append(Event("FAM4501", 52, aircrafts, activity_time_dict["FAM4501"]))
-
-    aeroEvents = []
-    aeroEvents.append(Event("FAM3401", 53, oft_sims, activity_time_dict["FAM3401"]))
-    aeroEvents.append(Event("FAM4701", 54, aircrafts, activity_time_dict["FAM4701"]))
-    aeroEvents.append(Event("FAM4702", 55, aircrafts, activity_time_dict["FAM4702"]))
-    aeroEvents.append(Event("FAM4703", 56, aircrafts, activity_time_dict["FAM4703"]))
-
-
-    instrGrndSchoolEvents = []
-    instrGrndSchoolEvents.append(Event("IN1202", 57, classrooms, activity_time_dict["IN1202"]/2))
-    instrGrndSchoolEvents.append(Event("IN1203", 57, classrooms, activity_time_dict["IN1203"]/2))
-    instrGrndSchoolEvents.append(Event("IN1205", 58, classrooms, activity_time_dict["IN1205"]/2))
-    instrGrndSchoolEvents.append(Event("IN1206", 58, classrooms, activity_time_dict["IN1206"]/2))
-    instrGrndSchoolEvents.append(Event("IN1290", 59, classrooms, activity_time_dict["IN1290"]))
-    instrGrndSchoolEvents.append(Event("IN1305", 60, classrooms, activity_time_dict["IN1305"]/2))
-    instrGrndSchoolEvents.append(Event("IN1306", 60, classrooms, activity_time_dict["IN1306"]/2))
-    instrGrndSchoolEvents.append(Event("IN1307", 61, classrooms, activity_time_dict["IN1307"]/2))
-    instrGrndSchoolEvents.append(Event("IN1308", 61, classrooms, activity_time_dict["IN1308"]/2))
-    instrGrndSchoolEvents.append(Event("IN1390", 62, classrooms, activity_time_dict["IN1390"]/2))
-    instrGrndSchoolEvents.append(Event("IN1403", 62, classrooms, activity_time_dict["IN1403"]/2))
-    instrGrndSchoolEvents.append(Event("IN1406", 63, classrooms, activity_time_dict["IN1406"]))
-    instrGrndSchoolEvents.append(Event("IN1411", 64, classrooms, activity_time_dict["IN1411"]/3))
-    instrGrndSchoolEvents.append(Event("IN1412", 64, classrooms, activity_time_dict["IN1412"]/3))
-    instrGrndSchoolEvents.append(Event("IN1413A", 64, classrooms, activity_time_dict["IN1413A"]/3))
-    instrGrndSchoolEvents.append(Event("IN1490", 65, classrooms, activity_time_dict["IN1490"]/2))
-    instrGrndSchoolEvents.append(Event("IN1501", 65, classrooms, activity_time_dict["IN1501"]/2))
-    instrGrndSchoolEvents.append(Event("NA1105", 66, classrooms, activity_time_dict["NA1105"]/2))
-    instrGrndSchoolEvents.append(Event("NA1106", 66, classrooms, activity_time_dict["NA1106"]/2))
-    instrGrndSchoolEvents.append(Event("NA1190", 67, classrooms, activity_time_dict["NA1190"]))
-
-
-    instrumentsEvents = []
-    instrumentsEvents.append(Event("I2201", 68, utd_sims, activity_time_dict["I2201"]))
-    instrumentsEvents.append(Event("I2202", 69, utd_sims, activity_time_dict["I2202"]))
-    instrumentsEvents.append(Event("I2203", 70, utd_sims, activity_time_dict["I2203"]))
-    instrumentsEvents.append(Event("N3101", 71, oft_sims, activity_time_dict["N3101"]))
-    instrumentsEvents.append(Event("N6101", 72, vtd_sims, activity_time_dict["N6101"]))
-    instrumentsEvents.append(Event("I6101", 73, vtd_sims, activity_time_dict["I6101"]))
-    instrumentsEvents.append(Event("I6102", 74, vtd_sims, activity_time_dict["I6102"]))
-    instrumentsEvents.append(Event("I3101", 75, utd_sims, activity_time_dict["I3101"]))
-    instrumentsEvents.append(Event("I3102", 76, utd_sims, activity_time_dict["I3102"]))
-    instrumentsEvents.append(Event("I3103", 77, utd_sims, activity_time_dict["I3103"]))
-    instrumentsEvents.append(Event("I3104", 78, oft_sims, activity_time_dict["I3104"]))
-    instrumentsEvents.append(Event("I6201", 79, vtd_sims, activity_time_dict["I6201"]))
-    instrumentsEvents.append(Event("I6202", 80, vtd_sims, activity_time_dict["I6202"]))
-    instrumentsEvents.append(Event("I4101", 81, aircrafts, activity_time_dict["I4101"]))
-    instrumentsEvents.append(Event("I4102", 82, aircrafts, activity_time_dict["I4102"]))
-    instrumentsEvents.append(Event("I4103", 83, aircrafts, activity_time_dict["I4103"]))
-    instrumentsEvents.append(Event("SY0302", 84, classrooms, activity_time_dict["SY0302"]))
-    instrumentsEvents.append(Event("I3201", 85, utd_sims, activity_time_dict["I3201"]))
-    instrumentsEvents.append(Event("I3202", 86, utd_sims, activity_time_dict["I3202"]))
-    instrumentsEvents.append(Event("I3203", 87, oft_sims, activity_time_dict["I3203"]))
-    instrumentsEvents.append(Event("I3204", 88, oft_sims, activity_time_dict["I3204"]))
-    instrumentsEvents.append(Event("I3205", 89, oft_sims, activity_time_dict["I3205"]))
-    instrumentsEvents.append(Event("I3206", 90, oft_sims, activity_time_dict["I3206"]))
-    instrumentsEvents.append(Event("I6301", 91, vtd_sims, activity_time_dict["I6301"]))
-    instrumentsEvents.append(Event("I4201", 92, aircrafts, activity_time_dict["I4201"]))
-    instrumentsEvents.append(Event("I4202", 93, aircrafts, activity_time_dict["I4202"]))
-    instrumentsEvents.append(Event("I4203", 94, aircrafts, activity_time_dict["I4203"]))
-    instrumentsEvents.append(Event("I4204", 95, aircrafts, activity_time_dict["I4204"]))
-    instrumentsEvents.append(Event("I4301", 96, aircrafts, activity_time_dict["I4301"]))
-    instrumentsEvents.append(Event("I4302", 97, aircrafts, activity_time_dict["I4302"]))
-    instrumentsEvents.append(Event("I4303", 98, aircrafts, activity_time_dict["I4303"]))
-    instrumentsEvents.append(Event("I4304", 99, aircrafts, activity_time_dict["I4304"]))
-    instrumentsEvents.append(Event("I4490", 100, aircrafts, activity_time_dict["I4490"]))
-    instrumentsEvents.append(Event("N4101", 101, aircrafts, activity_time_dict["N4101"]))
-    instrumentsEvents.append(Event("FAM4601", 102, aircrafts, activity_time_dict["FAM4601"]))
-
-    formsEvents = []
-    formsEvents.append(Event("F1102", 103, classrooms, activity_time_dict["F1102"]))
-    formsEvents.append(Event("FF190", 104, classrooms, activity_time_dict["FF190"]))
-    formsEvents.append(Event("FF1201", 105, classrooms, activity_time_dict["FF1201"]))
-    formsEvents.append(Event("F3101", 106, oft_sims, activity_time_dict["F3101"]))
-    formsEvents.append(Event("F2101", 107, mr_sims, activity_time_dict["F2101"]))
-    formsEvents.append(Event("F4101", 108, aircrafts, activity_time_dict["F4101"]))
-    formsEvents.append(Event("F4102", 109, aircrafts, activity_time_dict["F4102"]))
-    formsEvents.append(Event("F4103", 110, aircrafts, activity_time_dict["F4103"]))
-    formsEvents.append(Event("F4104", 111, aircrafts, activity_time_dict["F4104"]))
-    formsEvents.append(Event("F4290", 112, aircrafts, activity_time_dict["F4290"]))
-
-    capstoneEvents = []
-    capstoneEvents.append(Event("CS1101", 113, classrooms, activity_time_dict["CS1101"]))
-    capstoneEvents.append(Event("CS2101", 114, mr_sims, activity_time_dict["CS2101"]))
-    capstoneEvents.append(Event("CS2102", 115, mr_sims, activity_time_dict["CS2102"]))
-    capstoneEvents.append(Event("CS3101", 116, oft_sims, activity_time_dict["CS3101"]))
-    capstoneEvents.append(Event("CS3102", 117, oft_sims, activity_time_dict["CS3102"]))
-    capstoneEvents.append(Event("CS4101", 118, aircrafts, activity_time_dict["CS4101"]))
-    capstoneEvents.append(Event("CS4102", 119, aircrafts, activity_time_dict["CS4102"]))
-    capstoneEvents.append(Event("CS4290", 120, aircrafts, activity_time_dict["CS4290"]))
 
     # Initialize the training blocks
     block1 = TrainingBlock("Systems Ground School", 28, sysGrndSchoolEvents, 13, 60.1)  
