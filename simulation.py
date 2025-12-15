@@ -90,39 +90,6 @@ def is_valid_day(day):
     return True
 
 
-def isResourceAvailable(event, resourceList):
-    # check everything including dwellTime and how many times used that day, etc ...
-    '''
-    1) given the event, identify which type of resource is needed
-    2) look through a list of that type of resource and see if any of them are available
-    3) if none are, return false
-    4) if a resource is availble, then we have to do some work...
-        a) check if there is enough time in the day given the length of the event 
-        b) then block off the aircraft for the time of the event plus its required dwelltime
-        c) if the resource is an aircraft, then we need to also check if an instructor is available too
-        d) after we have checked everything, and everything is all good, return true
-    '''
-    pass
-
-def isInstructorAvailble(event, instructors):  #needOnwing?
-    # handle forms flight events seperatley bc need to check quals and need two instructors 
-    '''
-    1) if a forms event
-        a) need a section lead and a forms qualled guy
-    2) otherwise, if an instructor is available, assign them
-
-    Not really taking onwings into account right now. Also I don't know if this is the best way, haven't thought about it. 
-
-    We may have to do something completely different for forms, because we need two students who are on the same event. 
-    But I do think that the two students fly all their forms flights together; not sure if the instructors have to be the same though...
-    '''
-    pass
-
-def schedule(student, instrictor, event, resource):
-    # if all good
-    # take night hours into account
-    pass
-
 def class_in_progress(event, classrooms):
     for c in classrooms:
         if event == classrooms[c][1]:
@@ -132,6 +99,10 @@ def class_in_progress(event, classrooms):
                 return c
     return 99
 
+# maybe 
+def forms():
+    pass
+
 # IMPORTANT: how to keep track of how many students in each training block? Should we make them classes? Because we 
 #            need to look at all the counts to decide where to place students after they complete contacts, and then 
 #            also for scheduling for forms (need two students and two instructors)
@@ -139,8 +110,12 @@ def class_in_progress(event, classrooms):
 # 1) we need a function that keeps track of resources and their scheduling 
 
 # SIMULATION LOGIC 
-def run_simulation(students, instructors):
+def run_simulation(students, instructors, class_up_size, percent_aero):
+    #students, day, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus
+    # look at line 437
     counter = 0 # turning off infinite loop until simulation works
+
+    # run the loop for the amount of days
     while True:  
         # go day by day
         # sort student list at the start of each day by daysSinceLastEvent
@@ -229,14 +204,6 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
                 #   a) and there is space in the class, schedule the student and dont need to play around with the classroom's hours, just its current_num
                 #   b) if there is no space, go check if another classroom is available
                 # 2) if it isn't, then just assign it to a classroom if possible, and update hours and the classroom's current_num
-                # fate = class_in_progress(ev, classroom)
-                # if fate != 99:
-                #     assigned_classroom = classroom[fate]
-                #     s.event_complete()
-                #     assigned_classroom.current_num += 1
-                #     helper = 1
-                #     break
-                # else:
                     if needed_time <= classroom_hours_events[c][0] or str(ev) == "IN1411/IN1412/IN1413A" or str(ev) == "NA1105/NA1106":
                         classroom_hours_events[c][0] -= needed_time
                         classroom_hours_events[c][1] = ev
@@ -323,10 +290,8 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
             ## make sure actuallly values not copies
             for ac in aircraft_hours:
                 instructor_found = 0
-
                 check = 0
-
-                if needed_time <= aircraft_hours[ac][0] and aircraft_hours[ac][2] < 4:
+                if needed_time <= aircraft_hours[ac][0] and aircraft_hours[ac][2] < Aircraft.uses_per_day:
                     for inst in instructor_hours:
                         if needed_time <= instructor_hours[inst]:
                             aircraft_hours[ac][0] -= (needed_time + Aircraft.break_time)
@@ -390,6 +355,8 @@ def main():
     mr_sims = "mr"
     aircrafts = "aircraft"
 
+    # going to running run_simulation function multiple times based on different class sizes
+
     # Initialize a list of event objects for each block
     sysGrndSchoolEvents = make_events(os.path.join("data", "sysGrnd.csv"), "system ground")
     # print("sys grnd: ", sysGrndSchoolEvents)
@@ -402,18 +369,6 @@ def main():
     capstoneEvents = make_events(os.path.join("data", "capstone.csv"), "capstone")
     
 
-    # Initialize the training blocks
-    block1 = TrainingBlock("Systems Ground School", 28, sysGrndSchoolEvents, 13, 60.1)  
-    block2 = TrainingBlock("Contacts", 39, contactsEvents, 39, 56)
-    block3 = TrainingBlock("Aero", 4, aeroEvents, 4, 6.4)
-    block4 = TrainingBlock("Instruments Ground School", 20, instrGrndSchoolEvents, 11, 38)
-    block5 = TrainingBlock("Instruments", 35, instrumentsEvents, 35, 50.9)
-    block6 = TrainingBlock("Forms", 10, formsEvents, 10, 17.1)
-    block7 = TrainingBlock("Capstone", 8, capstoneEvents, 8, 12.3)
-
-    # Combine into syllabus
-    syllabus_old = [block1, block2, block3, block4, block5, block6, block7]
- 
     syllabus = [sysGrndSchoolEvents, contactsEvents, aeroEvents, instrGrndSchoolEvents, instrumentsEvents, formsEvents, capstoneEvents]
     # Resources
     classrooms_list = [Classroom(f"CL{i+1}") for i in range(6)]
@@ -426,6 +381,7 @@ def main():
     # run_simulation(students, syllabus)/
 
     FlightStudent.syllabus1 = syllabus
+    # create syllabus 2 here...
 
     default_value=10
 

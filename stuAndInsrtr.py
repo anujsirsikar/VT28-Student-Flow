@@ -21,7 +21,7 @@ class FlightStudent:
         # self.status = "active"   # active, completed, med down, leave, (pool?), waiting
         self.completion_date = None
         self.completed_blocks = [0,0,0,0,0,0,0]    # 0 = uncompleted, 1 = completed
-        self.completed_dates = [None, None, None, None, None, None]
+        self.completed_dates = [None, None, None, None, None, None, None]
         self.current_block = 0                     # Block one starts at zero for indexing
         self.next_event_index = 0                  # index into flattened syllabus events
         self.aero_first = False
@@ -41,7 +41,7 @@ class FlightStudent:
     def next_event(self):
         return self.current_block, self.next_event_index
     
-    
+
     def event_complete(self, day):
         if len(self.syllabus1[self.current_block])-1 <= self.next_event_index:
             self.completed_blocks[self.current_block] = 1
@@ -50,7 +50,7 @@ class FlightStudent:
             self.next_event_index = 0
         else:
             self.next_event_index += 1
-        if sum(self.completed_blocks) == 6:
+        if sum(self.completed_blocks) == 7:
             self.completion_date = date.today()
   
 

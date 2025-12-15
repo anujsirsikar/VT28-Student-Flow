@@ -1,15 +1,4 @@
-
-
-
 # This code will address the flight schedule and different events and the resources they need
-class TrainingBlock:
-    def __init__(self, name, num_events, events, total_days, total_activity_time):
-        self.name = name # name of the block (i.e. aero, contacts, etc...)
-        self.num_events = num_events
-        self.events = events  # a list of the actual event objects
-        self.total_days = total_days
-        self.total_activity_time = total_activity_time   # in hours
-        self.num_students = 0 
 
 class Event:
     def __init__(self, name, training_day, resource, activity_time, block):

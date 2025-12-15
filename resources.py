@@ -62,14 +62,10 @@ class Aircraft():
     daily_hours = 16                     # 11 for the day and 5 for the night (0700 to 2300)
     break_time = 1
     failure_rate = 0.25                  # 75% chance given aircraft is working
+    uses_per_day = 4                
     def __init__(self, name, capacity=1):
         self.name = name
         self.capacity = capacity
-        self.use_per_day = 0             # no more than 4 times per day
-        #self.start = 7                   # represents 0700
-        #self.day_stop = 18
-        #self.night_start = 18
-        #self.stop = 23                   # represents 2300 
         self.breakTime = 1               # hours
         self.failureRate = 0.25          # 75% chance given aircraft is working
 
