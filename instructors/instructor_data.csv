@@ -1,7 +1,7 @@
 Name,T_6B_Section_Lead,T_6B_Formation,T_6B_Cruise_Formation,T_6B_Tactical_Formation,T_6B_Formation_Chase,T_6B_Instructor_Pilot,T_6B_Contact,T_6B_Night_Contact,T_6B_Navigation,T_6B_Instrument,T_6B_Out_of_Control_Flight,T_6B_Division_Lead,T_6B_IUT_Instructor,T_6B_FCP,T_6B_INST_CHK,T_6B_NATOPS_Instructor,T_6B_CRM_Facilitator,T_6B_CRM_Instructor,T_6B_NATOPS_Evaluator,T_6B_CAPSTONE_LVL_Q,T_6B_CAPSTONE_LVL_X,QUALIFICATION_CHECKER_Q_X,T_6B_Emergency_Egress_Training,T_6B_NATOPS_Q_SIM_IP,T_6B_OCF_Q_Designation,T_6B_OCF_S_Designation,Operations_Duty_Officer,Runway_Duty_Officer
 1,,C,C,,,D,D,D,D,D,,,,,,,,,,,,D,,,,,D,
 2,D,W,W,,,E,W,W,D,W,D,D,D,,D,D,D,D,,D,D,D,,,,,D,D
-3,D,E,E,E,D,C,E,E,D,E,E,D,D,,D,D,D,,,D,D,D,,,,,D,S
+3,D,E,E,E,D,C,E,E,D,E,E,D,D,,D,D,D,,D,D,D,,,,,D,S
 4,,,,,D,D,D,D,D,,,,,,,,,,,,,,,,,,,
 5,,,,,C,D,E,D,D,,,,,,,,,,,,,,D,D
 6,,,,,D,D,D,D,D,,,,,,,,D,,,,,
