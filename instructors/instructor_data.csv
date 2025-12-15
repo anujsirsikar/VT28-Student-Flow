@@ -1,0 +1,70 @@
+Name	T-6B Section Lead	T-6B Formation	T-6B Cruise Formation	T-6B Tactical Formation	T-6B Formation Chase	T-6B Instructor Pilot	T-6B Contact	T-6B Night Contact	T-6B Navigation	T-6B Instrument	T-6B Out-of-Control Flight	T-6B Division Lead	T-6B IUT Instructor	T-6B FCP	T-6B INST CHK	T-6B NATOPS Instructor	T-6B CRM Facilitator	T-6B CRM Instructor	T-6B NATOPS Evaluator	T-6B CAPSTONE LVL Q	T-6B CAPSTONE LVL X	QUALIFICATION CHECKER(Q/X)	T-6B Emergency Egress Training	T-6B NATOPS Q SIM IP	T-6B OCF "Q" Designation	T-6B OCF "S" Designation	Operations Duty Officer	Runway Duty Officer
+1		C	C			D	D	D	D	D										D							D	
+2	D	W	W			E	W	W	D	W	D	D	D		D	D	D	D		D	D	D					D	D
+3	D	E	E	E	D	C	E	E	D	E	E	D	D		D	D	D			D	D	D					D	S
+4						D	D	D	D	D																		
+5						C	D	E	D	D																	D	D
+6						D	D	D	D	D													D					
+7						D	D	D	D	D																	D	
+8						E	E	E	D	W																	D	D
+9	D	E	E	E	D	E	E	E	D	E			P							D	D	D					D	
+10	D	D	D			D	D	D	D	D	D									D	D						D	D
+11	D	D	D			D	D	D	D	D	D									D	D	D					D	D
+12						D	D	D	D	D																		
+13		D				C	D	D	D	D										D							D	D
+14	D	E	E	E	D	E	E	E	D	E	E		D				D			D	D	D					D	D
+15						C	D	C	D	D																		
+16	D	E				P	E	E	D	E	E				D	D	D			D	D	D					D	D
+17		E				P	E	E	D	E			D							D		D						
+18	D	E	E		D	C	E	E	D	E	E						D			D	D	D					D	D
+19		D	D			W	D	C	D	D										D							D	
+20	D	W	W		D	C	W	W	D	W	C		D	D	D	D	D	D	D	D	D						D	D
+21						D	D	D	D	D																	D	D
+22	D	E	E		D	E	E	E	D	E	E		D		D	D	D										D	D
+23	D	D	D	E	D	D	D	D	D	D	D	D	D		D	D	D			D	D	D					D	D
+24	D	D	D			D	D	D	D	D										D							D	
+25	D	D	D			D	D	D	D	D	D		D		D	D	D	D	D	D	D	D					D	D
+26		D	D			D	D	C	D	D																	D	D
+27						D	D	D	D	D																		
+28						D	D	D	D	D																		
+29	D	E				P	E	E	D	E	E				D		D											
+30	D	W	W		D	E	W	E	D	W	D		D		D	D	D			D	D	D					D	
+31		D	D			D	D	D	D	D												D					D	D
+32	D	D	D			C	D	D	D	E										D	D						D	
+33	D	D	D		D	C	D	C	D	D	D		D		D	D	D			D	D	D					D	D
+34						D	D	D	D	D																	D	D
+35						D	D	C	D	D																	D	D
+36	D	D				D	D	D	D	D										D		D					D	D
+37	D	E	E		D	P	E	E	D	E	E	D	D		D	S	D	D		D	D	D					D	D
+38	D	D				D	D	W	D	D	D				P	P	D			D	D	D					D	D
+39						D	D	D	D	D										D							D	D
+40	D	D			D	D	D	W	D	D										D	D	D						
+41		E				P	E	E	D	E	E				D	D	D										D	D
+42						E	W	E	D	W																		
+43		D				C	D	D	D	D	D									D		D					D	D
+44						D	D	D	D	D																		
+45	D	C	E			C	D	D	D	D					D		D										D	
+46	D	D	D			D	D	D	D	D										D	D	D					D	
+47						E	D	D	D	D																		
+48		D				D	D	D	D	D										D		D					D	D
+49	D	E	E			E	C	C	D	C	C	D															D	D
+50	D	D	D			D	D	D	D	D										D	D						D	D
+51						C	D	D	D	D																	D	D
+52																												
+53						E	E	E	D	E	E		D		D	D	D	D									D	D
+54						C	D	D	D	D																		
+55		D				C	D	W	D	D										D		D					D	
+56						P	E	E	E	E					D					D								
+57		D	P			D	D	D	D	D																		
+58		D	D			D	D	D	D	D										D							D	D
+59	S	E			S	E	E	W	D	W	E		D		S	S	S			D							D	D
+60						D	D	D	D	D	D					D	D					D					D	D
+61	D	W	W	E	D	E	W	E	D	E	C		D		D	D	D			D	D	D		D				
+62		D	P			C	D	D	D	D																	D	D
+63	D	E	E			D	D	C	D	D	E		D		D	D	D						D				D	D
+64	D	D	D			D	D	C	D	D	D		D		D	D	D			D	D	D					D	D
+65						P	E	E	D	E			D							D		D						
+66	D	E	E			E	E	E	D	E	E		D		D	D	D	D		D							D	D
+67	D	D				D	D	W	D	W										D	D	D					D	D
+68		W	W			D	E	D	D	D										D							D	D
+69		D	D			C	D	W	D	D										D							D	D

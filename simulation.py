@@ -312,11 +312,7 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
     return successfull_events
             
     
-    # # need to reset the classroom variables after each day
-    # for c in classroom:
-    #     c.current_num = 0
-    #     c.event = None
-    #     c.daily_hours = 12
+
 
 # reads in events from a csv file and makes event objects per block and puts that in a list
 def make_events(file_path, block):
