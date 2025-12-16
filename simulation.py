@@ -4,12 +4,12 @@
 # have it read from an excel spreadsheet? -> yes, to make a list of students
 
 import datetime
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from collections import deque
 import time
 import sys
 from collections import defaultdict
-from eventList import getActivityTime, Event, TrainingBlock
+from eventList import getActivityTime, Event
 from stuAndInsrtr import FlightStudent, Instructor
 from resources import Classroom, Utd, Oft, Vtd, Mr, Aircraft, Sim
 import csv
@@ -319,7 +319,6 @@ def make_events(file_path, block):
     # keep track of each event's activity time
     activity_time_dict = getActivityTime()
     events = []
-    csv_data = file_path
     # Read CSV into rows
     rows = []
     with open(file_path, "r") as f:
@@ -340,6 +339,132 @@ def make_events(file_path, block):
         resource = data["resource"]
         events.append(Event(merged_name, day, resource, total_time, block))
     return events
+
+# helper function for the load_students() function
+def get_last_completed_event(row):
+    last_event_name = None
+    last_event_date = None
+
+    for key, value in row.items():
+        if key in ("Name", "Class", "Status"):
+            continue
+        if value.strip():
+            date = datetime.strptime(value.strip(), "%m/%d/%Y").date()
+
+            if last_event_date is None or date > last_event_date:
+                last_event_date = date
+                last_event_name = key
+
+    return last_event_name
+
+# makes a list of current students in the syllabus from a csv file 
+'''
+IMPORTANT ASSUMPTION BEING MADE:
+If there is a gap (gap = event with no date listed with completed events on either side of it), we are going
+to assume that that event was completed and that its date of completion was just not listed (some TSHARP error).
+So to figure out wihch block a student is in and which event they need to complete next, we are just looking at their
+most recent date, and going from there. 
+'''
+def load_students(file_path):
+    student_list = []
+    with open(file_path, newline="", encoding="utf-8") as csvfile:
+        reader = csv.DictReader(csvfile)
+
+        for row in reader:
+            status = row["Status"].strip().lower()
+            student_id = row["Name"]
+            class_id = row["Class"]
+
+            # Find earliest completed event date as start_date
+            start_date = None
+            last_date = None
+
+            for key, value in row.items():
+                if key in ("Name", "Class", "Status"):
+                    continue
+                if value.strip():
+                    date = datetime.strptime(value.strip(), "%m/%d/%Y").date()
+
+                    if start_date is None or date < start_date:
+                        start_date = date
+                    if last_date is None or date > last_date:
+                        last_date = date
+
+            # Create student object
+            student = FlightStudent(student_id, class_id, start_date)
+
+            # Initialize timeline fields
+            # do we need both of these variables?
+            student.last_completed_event_date = last_date
+            student.current_date = last_date
+            student.days_since_last_event = (datetime.today().date() - student.last_completed_event_date).days
+            last_completed_event = get_last_completed_event(row)
+
+            # gets tricky here because need to check if they have done aero
+            sys1 = FlightStudent.syllabus1
+            sys2 = FlightStudent.syllabus2
+
+
+            # Mark completed students
+            if status == "complete":
+                student.completion_date = last_date
+                student.completed_blocks = [1, 1, 1, 1, 1, 1, 1]
+
+            student_list.append(student)
+    return student_list
+
+#write now, don't care if they're status is 'suspended'. As long as they have something, we will count them as qualified
+def load_instructors(file_path):
+    instructor_list = []
+    with open(file_path, newline="", encoding="utf-8") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            name = row["Name"]
+
+            # Check the two columns we care about
+            section_lead = row.get("T_6B_Section_Lead", "").strip()
+            formation = row.get("T_6B_Formation", "").strip()
+
+            # True if either column has any letter/value
+            is_section_lead =  bool(section_lead)
+            is_formation = bool(formation)
+
+            instructor = Instructor(name, is_section_lead, is_formation)
+            instructor_list.append(instructor)
+    return instructor_list
+
+# this function will be called every monday
+# Note: make sure dates can be compared (same format)
+# This function creates a list of new students that will be added to the student list
+def students_starting_week(file_path, date):
+    num_students = 0
+    new_students = []
+
+    # Ensure we are working with a date object
+    if isinstance(date, datetime):
+        date = date.date()
+    elif not isinstance(date, date_type):
+        raise TypeError("date must be a datetime.date or datetime.datetime")
+
+    with open(file_path, newline="", encoding="utf-8") as csvfile:
+        reader = csv.DictReader(csvfile)
+
+        for row in reader:
+            csv_date = datetime.strptime(
+                row["Date"].strip(), "%d-%b-%y"
+            ).date()
+
+            if csv_date == date:
+                num_students = int(row["Number_of_Students_Classing_Up"])
+
+    # how to come up with student_ids and class_ids??? -> made a second constructor for now
+    for i in range(num_students):
+        # new_students.append(FlightStudent())
+        pass
+    
+    return new_students
+    
+
 
 
 def main():
@@ -364,8 +489,10 @@ def main():
     formsEvents = make_events(os.path.join("data", "forms.csv"), "forms")
     capstoneEvents = make_events(os.path.join("data", "capstone.csv"), "capstone")
     
+    # syllabus combinations (can add more)
+    syllabus1 = [sysGrndSchoolEvents, contactsEvents, instrGrndSchoolEvents, instrumentsEvents, aeroEvents, formsEvents, capstoneEvents]
+    syllabus2 = [sysGrndSchoolEvents, contactsEvents, aeroEvents, instrGrndSchoolEvents, instrumentsEvents, formsEvents, capstoneEvents]
 
-    syllabus = [sysGrndSchoolEvents, contactsEvents, aeroEvents, instrGrndSchoolEvents, instrumentsEvents, formsEvents, capstoneEvents]
     # Resources
     classrooms_list = [Classroom(f"CL{i+1}") for i in range(6)]
     utd_sims_list = [Utd(f"UTD{i+1}") for i in range(6)]
@@ -374,9 +501,10 @@ def main():
     mr_sims_list = [Mr(f"MR{i+1}") for i in range(2)]
     aircraft_list = [Aircraft(f"AC{i+1}") for i in range(18)]
     # Run the simulation
-    # run_simulation(students, syllabus)/
+    # run_simulation(students, syllabus)
 
-    FlightStudent.syllabus1 = syllabus
+    FlightStudent.syllabus1 = syllabus1
+    FlightStudent.syllabus2 = syllabus2
     # create syllabus 2 here...
 
     default_value=10
@@ -400,7 +528,7 @@ def main():
         students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
 
 
-    instructors = []
+    instructors = load_instructors(os.path.join("instructors", "instructor_data.csv"))
 
     for i in range(20):
         new_instructor = Instructor(i, True, True)
@@ -423,7 +551,7 @@ def main():
 
     for i in range(value):
         current = date.today() + timedelta(days=i)
-        schedule = schedule_one_day(students, current, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus)
+        schedule = schedule_one_day(students, current, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1)
         result.append(schedule)
 
     for i in result:
