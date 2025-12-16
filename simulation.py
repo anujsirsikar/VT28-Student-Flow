@@ -381,7 +381,7 @@ def main():
 
     default_value=10
 
-    students = [] # this will be a deque of students (for the future: be able to read in an excel sheet and then initialize student objects to populate this)
+    students = []
     # Let's make some students
 
     user_input = input("Enter a number of initial students (default 10): ")
