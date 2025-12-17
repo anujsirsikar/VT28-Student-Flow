@@ -28,7 +28,7 @@ class FlightStudent:
         self.aero_first = False
         self.night_hours = 0                       # need at least 5 hours of night flying
         # should we include a student failu/setre rate?
-        self.syllabus_type = 1 # 1 = normal, 2 = aero and then instruments
+        self.syllabus_type = 1 # 1 = normal, 2 = aero and forms and then instruments
 
 
     # toString function

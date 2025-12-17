@@ -1,7 +1,15 @@
 # @author Anuj Sirsikar and Timothy Kedrowski and Lauren Leckelt
 # simulates a student going through the primary syllabus in flight school
 
-# have it read from an excel spreadsheet? -> yes, to make a list of students
+# RANDOM ONE OFF CASES:
+# randomly did SY0302 while in instr grnd:
+# 102,2511,Active,12/16/2024,12/16/2024,12/17/2024,12/17/2024,12/17/2024,12/18/2024,12/19/2024,12/20/2024,12/20/2024,1/7/2025,1/7/2025,1/8/2025,1/8/2025,1/8/2025,1/10/2025,1/10/2025,1/10/2025,1/13/2025,1/13/2025,1/13/2025,1/14/2025,1/15/2025,1/15/2025,1/16/2025,1/16/2025,1/16/2025,1/17/2025,1/17/2025,1/22/2025,1/23/2025,1/24/2025,1/27/2025,1/28/2025,1/30/2025,2/3/2025,2/7/2025,2/13/2025,2/18/2025,2/19/2025,2/20/2025,2/24/2025,2/25/2025,2/26/2025,2/27/2025,2/28/2025,3/3/2025,3/24/2025,3/25/2025,3/28/2025,3/31/2025,4/9/2025,3/7/2025,3/10/2025,3/11/2025,3/12/2025,3/20/2025,4/10/2025,4/11/2025,4/16/2025,4/14/2025,4/15/2025,4/28/2025,4/29/2025,5/2/2025,5/6/2025,5/13/2025,5/14/2025,,,,,5/28/2025,5/28/2025,5/29/2025,5/29/2025,5/30/2025,6/2/2025,6/3/2025,6/3/2025,6/4/2025,6/4/2025,6/5/2025,6/6/2025,6/6/2025,6/6/2025,,,,,,,,,,,,,,,,,,,,,,9/17/2025,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+# instr -> forms -> aero?:
+# 118,2511,Active,12/16/2024,12/16/2024,12/17/2024,12/17/2024,12/17/2024,12/18/2024,12/19/2024,12/20/2024,12/20/2024,1/7/2025,1/7/2025,1/8/2025,1/8/2025,1/8/2025,1/10/2025,1/10/2025,1/10/2025,1/13/2025,1/13/2025,1/13/2025,1/14/2025,1/15/2025,1/15/2025,1/16/2025,1/16/2025,1/16/2025,1/17/2025,1/17/2025,1/22/2025,1/23/2025,1/24/2025,1/27/2025,1/28/2025,1/30/2025,2/3/2025,2/7/2025,2/13/2025,2/14/2025,2/18/2025,2/19/2025,2/24/2025,2/25/2025,2/26/2025,2/27/2025,2/28/2025,3/3/2025,3/24/2025,3/25/2025,4/7/2025,4/8/2025,4/9/2025,3/7/2025,3/17/2025,3/18/2025,3/19/2025,3/20/2025,4/10/2025,4/12/2025,4/16/2025,4/14/2025,4/16/2025,5/1/2025,5/13/2025,5/14/2025,5/27/2025,5/28/2025,5/28/2025,,,,,6/4/2025,6/4/2025,6/5/2025,6/5/2025,6/6/2025,6/9/2025,6/10/2025,6/10/2025,6/11/2025,6/11/2025,6/12/2025,6/13/2025,6/13/2025,6/13/2025,6/16/2025,6/16/2025,6/17/2025,6/17/2025,6/18/2025,6/20/2025,6/21/2025,6/23/2025,6/24/2025,6/26/2025,6/30/2025,7/1/2025,7/2/2025,7/7/2025,7/9/2025,7/11/2025,7/14/2025,7/16/2025,7/21/2025,7/22/2025,7/22/2025,7/24/2025,7/30/2025,7/31/2025,8/1/2025,8/4/2025,8/4/2025,8/5/2025,8/5/2025,8/7/2025,8/7/2025,8/8/2025,8/8/2025,8/8/2025,8/12/2025,8/13/2025,8/14/2025,8/14/2025,7/23/2025,8/13/2025,8/19/2025,8/19/2025,8/20/2025,8/25/2025,8/26/2025,8/28/2025,9/9/2025,9/9/2025,9/12/2025,9/16/2025,,,,,,,,
+# 134,2444,Active,8/12/2024,8/29/2024,8/13/2024,8/13/2024,8/13/2024,8/14/2024,8/15/2024,8/16/2024,8/16/2024,8/19/2024,8/19/2024,8/20/2024,8/20/2024,8/20/2024,8/21/2024,8/21/2024,8/21/2024,8/22/2024,8/22/2024,8/22/2024,8/23/2024,8/26/2024,8/26/2024,8/27/2024,8/27/2024,8/27/2024,8/28/2024,8/28/2024,9/4/2024,9/5/2024,9/6/2024,9/9/2024,9/11/2024,9/12/2024,9/13/2024,9/16/2024,9/17/2024,9/18/2024,9/19/2024,9/20/2024,9/23/2024,9/24/2024,9/25/2024,9/26/2024,9/30/2024,10/1/2024,10/3/2024,10/7/2024,11/6/2024,11/12/2024,11/14/2024,11/15/2024,1/31/2025,11/20/2024,11/21/2024,12/12/2024,2/6/2025,2/9/2025,3/18/2025,2/26/2025,3/14/2025,3/16/2025,3/25/2025,3/28/2025,4/8/2025,4/9/2025,4/9/2025,,,,,4/16/2025,4/16/2025,4/17/2025,4/17/2025,4/18/2025,4/21/2025,4/22/2025,4/22/2025,4/23/2025,4/23/2025,4/24/2025,4/25/2025,4/25/2025,4/25/2025,4/28/2025,4/28/2025,4/29/2025,4/29/2025,4/30/2025,5/1/2025,5/2/2025,5/6/2025,5/7/2025,5/8/2025,5/12/2025,5/13/2025,5/14/2025,5/15/2025,5/16/2025,5/29/2025,5/20/2025,5/21/2025,5/31/2025,6/3/2025,6/5/2025,6/6/2025,6/9/2025,6/10/2025,6/10/2025,6/11/2025,6/11/2025,7/22/2025,6/12/2025,6/15/2025,6/15/2025,6/15/2025,6/16/2025,6/25/2025,7/5/2025,7/23/2025,7/24/2025,7/28/2025,5/30/2025,6/4/2025,7/29/2025,7/29/2025,7/30/2025,7/31/2025,7/31/2025,8/5/2025,8/7/2025,8/18/2025,8/19/2025,,,,,,,,,
+# aero -> instr -> forms?
+# 131,2519,Active,2/24/2025,2/24/2025,2/25/2025,2/25/2025,2/25/2025,2/26/2025,2/27/2025,2/28/2025,2/28/2025,3/3/2025,3/3/2025,3/4/2025,3/4/2025,3/4/2025,3/5/2025,3/5/2025,3/5/2025,3/6/2025,3/6/2025,3/6/2025,3/7/2025,3/10/2025,3/10/2025,3/11/2025,3/11/2025,3/11/2025,3/12/2025,3/12/2025,3/13/2025,3/14/2025,3/17/2025,3/18/2025,3/21/2025,3/22/2025,3/24/2025,3/24/2025,3/25/2025,3/26/2025,4/29/2025,3/28/2025,3/31/2025,4/1/2025,4/2/2025,4/3/2025,4/4/2025,4/21/2025,,4/30/2025,5/19/2025,5/29/2025,6/3/2025,6/6/2025,8/14/2025,6/16/2025,6/17/2025,6/18/2025,6/23/2025,7/9/2025,7/15/2025,7/10/2025,7/16/2025,7/17/2025,7/29/2025,8/5/2025,9/4/2025,9/9/2025,9/10/2025,9/11/2025,9/13/2025,9/15/2025,9/16/2025,9/17/2025,9/17/2025,9/18/2025,9/18/2025,9/19/2025,9/22/2025,9/23/2025,9/23/2025,9/24/2025,9/24/2025,9/25/2025,9/26/2025,9/26/2025,9/26/2025,9/29/2025,9/29/2025,9/30/2025,9/30/2025,10/1/2025,10/2/2025,10/2/2025,10/3/2025,10/3/2025,10/6/2025,10/7/2025,10/7/2025,10/8/2025,10/9/2025,10/10/2025,11/5/2025,10/14/2025,10/14/2025,11/6/2025,11/11/2025,11/17/2025,11/18/2025,11/19/2025,,,,,,,,,,,,,,,,11/11/2025,11/12/2025,,,,,,,,,,,,,,,,,,
+
 
 import datetime
 from datetime import date, timedelta, datetime
@@ -394,23 +402,6 @@ def make_events(file_path, block):
         events.append(Event(merged_name, day, resource, total_time, block))
     return events
 
-# helper function for the load_students() function
-def get_last_completed_event(row):
-    last_event_name = None
-    last_event_date = None
-
-    for key, value in row.items():
-        if key in ("Name", "Class", "Status"):
-            continue
-        if value.strip():
-            date = datetime.strptime(value.strip(), "%m/%d/%Y").date()
-
-            if last_event_date is None or date > last_event_date:
-                last_event_date = date
-                last_event_name = key
-
-    return last_event_name
-
 # makes a list of current students in the syllabus from a csv file 
 '''
 IMPORTANT ASSUMPTION BEING MADE:
@@ -432,6 +423,7 @@ def load_students(file_path):
             # Find earliest completed event date as start_date
             start_date = None
             last_date = None
+            last_event = None
 
             for key, value in row.items():
                 if key in ("Name", "Class", "Status"):
@@ -443,6 +435,8 @@ def load_students(file_path):
                         start_date = date
                     if last_date is None or date > last_date:
                         last_date = date
+                        last_event = key
+                        print(last_event)
 
             # Create student object
             student = FlightStudent(student_id, class_id, start_date)
@@ -456,7 +450,7 @@ def load_students(file_path):
                 student.completion_date = last_date
                 student.completed_blocks = [1, 1, 1, 1, 1, 1, 1]
                 # calculate syllabus_type
-                date_str1 = row["FAM4703"]
+                date_str1 = row["FAM4703"]  # this could also be "F4290" (last forms event)
                 date_str2 = row["FAM4601"]
                 # Convert to date objects
                 d1 = datetime.strptime(date_str1, "%m/%d/%Y").date()
@@ -469,12 +463,12 @@ def load_students(file_path):
                 # Initialize timeline fields
                 student.last_completed_event_date = last_date
                 student.days_since_last_event = (datetime.today().date() - student.last_completed_event_date).days
-                last_completed_event = get_last_completed_event(row)
-                print("last comp event: ", last_completed_event)
+                print("last comp event: ", last_event)
+                print(last_date)
                 found = False 
                 for block_index, block in enumerate(sys1):
                     for event_index, event in enumerate(block):
-                        if last_completed_event in event.name:
+                        if last_event in event.name:
                             student.current_block = block_index
                             student.next_event_index = event_index + 1
                             founds = True
@@ -499,20 +493,20 @@ def load_students(file_path):
                         student.syllabus_type = 2
                         student.current_block += 1
 
-                if student.current_block == 4:
+                if student.current_block in (4,5):
                     if not row["FAM4601"].strip():     # if not complete with instruments
                         student.syllabus_type = 2
-                        student.current_block = 2 
+                        student.current_block -= 2 
 
                 for i in range(0, student.current_block):
                     student.completed_blocks[i] = 1
             
             # Go through and update the completed_dates list
             end_events1 = {0:"G0102", 1:"FAM4501", 2:"NA1190", 3:"FAM4601", 4:"FAM4703", 5:"F4290", 6:"CS4290"}
-            end_events2 = {0:"G0102", 1:"FAM4501", 2:"FAM4703", 3:"NA1190", 4:"FAM4601", 5:"F4290", 6:"CS4290"}
+            end_events2 = {0:"G0102", 1:"FAM4501", 2:"FAM4703", 3:"F4290", 4:"NA1190", 5:"FAM4601", 6:"CS4290"}
             # sometimes they forget to put the completion date if the last two events take place on the same day...
             almost_end_events1 = {0:"G0290", 1:"FAM4490", 2:"NA1106", 3:"N4101", 4:"FAM4702", 5:"F4104", 6:"CS4102"}
-            almost_end_events2 = {0:"G0290", 1:"FAM4490", 2:"FAM4702", 3:"NA1106", 4:"N4101", 5:"F4104", 6:"CS4102"}
+            almost_end_events2 = {0:"G0290", 1:"FAM4490", 2:"FAM4702", 3:"F4104", 4:"NA1106", 5:"N4101", 6:"CS4102"}
             for i, block in enumerate(student.completed_blocks):
                 if student.syllabus_type == 1:
                     if block == 1:
@@ -616,7 +610,7 @@ def main():
     
     # syllabus combinations (can add more)
     syllabus1 = [sysGrndSchoolEvents, contactsEvents, instrGrndSchoolEvents, instrumentsEvents, aeroEvents, formsEvents, capstoneEvents]
-    syllabus2 = [sysGrndSchoolEvents, contactsEvents, aeroEvents, instrGrndSchoolEvents, instrumentsEvents, formsEvents, capstoneEvents]
+    syllabus2 = [sysGrndSchoolEvents, contactsEvents, aeroEvents, formsEvents, instrGrndSchoolEvents, instrumentsEvents, capstoneEvents]
 
     # Resources
     classrooms_list = [Classroom(f"CL{i+1}") for i in range(6)]
