@@ -436,7 +436,7 @@ def load_students(file_path):
                     if last_date is None or date > last_date:
                         last_date = date
                         last_event = key
-                        print(last_event)
+                        #print(last_event)
 
             # Create student object
             student = FlightStudent(student_id, class_id, start_date)
@@ -463,8 +463,8 @@ def load_students(file_path):
                 # Initialize timeline fields
                 student.last_completed_event_date = last_date
                 student.days_since_last_event = (datetime.today().date() - student.last_completed_event_date).days
-                print("last comp event: ", last_event)
-                print(last_date)
+                #print("last comp event: ", last_event)
+                #print(last_date)
                 found = False 
                 for block_index, block in enumerate(sys1):
                     for event_index, event in enumerate(block):
@@ -485,7 +485,7 @@ def load_students(file_path):
                 # 4 = aero
                 # 5 = forms
                 # 6 = capstone
-                print("current block: ", student.current_block)
+                #print("current block: ", student.current_block)
                 if student.current_block in (2,3):
                     if not row["FAM4703"].strip():     # if not complete with aero
                         student.syllabus_type = 1
@@ -510,23 +510,23 @@ def load_students(file_path):
             for i, block in enumerate(student.completed_blocks):
                 if student.syllabus_type == 1:
                     if block == 1:
-                        print(1)
-                        print(student.student_id)
-                        print(student.completed_blocks)
+                        #print(1)
+                        #print(student.student_id)
+                        #print(student.completed_blocks)
                         date = row[end_events1[i]]
                         if date == '':
                             date = row[almost_end_events1[i]]
-                        print(date)
+                        #print(date)
                         student.completed_dates[i] = datetime.strptime(date, "%m/%d/%Y").date()
                 if student.syllabus_type == 2:
                     if block == 1:
-                        print(2)
-                        print(student.student_id)
-                        print(student.completed_blocks)
+                        #print(2)
+                        #print(student.student_id)
+                        #print(student.completed_blocks)
                         date = row[end_events2[i]]
                         if date == '':
                             date = row[almost_end_events2[i]]
-                        print(date)
+                        #print(date)
                         student.completed_dates[i] = datetime.strptime(date, "%m/%d/%Y").date()
 
             student_list.append(student)
