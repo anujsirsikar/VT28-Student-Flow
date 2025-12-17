@@ -134,29 +134,43 @@ def run_simulation(students, instructors, class_up_size, percent_aero):
         # run the schedule_one_day() function for every valid day
 
 
-daytime_hours = 11 ## 7 to 6
-nighttime_hours = 5
-instructors = 40
+# daytime_hours = 11 ## 7 to 6
+# nighttime_hours = 5
+# instructors = 40
 instructor_rate = 0.9
 instructor_daily_hours = 12
 
-def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus):# grndSchool, contacts, aero, inst, forms, capstone):
+def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2):# grndSchool, contacts, aero, inst, forms, capstone):
     # events that will be attempted to schedule for each student
     events_to_attempt = []
     successfull_events = []
 
-    # sort the student by longest time since last event
-    if day != date.today():
-        students.sort(key=lambda s: s.days_since_last_event, reverse=True)
+    students = students = sorted(
+    students,
+    key=lambda s: s.days_since_last_event or -1,  # None-safe
+    reverse=True
+)
+    print([s.days_since_last_event for s in students])
+
 
     for s in students:
         # s.daily_events_done = 0  # unsure if I need this
-        block, event = s.next_event()
-        nxt = syllabus[block][event]
-        # NEED TO SOMEHOW ACCOUNT FOR EVENTS THAT TAKE PLACE ON THE SAME TRAINING DAY (make a function that combines all the events for a single training day into one big event)
-        if nxt and s.completion_date is None: # if they have an event and are not finished add it to the attempted events
-            events_to_attempt.append((s,nxt))
-    print(events_to_attempt)
+        if s.completion_date is None:
+            if s.days_since_last_event >= 15:
+                events_to_attempt.append((s,"warmup flight"))
+            else:
+
+                #get the index of the block and event
+                block, event = s.next_event()
+                
+                # get the event from the sylllabus
+                syllabus = syllabus1
+                if s.syllabus_type == 2:
+                    syllabus = syllabus2
+                nxt = syllabus[block][event]
+            
+                events_to_attempt.append((s,nxt))
+    # print(events_to_attempt)
 
     # Filter out failed devices. Note this changes every day
     working_utds = [sim for sim in utd if random.random() > Sim.failure_rate]
@@ -172,10 +186,10 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
     vtd_hours = {sim: Sim.daily_hours for sim in working_vtds}
     mr_hours  = {sim: Sim.daily_hours for sim in working_mrs}
     # format is Aircraft Object: [Daily Hours Availible, Night Hours Availible, Total uses that day]
-    aircraft_hours = {ac: [daytime_hours, nighttime_hours, 0] for ac in working_aircraft}
+    aircraft_hours = {ac: [Aircraft.daytime_hours, Aircraft.nighttime_hours, 0] for ac in working_aircraft}
 
     # format object: [hours, event, current capacity check, [capacity_event_one, capacity_event_two, etc...]]
-    classroom_hours_events = {c: [Classroom.daily_hours, None, -1, [0, 0, 0, 0]] for c in classroom}
+    classroom_hours_events = {c: [Classroom.daily_hours, None, -1, [0, 0, 0, 0,0,0,0,0,0]] for c in classroom}
 
     # instructors now
     # want to leave these as objects because we will need to check their quals later on and check onwings 
@@ -186,14 +200,18 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
     # looking at student and the event they are scheduled for
     for s, ev in events_to_attempt:
         #getting how long the event it. 
-        needed_time = ev.activity_time
-        needed_resource = ev.resource
+        if ev == "warmup flight":
+            needed_time = 2
+            needed_resource = "aircraft"
+        else:
+            needed_time = ev.activity_time
+            needed_resource = ev.resource
 
         if needed_resource == "classroom":
             helper = 0
             fate = class_in_progress(ev, classroom_hours_events)
             if fate != 99:
-                successfull_events.append([s,ev, day, str(fate) + " Class: " + str(classroom_hours_events[fate][2]) + " Student: " + str(classroom_hours_events[fate][3][classroom_hours_events[fate][2]])])
+                successfull_events.append([s,ev, str(day), str(fate) + " Class: " + str(classroom_hours_events[fate][2]) + " Student: " + str(classroom_hours_events[fate][3][classroom_hours_events[fate][2]])])
                 s.event_complete(day)
                 classroom_hours_events[fate][3][classroom_hours_events[fate][2]] += 1
                 helper = 1
@@ -210,7 +228,7 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
                         capacity_index = classroom_hours_events[c][2]
                         classroom_hours_events[c][3][capacity_index] = 1
                         classroom_hours_events[c][2] += 1
-                        successfull_events.append([s,ev, day, str(c) + " Class: " + str(classroom_hours_events[c][2]) + " Student: " + str(classroom_hours_events[c][3][classroom_hours_events[c][2]])])
+                        successfull_events.append([s,ev, str(day), str(c) + " Class: " + str(classroom_hours_events[c][2]) + " Student: " + str(classroom_hours_events[c][3][classroom_hours_events[c][2]])])
                         classroom_hours_events[c][3][classroom_hours_events[c][2]] += 1
                         s.event_complete(day)
                         helper = 1
@@ -229,7 +247,7 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
                 if needed_time <= utd_hours[u]:
                     utd_hours[u] -=  (needed_time + Sim.break_time) #ADD BREAK Time
                     # schedule the student
-                    successfull_events.append([s,ev, day, u])
+                    successfull_events.append([s,ev, str(day), u])
                     s.event_complete(day)
                     helper = 1
                     break
@@ -244,7 +262,7 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
                 if needed_time <= oft_hours[o]:
                     oft_hours[o] -= (needed_time + Sim.break_time)
                     # schedule the student
-                    successfull_events.append([s,ev, day, o])
+                    successfull_events.append([s,ev, str(day), o])
                     s.event_complete(day)
                     helper = 1
                     break
@@ -259,7 +277,7 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
                 if needed_time <= vtd_hours[v]:
                     vtd_hours[v] -= (needed_time + Sim.break_time)
                     # schedule the student
-                    successfull_events.append([s,ev, day, v])
+                    successfull_events.append([s,ev, str(day), v])
                     s.event_complete(day)
                     helper = 1
                     break
@@ -274,7 +292,7 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
                 if needed_time <= mr_hours[m]:
                     mr_hours[m] -= (needed_time + Sim.break_time)
                     # schedule the student
-                    successfull_events.append([s,ev, day, m])
+                    successfull_events.append([s,ev, str(day), m])
                     s.event_complete(day)
                     helper = 1
                     break
@@ -288,15 +306,50 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
             # Later: add in stuff about day or night...
             aircraft_found = 0
             ## make sure actuallly values not copies
+
+            can_be_night = False
+
+            if ev != "warmup flight" and ev.block == "instruments":
+                ## then it can be completed at night
+                can_be_night = True
+
+            if can_be_night and s.night_hours < 5:
+                for ac in aircraft_hours:
+                    instructor_found = 0
+                    if needed_time <= aircraft_hours[ac][1] and aircraft_hours[ac][2] < Aircraft.uses_per_day:
+                        for inst in instructor_hours:
+                            if needed_time <= instructor_hours[inst]:
+                                aircraft_hours[ac][1] -= (needed_time + Aircraft.break_time)
+                                instructor_hours[inst] -= (needed_time + Instructor.break_time)
+                                successfull_events.append([s,ev, str(day), "night",ac,inst])
+                                s.event_complete(day)
+                                aircraft_hours[ac][2] += 1
+                                aircraft_found = 1
+                                instructor_found = 1
+                                s.night_hours += needed_time
+                                break
+                        if instructor_found == 1:
+                            break
+            
+            if aircraft_found == 1:
+                continue
+
+            running_out_of_events = ev.name == "I4490" or ev.name == "N4101" or ev.name == "FAM4601"
+
+            if aircraft_found == 0 and s.night_hours < 5 and running_out_of_events:
+                s.days_since_last_event += 1
+                s.total_wait_time += 1
+                break
+
+
             for ac in aircraft_hours:
                 instructor_found = 0
-                check = 0
                 if needed_time <= aircraft_hours[ac][0] and aircraft_hours[ac][2] < Aircraft.uses_per_day:
                     for inst in instructor_hours:
                         if needed_time <= instructor_hours[inst]:
                             aircraft_hours[ac][0] -= (needed_time + Aircraft.break_time)
                             instructor_hours[inst] -= (needed_time + Instructor.break_time)
-                            successfull_events.append([s,ev, day, ac,inst])
+                            successfull_events.append([s,ev, str(day), "day",ac,inst])
                             s.event_complete(day)
                             aircraft_hours[ac][2] += 1
                             aircraft_found = 1
@@ -524,7 +577,8 @@ def main():
 
     for i in range(value):
         new_student = FlightStudent(i, i//8, date.today())
-        new_student.days_since_last_event = i
+        if i % 10 == 1:
+            new_student.syllabus_type = 2
         students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
 
 
@@ -551,7 +605,7 @@ def main():
 
     for i in range(value):
         current = date.today() + timedelta(days=i)
-        schedule = schedule_one_day(students, current, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1)
+        schedule = schedule_one_day(students, current, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2)
         result.append(schedule)
 
     for i in result:
@@ -559,6 +613,8 @@ def main():
             print(j)
 
 
+
+    student_wait_times = []
     for s in students:
         # dates = sorted(s.completed_dates)
         dates = sorted(s.completed_dates, key=lambda d: (d is None, d))
@@ -573,9 +629,11 @@ def main():
             wait_times.append((i-date_to_compare).days)
             date_to_compare = i
 
-        print("Time to complete each block", wait_times)
-        print("Dates each block was completed", s.completed_dates)
+        student_wait_times.append([f"Student {s.student_id}", wait_times, f"night hours: {s.night_hours}"])
 
+    print("Wait times for each student by block")
+    for i in student_wait_times:
+        print(i[0],i[1],i[2], "completion date:",s.completion_date )
 
 
 if __name__ == "__main__":

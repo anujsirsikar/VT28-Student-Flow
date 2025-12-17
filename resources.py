@@ -60,6 +60,8 @@ class Mr(Sim):                           # subclass of Sim
 class Aircraft():
     amount = 18
     daily_hours = 16                     # 11 for the day and 5 for the night (0700 to 2300)
+    daytime_hours = 11
+    nighttime_hours = 5
     break_time = 1
     failure_rate = 0.25                  # 75% chance given aircraft is working
     uses_per_day = 4                

@@ -43,7 +43,12 @@ class FlightStudent:
     
 
     def event_complete(self, day):
-        if len(self.syllabus1[self.current_block])-1 <= self.next_event_index:
+        syl = FlightStudent.syllabus1
+        self.days_since_last_event = 0
+        if self.syllabus_type == 2:
+            syl = FlightStudent.syllabus2
+
+        if len(syl[self.current_block])-1 <= self.next_event_index:
             self.completed_blocks[self.current_block] = 1
             self.completed_dates[self.current_block] = day
             self.current_block += 1
@@ -51,7 +56,7 @@ class FlightStudent:
         else:
             self.next_event_index += 1
         if sum(self.completed_blocks) == 7:
-            self.completion_date = date.today()
+            self.completion_date = day
   
 
 class Instructor:

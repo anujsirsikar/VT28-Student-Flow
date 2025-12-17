@@ -15,7 +15,8 @@ class Event:
         return self.name
 
     def __repr__(self):
-        return str(self) + str(self.block) + str(self.resource) + str(self.activity_time)
+        # return str(self) + str(self.block) + str(self.resource) + str(self.activity_time)
+        return str(self)
 
 # returns the times associated with each event
 def getActivityTime():
