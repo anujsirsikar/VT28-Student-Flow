@@ -10,18 +10,19 @@ class FlightStudent:
     syllabus1 = []
     syllabus2 = []
 
+    student_id = 0
+
     def __init__(self, student_id, class_id, start_date):
         self.student_id = student_id
         self.class_id = class_id
         self.start_date = start_date
-        self.current_date = start_date             # last date they were active/completed an event
         self.days_since_last_event = 0             # lastCompletedEventDate - currentDate. If it's >= 15, they need a warmup flight
         self.total_wait_time = 0                   # total days waiting due to resource shortage (weekdays only)
         self.last_completed_event_date = None
         # self.status = "active"   # active, completed, med down, leave, (pool?), waiting
         self.completion_date = None
         self.completed_blocks = [0,0,0,0,0,0,0]    # 0 = uncompleted, 1 = completed
-        self.completed_dates = [None, None, None, None, None, None, None]
+        self.completed_dates = [None, None, None, None, None, None, None]  
         self.current_block = 0                     # Block one starts at zero for indexing
         self.next_event_index = 0                  # index into flattened syllabus events
         self.aero_first = False

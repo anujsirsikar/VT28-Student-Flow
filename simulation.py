@@ -334,7 +334,8 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
             if aircraft_found == 1:
                 continue
 
-            running_out_of_events = ev.name == "I4490" or ev.name == "N4101" or ev.name == "FAM4601"
+            # was getting an error so changed ev.names to ev
+            running_out_of_events = ev == "I4490" or ev == "N4101" or ev == "FAM4601"
 
             if aircraft_found == 0 and s.night_hours < 5 and running_out_of_events:
                 s.days_since_last_event += 1
@@ -446,24 +447,96 @@ def load_students(file_path):
             # Create student object
             student = FlightStudent(student_id, class_id, start_date)
 
-            # Initialize timeline fields
-            # do we need both of these variables?
-            student.last_completed_event_date = last_date
-            student.current_date = last_date
-            student.days_since_last_event = (datetime.today().date() - student.last_completed_event_date).days
-            last_completed_event = get_last_completed_event(row)
-
             # gets tricky here because need to check if they have done aero
             sys1 = FlightStudent.syllabus1
             sys2 = FlightStudent.syllabus2
-
 
             # Mark completed students
             if status == "complete":
                 student.completion_date = last_date
                 student.completed_blocks = [1, 1, 1, 1, 1, 1, 1]
+                # calculate syllabus_type
+                date_str1 = row["FAM4703"]
+                date_str2 = row["FAM4601"]
+                # Convert to date objects
+                d1 = datetime.strptime(date_str1, "%m/%d/%Y").date()
+                d2 = datetime.strptime(date_str2, "%m/%d/%Y").date()
+                # Compare
+                if d1 < d2:
+                    student.syllabus_type = 2
+            else:
+                # active students
+                # Initialize timeline fields
+                student.last_completed_event_date = last_date
+                student.days_since_last_event = (datetime.today().date() - student.last_completed_event_date).days
+                last_completed_event = get_last_completed_event(row)
+                print("last comp event: ", last_completed_event)
+                found = False 
+                for block_index, block in enumerate(sys1):
+                    for event_index, event in enumerate(block):
+                        if last_completed_event in event.name:
+                            student.current_block = block_index
+                            student.next_event_index = event_index + 1
+                            founds = True
+                            break
+                    if found:
+                        break
+                
+                # Figure out which syllabus the student is using
+                # For syllabus 1:
+                # 0 = sys grnd
+                # 1 = contacts
+                # 2 = instr grnd
+                # 3 = instr
+                # 4 = aero
+                # 5 = forms
+                # 6 = capstone
+                print("current block: ", student.current_block)
+                if student.current_block in (2,3):
+                    if not row["FAM4703"].strip():     # if not complete with aero
+                        student.syllabus_type = 1
+                    else:
+                        student.syllabus_type = 2
+                        student.current_block += 1
+
+                if student.current_block == 4:
+                    if not row["FAM4601"].strip():     # if not complete with instruments
+                        student.syllabus_type = 2
+                        student.current_block = 2 
+
+                for i in range(0, student.current_block):
+                    student.completed_blocks[i] = 1
+            
+            # Go through and update the completed_dates list
+            end_events1 = {0:"G0102", 1:"FAM4501", 2:"NA1190", 3:"FAM4601", 4:"FAM4703", 5:"F4290", 6:"CS4290"}
+            end_events2 = {0:"G0102", 1:"FAM4501", 2:"FAM4703", 3:"NA1190", 4:"FAM4601", 5:"F4290", 6:"CS4290"}
+            # sometimes they forget to put the completion date if the last two events take place on the same day...
+            almost_end_events1 = {0:"G0290", 1:"FAM4490", 2:"NA1106", 3:"N4101", 4:"FAM4702", 5:"F4104", 6:"CS4102"}
+            almost_end_events2 = {0:"G0290", 1:"FAM4490", 2:"FAM4702", 3:"NA1106", 4:"N4101", 5:"F4104", 6:"CS4102"}
+            for i, block in enumerate(student.completed_blocks):
+                if student.syllabus_type == 1:
+                    if block == 1:
+                        print(1)
+                        print(student.student_id)
+                        print(student.completed_blocks)
+                        date = row[end_events1[i]]
+                        if date == '':
+                            date = row[almost_end_events1[i]]
+                        print(date)
+                        student.completed_dates[i] = datetime.strptime(date, "%m/%d/%Y").date()
+                if student.syllabus_type == 2:
+                    if block == 1:
+                        print(2)
+                        print(student.student_id)
+                        print(student.completed_blocks)
+                        date = row[end_events2[i]]
+                        if date == '':
+                            date = row[almost_end_events2[i]]
+                        print(date)
+                        student.completed_dates[i] = datetime.strptime(date, "%m/%d/%Y").date()
 
             student_list.append(student)
+    FlightStudent.student_id = len(student_list)+1
     return student_list
 
 #write now, don't care if they're status is 'suspended'. As long as they have something, we will count them as qualified
@@ -488,9 +561,9 @@ def load_instructors(file_path):
 
 # this function will be called every monday
 # Note: make sure dates can be compared (same format)
-# This function creates a list of new students that will be added to the student list
-def students_starting_week(file_path, date):
-    num_students = 0
+# This function creates a list of new students that will be added (.extend) to the student list
+# It will be called in the run_simulation function
+def students_starting_weekly(file_path, date):
     new_students = []
 
     # Ensure we are working with a date object
@@ -509,12 +582,11 @@ def students_starting_week(file_path, date):
 
             if csv_date == date:
                 num_students = int(row["Number_of_Students_Classing_Up"])
+                class_id = row["class_id"]
 
-    # how to come up with student_ids and class_ids??? -> made a second constructor for now
-    for i in range(num_students):
-        # new_students.append(FlightStudent())
-        pass
-    
+                for i in range(num_students):
+                    FlightStudent.student_id += 1
+                    new_students.append(FlightStudent(FlightStudent.student_id, class_id, date))
     return new_students
     
 
@@ -558,11 +630,10 @@ def main():
 
     FlightStudent.syllabus1 = syllabus1
     FlightStudent.syllabus2 = syllabus2
-    # create syllabus 2 here...
 
     default_value=10
 
-    students = []
+    students = load_students((os.path.join("students", "current_students.csv")))
     # Let's make some students
 
     user_input = input("Enter a number of initial students (default 10): ")
@@ -583,10 +654,6 @@ def main():
 
 
     instructors = load_instructors(os.path.join("instructors", "instructor_data.csv"))
-
-    for i in range(20):
-        new_instructor = Instructor(i, True, True)
-        instructors.append(new_instructor)
 
     result = []
 
