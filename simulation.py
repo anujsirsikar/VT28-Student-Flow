@@ -25,6 +25,8 @@ import pandas as pd
 import random
 import matplotlib.pyplot as plt
 import os
+import tkinter as tk
+import numpy as np
     
     # Will need a function that iterates over the resource list to check if there are resources available to fulfill the event.
     # Each event should also have a variable that indicates whether or not an event has available resources. 
@@ -321,7 +323,7 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
                 ## then it can be completed at night
                 can_be_night = True
 
-            if can_be_night and s.night_hours < 5:
+            if can_be_night and s.night_hours < 3.3:
                 for ac in aircraft_hours:
                     instructor_found = 0
                     if needed_time <= aircraft_hours[ac][1] and aircraft_hours[ac][2] < Aircraft.uses_per_day:
@@ -343,9 +345,9 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
                 continue
 
             # was getting an error so changed ev.names to ev
-            running_out_of_events = ev == "I4490" or ev == "N4101" or ev == "FAM4601"
+            running_out_of_events = ev == "I4490" or ev == "N4101" or ev == "FAM4601" 
 
-            if aircraft_found == 0 and s.night_hours < 5 and running_out_of_events:
+            if ev == "FAM4601" or (aircraft_found == 0 and s.night_hours < 5 and running_out_of_events):
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
                 break
@@ -584,6 +586,279 @@ def students_starting_weekly(file_path, date):
     return new_students
     
 
+def ask_user():
+    result = {}
+
+    root = tk.Tk()
+    root.title("VT28 Scheduling Simulation")
+    root.geometry("640x600")
+
+    root.resizable(False,False)
+
+    ##bring widow to front
+    root.update_idletasks()
+    root.deiconify()
+
+    root.after_idle(lambda: (
+    root.lift(),
+    root.attributes("-topmost", True),
+    root.after(100, lambda: root.attributes("-topmost", False))
+    ))
+
+
+    #Question
+    tk.Label(root, text="Would you like to include current students in simulation?", font=("Arial", 12)).pack(pady=10)
+
+    ##yes/no answer
+    choice = tk.StringVar(value="yes")  # default = Yes
+
+    radio_frame = tk.Frame(root)
+    radio_frame.pack()
+
+    tk.Radiobutton(
+        radio_frame, text="Yes", variable=choice, value="yes"
+    ).pack(side="left", padx=10)
+
+    tk.Radiobutton(
+        radio_frame, text="No", variable=choice, value="no"
+    ).pack(side="left", padx=10)
+
+    ##first slider
+    slider1_label = tk.Label(root, text="If no, how many initial students do you want to start with?", fg="white")
+    slider1_label.pack(pady=(15, 0))
+
+    slider1 = tk.Scale(root, from_=0, to=150, orient="horizontal")
+    slider1.pack()
+
+    ## second slider
+    slider2_label = tk.Label(root, text="How many weeks would you like to run the simulation for?", fg = "white")
+    slider2_label.pack(pady=(10, 0))
+
+    slider2 = tk.Scale(root, from_=0, to=52, orient="horizontal")
+    slider2.pack()
+
+    ## grey out slider if yes
+    # ---------------- Toggle logic ----------------
+    def toggle_sliders(*args):
+        if choice.get() == "yes":
+            slider1.set(0)
+            slider1.config(state="disabled")
+            slider1_label.config(fg="gray")
+
+            slider2.config(state="normal")
+            slider2_label.config(fg="white")
+        else:
+            slider1.config(state="normal")
+            slider1_label.config(fg="white")
+
+            slider2.config(state="normal")
+            slider2_label.config(fg="white")
+
+    choice.trace_add("write", toggle_sliders)
+    toggle_sliders()  # initialize state
+
+    #Question
+    tk.Label(root, text="Do you want to include current students in average completion time analysis", font=("Arial", 12)).pack(pady=10)
+
+    ##yes/no answer
+    choice2 = tk.StringVar(value="yes")  # default = Yes
+
+    radio_frame = tk.Frame(root)
+    radio_frame.pack()
+
+    tk.Radiobutton(
+        radio_frame, text="Yes", variable=choice2, value="yes"
+    ).pack(side="left", padx=10)
+
+    tk.Radiobutton(
+        radio_frame, text="No", variable=choice2, value="no"
+    ).pack(side="left", padx=10)
+
+
+     # ---------------- Confirm ----------------
+    def confirm():
+        result["answer"] = (choice.get() == "yes")
+        result["slider1"] = slider1.get()
+        result["slider2"] = slider2.get()
+        result["choice2"] = (choice2.get() == "yes")
+        root.destroy()
+
+    tk.Button(root, text="Confirm", width=15, command=confirm).pack(pady=15)
+
+    root.mainloop()
+    return result
+
+
+# ## student list in format 
+# '''
+# [
+# [list 1],
+# [list2],
+# [list3],
+# etc
+# ]
+# '''
+# # class up size in format [1,2,3,4,...]
+# #remove current students is a bool
+# def graph_simulation(student_lists, class_up_size, remove_current_students=True, debug=True):
+#     """
+#     Plots average total wait time vs students per week.
+    
+#     Parameters:
+#     - student_lists: list of lists of Student objects (one list per simulation run)
+#     - class_up_size: list of integers corresponding to number of students in each run
+#     - remove_current_students: bool, whether to exclude students whose start_date < today
+#     - debug: bool, whether to print debug info
+#     """
+#     today = date.today()
+#     average_waits = []
+
+#     for run_idx, run in enumerate(student_lists):
+#         filtered = []
+#         for s in run:
+#             if None in s.completed_dates:
+#                 if debug:
+#                     print(f"Skipping student {s.student_id} due to incomplete dates")
+#                 continue
+
+#             # convert dates if datetime.datetime
+#             start = s.start_date.date() if isinstance(s.start_date, datetime) else s.start_date
+#             completed_dates = [d.date() if isinstance(d, datetime) else d for d in s.completed_dates]
+
+#             if remove_current_students and start < today:
+#                 if debug:
+#                     print(f"Skipping student {s.student_id} due to start_date < today ({start})")
+#                 continue
+
+#             s._start_date = start
+#             s._completed_dates = completed_dates
+#             filtered.append(s)
+
+#         # compute total wait times in weeks
+#         total_waits = [
+#             (s._completed_dates[-1] - s._start_date).days / 7
+#             for s in filtered
+#         ]
+
+#         if debug:
+#             print(f"Run {run_idx+1} ({class_up_size[run_idx]} students/week): wait times = {total_waits}")
+
+#         # average wait, None if no valid students
+#         avg_wait = sum(total_waits)/len(total_waits) if total_waits else None
+#         average_waits.append(avg_wait)
+
+#     # Convert None to np.nan so matplotlib skips them
+#     y = [val if val is not None else np.nan for val in average_waits]
+
+#     # Check if all runs are empty
+#     if all(np.isnan(y)):
+#         print("Warning: all runs are empty. Nothing to plot.")
+#         return
+
+#     # Ensure lengths match
+#     if len(class_up_size) != len(y):
+#         print("Error: class_up_size and average_waits lengths do not match!")
+#         return
+
+#     plt.figure(figsize=(8,5))
+#     plt.plot(class_up_size, y, marker='o', linestyle='-')
+#     plt.xlabel("Number of students in each class up group")
+#     plt.ylabel("Average total wait time (weeks)")
+#     plt.title("Average total wait time per class up size")
+#     plt.grid(True)
+#     plt.show()
+
+def compute_average_waits(student_lists, remove_current_students=True, debug=False):
+    """
+    Computes average wait times for a list of student lists.
+    Returns a list of average waits corresponding to each run.
+    """
+    today = date.today()
+    average_waits = []
+
+    for run_idx, run in enumerate(student_lists):
+        filtered = []
+        for s in run:
+            if None in s.completed_dates:
+                if debug:
+                    print(f"Skipping student {s.student_id} due to incomplete dates")
+                continue
+
+            start = s.start_date.date() if isinstance(s.start_date, datetime) else s.start_date
+            completed_dates = [d.date() if isinstance(d, datetime) else d for d in s.completed_dates]
+
+            if remove_current_students and start < today:
+                if debug:
+                    print(f"Skipping student {s.student_id} due to start_date < today ({start})")
+                continue
+
+            s._start_date = start
+            s._completed_dates = completed_dates
+            filtered.append(s)
+
+        total_waits = [
+            (s._completed_dates[-1] - s._start_date).days / 7
+            for s in filtered
+        ]
+
+        avg_wait = sum(total_waits)/len(total_waits) if total_waits else None
+        average_waits.append(avg_wait)
+
+    # Replace None with np.nan
+    y = [val if val is not None else np.nan for val in average_waits]
+    return y
+
+
+
+def compare_multiple_simulations(list_of_student_lists, class_up_size, remove_current_students=True, debug=False):
+    """
+    Plots multiple simulations side by side or in a grid for comparison.
+    
+    Parameters:
+    - list_of_student_lists: list of lists of student lists, e.g., [sim1_lists, sim2_lists, sim3_lists...]
+    - class_up_size: list of integers for x-axis (number of students per week)
+    - remove_current_students: bool, whether to exclude students with start_date < today
+    - debug: bool, whether to print debug info
+    """
+    
+    num_simulations = len(list_of_student_lists)
+    
+    # Determine subplot grid size (rows x cols)
+    cols = min(3, num_simulations)  # max 3 per row
+    rows = (num_simulations + cols - 1) // cols  # ceil division
+    
+    fig, axes = plt.subplots(rows, cols, figsize=(5*cols, 4*rows), sharey=True)
+    
+    # Flatten axes in case of multiple rows
+    if rows == 1 and cols == 1:
+        axes = np.array([axes])
+    else:
+        axes = np.array(axes).flatten()
+    
+    # Colors for plotting
+    colors = plt.cm.tab10.colors  # up to 10 distinct colors
+    
+    for idx, student_lists in enumerate(list_of_student_lists):
+        avg_waits = compute_average_waits(student_lists, remove_current_students, debug)
+        y = [val if val is not None else np.nan for val in avg_waits]
+        
+        axes[idx].plot(class_up_size, y, marker='o', linestyle='-', color=colors[idx % len(colors)])
+        axes[idx].set_title(f"Simulation {idx+1}")
+        axes[idx].set_xlabel("Number of students per week")
+        axes[idx].grid(True)
+        
+        if idx % cols == 0:
+            axes[idx].set_ylabel("Average total wait time (weeks)")
+    
+    # Hide any unused subplots
+    for j in range(num_simulations, len(axes)):
+        axes[j].axis('off')
+    
+    plt.suptitle("Average Total Wait Time Comparison")
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    plt.show()
+
+
 
 
 def main():
@@ -625,46 +900,31 @@ def main():
     FlightStudent.syllabus1 = syllabus1
     FlightStudent.syllabus2 = syllabus2
 
-    default_value=10
+    user_input = ask_user()
 
-    students = load_students((os.path.join("students", "current_students.csv")))
-    # Let's make some students
+    students = []
 
-    user_input = input("Enter a number of initial students (default 10): ")
-    
-    try:
-        value = int(user_input)
-    except ValueError:
-        value = default_value
+    if not user_input["answer"]:
 
-    if value > 100:
-        value = 100
-
-    for i in range(value):
-        new_student = FlightStudent(i, i//8, date.today())
-        if i % 10 == 1:
-            new_student.syllabus_type = 2
-        students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
+        for i in range(int(user_input["slider1"])):
+            new_student = FlightStudent(FlightStudent.student_id+1, i//8, date.today())
+            FlightStudent.student_id += 1
+            if i % 10 == 1:
+                new_student.syllabus_type = 2
+            students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
+        
+    else:
+        students = load_students((os.path.join("students", "current_students.csv")))
 
 
     instructors = load_instructors(os.path.join("instructors", "instructor_data.csv"))
 
     result = []
 
-    user_input = input("Enter a number of days (default 10): ")
-
-    try: 
-        value = int(user_input)
-    except ValueError:
-        value = default_value
-
-    if value > 365:
-        value = 365
-
     # for i in syllabus:
     #     print(i)
 
-    for i in range(value):
+    for i in range(int(user_input["slider2"])*7):
         current = date.today() + timedelta(days=i)
         schedule = schedule_one_day(students, current, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2)
         result.append(schedule)
@@ -696,6 +956,15 @@ def main():
     for i in student_wait_times:
         print(i[0],i[1],i[2], "completion date:",s.completion_date )
 
+    print(f"Simulation run for {user_input["slider2"]} weeks with {len(students)} students")
+
+
+    # Need to put the students in in the format list of lists of simulation.
+    # First element is the list of students with syllabus2 == 0. this woudl be with class up sizes 1, 2, 3, etc
+    # second element is the list of students with syllabus2 = 10%. this would be with class up sizes 1, 2,3, etc
+    # third element is the same as above but a new percentage. Should be able to handle multiple variations.
+
+    compare_multiple_simulations([[students, students, students],[students, students, students],[students, students, students]], [1,2,3], not user_input["choice2"])
 
 if __name__ == "__main__":
     main()
