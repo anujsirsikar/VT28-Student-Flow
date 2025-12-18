@@ -689,85 +689,17 @@ def ask_user():
     return result
 
 
-# ## student list in format 
-# '''
-# [
-# [list 1],
-# [list2],
-# [list3],
-# etc
-# ]
-# '''
-# # class up size in format [1,2,3,4,...]
-# #remove current students is a bool
-# def graph_simulation(student_lists, class_up_size, remove_current_students=True, debug=True):
-#     """
-#     Plots average total wait time vs students per week.
-    
-#     Parameters:
-#     - student_lists: list of lists of Student objects (one list per simulation run)
-#     - class_up_size: list of integers corresponding to number of students in each run
-#     - remove_current_students: bool, whether to exclude students whose start_date < today
-#     - debug: bool, whether to print debug info
-#     """
-#     today = date.today()
-#     average_waits = []
-
-#     for run_idx, run in enumerate(student_lists):
-#         filtered = []
-#         for s in run:
-#             if None in s.completed_dates:
-#                 if debug:
-#                     print(f"Skipping student {s.student_id} due to incomplete dates")
-#                 continue
-
-#             # convert dates if datetime.datetime
-#             start = s.start_date.date() if isinstance(s.start_date, datetime) else s.start_date
-#             completed_dates = [d.date() if isinstance(d, datetime) else d for d in s.completed_dates]
-
-#             if remove_current_students and start < today:
-#                 if debug:
-#                     print(f"Skipping student {s.student_id} due to start_date < today ({start})")
-#                 continue
-
-#             s._start_date = start
-#             s._completed_dates = completed_dates
-#             filtered.append(s)
-
-#         # compute total wait times in weeks
-#         total_waits = [
-#             (s._completed_dates[-1] - s._start_date).days / 7
-#             for s in filtered
-#         ]
-
-#         if debug:
-#             print(f"Run {run_idx+1} ({class_up_size[run_idx]} students/week): wait times = {total_waits}")
-
-#         # average wait, None if no valid students
-#         avg_wait = sum(total_waits)/len(total_waits) if total_waits else None
-#         average_waits.append(avg_wait)
-
-#     # Convert None to np.nan so matplotlib skips them
-#     y = [val if val is not None else np.nan for val in average_waits]
-
-#     # Check if all runs are empty
-#     if all(np.isnan(y)):
-#         print("Warning: all runs are empty. Nothing to plot.")
-#         return
-
-#     # Ensure lengths match
-#     if len(class_up_size) != len(y):
-#         print("Error: class_up_size and average_waits lengths do not match!")
-#         return
-
-#     plt.figure(figsize=(8,5))
-#     plt.plot(class_up_size, y, marker='o', linestyle='-')
-#     plt.xlabel("Number of students in each class up group")
-#     plt.ylabel("Average total wait time (weeks)")
-#     plt.title("Average total wait time per class up size")
-#     plt.grid(True)
-#     plt.show()
-
+# # ## student list in format 
+# # '''
+# # [
+# # [[list 1],[list2],[list3]],
+# # [[list 1],[list2],[list3]],
+# # [[list 1],[list2],[list3]],
+# # etc
+# # ]
+# # '''
+# # # class up size in format [1,2,3,...]
+# # #remove current students is a bool
 def compute_average_waits(student_lists, remove_current_students=True, debug=False):
     """
     Computes average wait times for a list of student lists.
@@ -859,6 +791,81 @@ def compare_multiple_simulations(list_of_student_lists, class_up_size, remove_cu
     plt.show()
 
 
+
+
+def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_size,
+                                             remove_current_students=True,
+                                             debug=False):
+    """
+    Plots multiple simulations side by side for total wait time,
+    plus a stacked bar chart showing average wait time between blocks including start → first block.
+
+    Parameters:
+    - list_of_student_lists: list of student lists (one per simulation)
+    - class_up_size: list of integers for x-axis (number of students per run)
+    - block_names: list of names for each block (length = number of completed_dates)
+    - remove_current_students: bool, whether to exclude students with start_date < today
+    - debug: bool, whether to print debug info
+    """
+    block_names = ["Block 1", "Block 2", "Block 3", "Block 4", "Block 5", "Block 6", "Block 7"]
+    num_simulations = len(list_of_student_lists)
+    colors = plt.cm.tab10.colors  # up to 10 distinct colors for simulations
+    num_blocks = len(block_names)
+    block_colors = plt.cm.tab10.colors  # same colors used for blocks
+    
+    # Compute average waits for each simulation (total wait time)
+    avg_waits_all = [compute_average_waits(sim, remove_current_students, debug) for sim in list_of_student_lists]
+
+    # --- Top: Plot average total wait times ---
+    fig, axes = plt.subplots(2, 1, figsize=(12,10))
+    for idx, avg_waits in enumerate(avg_waits_all):
+        axes[0].plot(class_up_size, avg_waits, marker='o', linestyle='-',
+                     color=colors[idx % len(colors)], label=f"Simulation {idx+1}")
+    
+    axes[0].set_xlabel("Number of students per week")
+    axes[0].set_ylabel("Average total wait time (weeks)")
+    axes[0].set_title("Average Total Wait Time Comparison")
+    axes[0].grid(True)
+    axes[0].legend()
+
+    # --- Bottom: Stacked bar chart per-block including start → first block ---
+    width = 0.8 / num_simulations  # bar width per simulation
+    x = np.arange(len(class_up_size))
+
+    for sim_idx, sim in enumerate(list_of_student_lists):
+        bottom = np.zeros(len(class_up_size))
+        for block_idx in range(num_blocks):
+            waits = []
+            for run_idx, run in enumerate(sim):
+                run_waits = []
+                for s in run:
+                    if None in s.completed_dates:
+                        continue
+                    start = s.start_date.date() if isinstance(s.start_date, datetime) else s.start_date
+                    completed_dates = [d.date() if isinstance(d, datetime) else d for d in s.completed_dates]
+                    if block_idx == 0:
+                        run_waits.append((completed_dates[0] - start).days / 7)
+                    else:
+                        run_waits.append((completed_dates[block_idx] - completed_dates[block_idx-1]).days / 7)
+                if run_waits:
+                    waits.append(sum(run_waits)/len(run_waits))
+                else:
+                    waits.append(0)
+            axes[1].bar(x + sim_idx*width, waits, width=width, bottom=bottom,
+                        label=f"{block_names[block_idx]}" if sim_idx == 0 else "",
+                        color=block_colors[block_idx % len(block_colors)])
+            bottom += waits
+
+    axes[1].set_xticks(x + width*(num_simulations-1)/2)
+    axes[1].set_xticklabels(class_up_size)
+    axes[1].set_xlabel("Class up size")
+    axes[1].set_ylabel("Average wait time between blocks (weeks)")
+    axes[1].set_title("Per-Block Average Wait Times (including start → Block 1)")
+    axes[1].legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+    axes[1].grid(True)
+
+    plt.tight_layout()
+    plt.show()
 
 
 def main():
@@ -964,6 +971,7 @@ def main():
     # second element is the list of students with syllabus2 = 10%. this would be with class up sizes 1, 2,3, etc
     # third element is the same as above but a new percentage. Should be able to handle multiple variations.
 
+    compare_multiple_simulations_with_blocks([[students, students, students],[students, students, students],[students, students, students]], [1,2,3], not user_input["choice2"])
     compare_multiple_simulations([[students, students, students],[students, students, students],[students, students, students]], [1,2,3], not user_input["choice2"])
 
 if __name__ == "__main__":
