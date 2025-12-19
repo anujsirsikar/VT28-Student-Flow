@@ -503,6 +503,10 @@ def load_students(file_path):
                     if not row["FAM4703"].strip():     # not aero complete (have to be in syllabus 3)
                         student.syllabus_type = 3
                         student.current_block -= 1
+                    else:
+                        if not row["FAM4601"].strip():   # aero complete, not yet done instruments
+                            student.syllabus_type = 2
+                            student.current_block -= 2
 
                 for i in range(0, student.current_block):
                     student.completed_blocks[i] = 1
@@ -510,9 +514,13 @@ def load_students(file_path):
             # Go through and update the completed_dates list
             end_events1 = {0:"G0102", 1:"FAM4501", 2:"NA1190", 3:"FAM4601", 4:"FAM4703", 5:"F4290", 6:"CS4290"}
             end_events2 = {0:"G0102", 1:"FAM4501", 2:"FAM4703", 3:"F4290", 4:"NA1190", 5:"FAM4601", 6:"CS4290"}
+            end_events3 = {0:"G0102", 1:"FAM4501", 2:"NA1190", 3:"FAM4601", 4:"F4290", 5:"FAM4703", 6:"CS4290"}
+            end_events4 = {0:"G0102", 1:"FAM4501", 2:"FAM4703", 3:"NA1190", 4:"FAM4601", 5:"F4290", 6:"CS4290"}
             # sometimes they forget to put the completion date if the last two events take place on the same day...
             almost_end_events1 = {0:"G0290", 1:"FAM4490", 2:"NA1106", 3:"N4101", 4:"FAM4702", 5:"F4104", 6:"CS4102"}
             almost_end_events2 = {0:"G0290", 1:"FAM4490", 2:"FAM4702", 3:"F4104", 4:"NA1106", 5:"N4101", 6:"CS4102"}
+            almost_end_events3 = {0:"G0290", 1:"FAM4490", 2:"NA1106", 3:"N4101", 4:"F4104", 5:"FAM4702", 6:"CS4102"}
+            almost_end_events4 = {0:"G0290", 1:"FAM4490", 2:"FAM4702", 3:"NA1106", 4:"N4101", 5:"F4104", 6:"CS4102"}
             for i, block in enumerate(student.completed_blocks):
                 if student.syllabus_type == 1:
                     if block == 1:
@@ -532,6 +540,26 @@ def load_students(file_path):
                         date = row[end_events2[i]]
                         if date == '':
                             date = row[almost_end_events2[i]]
+                        #print(date)
+                        student.completed_dates[i] = datetime.strptime(date, "%m/%d/%Y").date()
+                if student.syllabus_type == 3:
+                    if block == 1:
+                        #print(3)
+                        #print(student.student_id)
+                        #print(student.completed_blocks)
+                        date = row[end_events3[i]]
+                        if date == '':
+                            date = row[almost_end_events3[i]]
+                        #print(date)
+                        student.completed_dates[i] = datetime.strptime(date, "%m/%d/%Y").date()
+                if student.syllabus_type == 4:
+                    if block == 4:
+                        #print(4)
+                        #print(student.student_id)
+                        #print(student.completed_blocks)
+                        date = row[end_events4[i]]
+                        if date == '':
+                            date = row[almost_end_events4[i]]
                         #print(date)
                         student.completed_dates[i] = datetime.strptime(date, "%m/%d/%Y").date()
 
