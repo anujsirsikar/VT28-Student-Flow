@@ -4,12 +4,6 @@
 # RANDOM ONE OFF CASES:
 # randomly did SY0302 while in instr grnd:
 # 102,2511,Active,12/16/2024,12/16/2024,12/17/2024,12/17/2024,12/17/2024,12/18/2024,12/19/2024,12/20/2024,12/20/2024,1/7/2025,1/7/2025,1/8/2025,1/8/2025,1/8/2025,1/10/2025,1/10/2025,1/10/2025,1/13/2025,1/13/2025,1/13/2025,1/14/2025,1/15/2025,1/15/2025,1/16/2025,1/16/2025,1/16/2025,1/17/2025,1/17/2025,1/22/2025,1/23/2025,1/24/2025,1/27/2025,1/28/2025,1/30/2025,2/3/2025,2/7/2025,2/13/2025,2/18/2025,2/19/2025,2/20/2025,2/24/2025,2/25/2025,2/26/2025,2/27/2025,2/28/2025,3/3/2025,3/24/2025,3/25/2025,3/28/2025,3/31/2025,4/9/2025,3/7/2025,3/10/2025,3/11/2025,3/12/2025,3/20/2025,4/10/2025,4/11/2025,4/16/2025,4/14/2025,4/15/2025,4/28/2025,4/29/2025,5/2/2025,5/6/2025,5/13/2025,5/14/2025,,,,,5/28/2025,5/28/2025,5/29/2025,5/29/2025,5/30/2025,6/2/2025,6/3/2025,6/3/2025,6/4/2025,6/4/2025,6/5/2025,6/6/2025,6/6/2025,6/6/2025,,,,,,,,,,,,,,,,,,,,,,9/17/2025,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-# instr -> forms -> aero?:
-# 118,2511,Active,12/16/2024,12/16/2024,12/17/2024,12/17/2024,12/17/2024,12/18/2024,12/19/2024,12/20/2024,12/20/2024,1/7/2025,1/7/2025,1/8/2025,1/8/2025,1/8/2025,1/10/2025,1/10/2025,1/10/2025,1/13/2025,1/13/2025,1/13/2025,1/14/2025,1/15/2025,1/15/2025,1/16/2025,1/16/2025,1/16/2025,1/17/2025,1/17/2025,1/22/2025,1/23/2025,1/24/2025,1/27/2025,1/28/2025,1/30/2025,2/3/2025,2/7/2025,2/13/2025,2/14/2025,2/18/2025,2/19/2025,2/24/2025,2/25/2025,2/26/2025,2/27/2025,2/28/2025,3/3/2025,3/24/2025,3/25/2025,4/7/2025,4/8/2025,4/9/2025,3/7/2025,3/17/2025,3/18/2025,3/19/2025,3/20/2025,4/10/2025,4/12/2025,4/16/2025,4/14/2025,4/16/2025,5/1/2025,5/13/2025,5/14/2025,5/27/2025,5/28/2025,5/28/2025,,,,,6/4/2025,6/4/2025,6/5/2025,6/5/2025,6/6/2025,6/9/2025,6/10/2025,6/10/2025,6/11/2025,6/11/2025,6/12/2025,6/13/2025,6/13/2025,6/13/2025,6/16/2025,6/16/2025,6/17/2025,6/17/2025,6/18/2025,6/20/2025,6/21/2025,6/23/2025,6/24/2025,6/26/2025,6/30/2025,7/1/2025,7/2/2025,7/7/2025,7/9/2025,7/11/2025,7/14/2025,7/16/2025,7/21/2025,7/22/2025,7/22/2025,7/24/2025,7/30/2025,7/31/2025,8/1/2025,8/4/2025,8/4/2025,8/5/2025,8/5/2025,8/7/2025,8/7/2025,8/8/2025,8/8/2025,8/8/2025,8/12/2025,8/13/2025,8/14/2025,8/14/2025,7/23/2025,8/13/2025,8/19/2025,8/19/2025,8/20/2025,8/25/2025,8/26/2025,8/28/2025,9/9/2025,9/9/2025,9/12/2025,9/16/2025,,,,,,,,
-# 134,2444,Active,8/12/2024,8/29/2024,8/13/2024,8/13/2024,8/13/2024,8/14/2024,8/15/2024,8/16/2024,8/16/2024,8/19/2024,8/19/2024,8/20/2024,8/20/2024,8/20/2024,8/21/2024,8/21/2024,8/21/2024,8/22/2024,8/22/2024,8/22/2024,8/23/2024,8/26/2024,8/26/2024,8/27/2024,8/27/2024,8/27/2024,8/28/2024,8/28/2024,9/4/2024,9/5/2024,9/6/2024,9/9/2024,9/11/2024,9/12/2024,9/13/2024,9/16/2024,9/17/2024,9/18/2024,9/19/2024,9/20/2024,9/23/2024,9/24/2024,9/25/2024,9/26/2024,9/30/2024,10/1/2024,10/3/2024,10/7/2024,11/6/2024,11/12/2024,11/14/2024,11/15/2024,1/31/2025,11/20/2024,11/21/2024,12/12/2024,2/6/2025,2/9/2025,3/18/2025,2/26/2025,3/14/2025,3/16/2025,3/25/2025,3/28/2025,4/8/2025,4/9/2025,4/9/2025,,,,,4/16/2025,4/16/2025,4/17/2025,4/17/2025,4/18/2025,4/21/2025,4/22/2025,4/22/2025,4/23/2025,4/23/2025,4/24/2025,4/25/2025,4/25/2025,4/25/2025,4/28/2025,4/28/2025,4/29/2025,4/29/2025,4/30/2025,5/1/2025,5/2/2025,5/6/2025,5/7/2025,5/8/2025,5/12/2025,5/13/2025,5/14/2025,5/15/2025,5/16/2025,5/29/2025,5/20/2025,5/21/2025,5/31/2025,6/3/2025,6/5/2025,6/6/2025,6/9/2025,6/10/2025,6/10/2025,6/11/2025,6/11/2025,7/22/2025,6/12/2025,6/15/2025,6/15/2025,6/15/2025,6/16/2025,6/25/2025,7/5/2025,7/23/2025,7/24/2025,7/28/2025,5/30/2025,6/4/2025,7/29/2025,7/29/2025,7/30/2025,7/31/2025,7/31/2025,8/5/2025,8/7/2025,8/18/2025,8/19/2025,,,,,,,,,
-# aero -> instr -> forms?
-# 131,2519,Active,2/24/2025,2/24/2025,2/25/2025,2/25/2025,2/25/2025,2/26/2025,2/27/2025,2/28/2025,2/28/2025,3/3/2025,3/3/2025,3/4/2025,3/4/2025,3/4/2025,3/5/2025,3/5/2025,3/5/2025,3/6/2025,3/6/2025,3/6/2025,3/7/2025,3/10/2025,3/10/2025,3/11/2025,3/11/2025,3/11/2025,3/12/2025,3/12/2025,3/13/2025,3/14/2025,3/17/2025,3/18/2025,3/21/2025,3/22/2025,3/24/2025,3/24/2025,3/25/2025,3/26/2025,4/29/2025,3/28/2025,3/31/2025,4/1/2025,4/2/2025,4/3/2025,4/4/2025,4/21/2025,,4/30/2025,5/19/2025,5/29/2025,6/3/2025,6/6/2025,8/14/2025,6/16/2025,6/17/2025,6/18/2025,6/23/2025,7/9/2025,7/15/2025,7/10/2025,7/16/2025,7/17/2025,7/29/2025,8/5/2025,9/4/2025,9/9/2025,9/10/2025,9/11/2025,9/13/2025,9/15/2025,9/16/2025,9/17/2025,9/17/2025,9/18/2025,9/18/2025,9/19/2025,9/22/2025,9/23/2025,9/23/2025,9/24/2025,9/24/2025,9/25/2025,9/26/2025,9/26/2025,9/26/2025,9/29/2025,9/29/2025,9/30/2025,9/30/2025,10/1/2025,10/2/2025,10/2/2025,10/3/2025,10/3/2025,10/6/2025,10/7/2025,10/7/2025,10/8/2025,10/9/2025,10/10/2025,11/5/2025,10/14/2025,10/14/2025,11/6/2025,11/11/2025,11/17/2025,11/18/2025,11/19/2025,,,,,,,,,,,,,,,,11/11/2025,11/12/2025,,,,,,,,,,,,,,,,,,
-
 
 import datetime
 from datetime import date, timedelta, datetime
@@ -26,12 +20,9 @@ import random
 import matplotlib.pyplot as plt
 import os
 import tkinter as tk
-import numpy as np
-    
-    # Will need a function that iterates over the resource list to check if there are resources available to fulfill the event.
-    # Each event should also have a variable that indicates whether or not an event has available resources. 
+import numpy as np 
 
-    # Note: You can have more than one event in a day (especially for sims and flights) [but for first iteration, do one per day]
+# Note: You can have more than one event in a day (especially for sims and flights) [but for first iteration, do one per day]
 
 # HELPER FUNCTIONS
 def is_valid_day(day):
@@ -116,32 +107,31 @@ def forms():
 # IMPORTANT: how to keep track of how many students in each training block? Should we make them classes? Because we 
 #            need to look at all the counts to decide where to place students after they complete contacts, and then 
 #            also for scheduling for forms (need two students and two instructors)
-# My opinion:
-# 1) we need a function that keeps track of resources and their scheduling 
 
 # SIMULATION LOGIC 
-def run_simulation(students, instructors, class_up_size, percent_aero):
-    #students, day, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus
-    # look at line 437
-    counter = 0 # turning off infinite loop until simulation works
+def run_simulation(sim_start_date, days, percent_aero, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2):
+    # sim_start_date = date(2025, 11, 24)   # year, month, day
+    current_day = sim_start_date
+    result = []
 
     # run the loop for the amount of days
-    while True:  
-        # go day by day
-        # sort student list at the start of each day by daysSinceLastEvent
+    while days > 0:  
         if students is None:
-            break # if all students finished 
-        if not is_valid_day(date):
+            break 
+        if not is_valid_day(current_day):
             continue 
-        
-        if counter < 20:
-            counter +=1
-        else: 
-            print("counter exceeded")
-            break
-        # if it's the 1st or 3rd Monday of the month, start a new class...
-
-        # run the schedule_one_day() function for every valid day
+        # if it is a monday
+        if current_day.weekday() == 0:
+            new_students = students_starting_weekly(os.path.join("students", "weekly_class_up_fy26.csv"), current_day)
+            # assign new_students to a syllabus 
+            for stu in new_students:
+                if Random.random() <= percent_aero:
+                    stu.syllabus_type = 2
+            students.extend(new_students)
+        schedule = schedule_one_day(current_day, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2)
+        result.append(schedule)
+        days -= 1
+        current_day += timedelta(days=1)
 
 
 # daytime_hours = 11 ## 7 to 6
@@ -150,7 +140,7 @@ def run_simulation(students, instructors, class_up_size, percent_aero):
 instructor_rate = 0.9
 instructor_daily_hours = 12
 
-def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2):# grndSchool, contacts, aero, inst, forms, capstone):
+def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2):# grndSchool, contacts, aero, inst, forms, capstone):
     # events that will be attempted to schedule for each student
     events_to_attempt = []
     successfull_events = []
@@ -249,8 +239,6 @@ def schedule_one_day(students, day, instructors, utd, oft, vtd, mr, aircraft, cl
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
             
-#### ADD BLOCK SPECIFIC WAIT TINME
-
         elif needed_resource == "utd":
             helper = 0   # if stays zero, then not scheduled
             for u in utd_hours:
@@ -487,18 +475,34 @@ def load_students(file_path):
                 # 4 = aero
                 # 5 = forms
                 # 6 = capstone
-                #print("current block: ", student.current_block)
-                if student.current_block in (2,3):
+                # Syllabus combinations:
+                # 2 -> aero, forms, instruments
+                # 3 -> instruments, forms, aero
+                # 4 -> aero, instruments, forms
+                # instr last event: FAM4601
+                # aero last event: FAM4703
+                # forms last event: F4290
+                if student.current_block in (2,3):     # currently in instruments
                     if not row["FAM4703"].strip():     # if not complete with aero
                         student.syllabus_type = 1
                     else:
-                        student.syllabus_type = 2
-                        student.current_block += 1
+                        if not row["F4290"].strip():   # aero complete, forms incomplete
+                            student.syllabus_type = 4
+                            student.current_block += 1
+                        else:                          # aero and forms complete
+                            student.syllabus_type = 2
+                            student.current_block += 2
 
-                if student.current_block in (4,5):
-                    if not row["FAM4601"].strip():     # if not complete with instruments
-                        student.syllabus_type = 2
+                if student.current_block == 4:         # currently in aero
+                    if not row["FAM4601"].strip():     # if not complete with instruments (could either make these people 2 or 4)
+                        student.syllabus_type = 2      # or 4
                         student.current_block -= 2 
+                    # else = aero and instruments complete   (could either be 1 or 4)
+                
+                if student.current_block == 5:         # currently in forms
+                    if not row["FAM4703"].strip():     # not aero complete (have to be in syllabus 3)
+                        student.syllabus_type = 3
+                        student.current_block -= 1
 
                 for i in range(0, student.current_block):
                     student.completed_blocks[i] = 1
@@ -532,7 +536,7 @@ def load_students(file_path):
                         student.completed_dates[i] = datetime.strptime(date, "%m/%d/%Y").date()
 
             student_list.append(student)
-    FlightStudent.student_id = len(student_list)+1
+    FlightStudent.student_id = len(student_list)+5
     return student_list
 
 #write now, don't care if they're status is 'suspended'. As long as they have something, we will count them as qualified
@@ -686,6 +690,7 @@ def ask_user():
     tk.Button(root, text="Confirm", width=15, command=confirm).pack(pady=15)
 
     root.mainloop()
+    print("result: ", result)
     return result
 
 
@@ -893,6 +898,11 @@ def main():
     # syllabus combinations (can add more)
     syllabus1 = [sysGrndSchoolEvents, contactsEvents, instrGrndSchoolEvents, instrumentsEvents, aeroEvents, formsEvents, capstoneEvents]
     syllabus2 = [sysGrndSchoolEvents, contactsEvents, aeroEvents, formsEvents, instrGrndSchoolEvents, instrumentsEvents, capstoneEvents]
+    
+    # current students may have one of these syllabi, but new students will stick to 1 or 2 for now:
+    syllabus3 = [sysGrndSchoolEvents, contactsEvents, instrGrndSchoolEvents, instrumentsEvents, formsEvents, aeroEvents, capstoneEvents]
+    syllabus4 = [sysGrndSchoolEvents, contactsEvents, aeroEvents, instrGrndSchoolEvents, instrumentsEvents, formsEvents, capstoneEvents]
+
 
     # Resources
     classrooms_list = [Classroom(f"CL{i+1}") for i in range(6)]
@@ -901,6 +911,7 @@ def main():
     vtd_sims_list = [Vtd(f"VTD{i+1}") for i in range(18)]
     mr_sims_list = [Mr(f"MR{i+1}") for i in range(2)]
     aircraft_list = [Aircraft(f"AC{i+1}") for i in range(18)]
+
     # Run the simulation
     # run_simulation(students, syllabus)
 
@@ -921,7 +932,7 @@ def main():
             students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
         
     else:
-        students = load_students((os.path.join("students", "current_students.csv")))
+        students = load_students(os.path.join("students", "current_students.csv"))
 
 
     instructors = load_instructors(os.path.join("instructors", "instructor_data.csv"))
@@ -933,7 +944,7 @@ def main():
 
     for i in range(int(user_input["slider2"])*7):
         current = date.today() + timedelta(days=i)
-        schedule = schedule_one_day(students, current, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2)
+        schedule = schedule_one_day(current, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2)
         result.append(schedule)
 
     for i in result:
@@ -963,7 +974,7 @@ def main():
     for i in student_wait_times:
         print(i[0],i[1],i[2], "completion date:",s.completion_date )
 
-    print(f"Simulation run for {user_input["slider2"]} weeks with {len(students)} students")
+    print(f"Simulation run for {user_input['slider2']} weeks with {len(students)} students")
 
 
     # Need to put the students in in the format list of lists of simulation.
