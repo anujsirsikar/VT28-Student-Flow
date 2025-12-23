@@ -6,7 +6,7 @@
 # 102,2511,Active,12/16/2024,12/16/2024,12/17/2024,12/17/2024,12/17/2024,12/18/2024,12/19/2024,12/20/2024,12/20/2024,1/7/2025,1/7/2025,1/8/2025,1/8/2025,1/8/2025,1/10/2025,1/10/2025,1/10/2025,1/13/2025,1/13/2025,1/13/2025,1/14/2025,1/15/2025,1/15/2025,1/16/2025,1/16/2025,1/16/2025,1/17/2025,1/17/2025,1/22/2025,1/23/2025,1/24/2025,1/27/2025,1/28/2025,1/30/2025,2/3/2025,2/7/2025,2/13/2025,2/18/2025,2/19/2025,2/20/2025,2/24/2025,2/25/2025,2/26/2025,2/27/2025,2/28/2025,3/3/2025,3/24/2025,3/25/2025,3/28/2025,3/31/2025,4/9/2025,3/7/2025,3/10/2025,3/11/2025,3/12/2025,3/20/2025,4/10/2025,4/11/2025,4/16/2025,4/14/2025,4/15/2025,4/28/2025,4/29/2025,5/2/2025,5/6/2025,5/13/2025,5/14/2025,,,,,5/28/2025,5/28/2025,5/29/2025,5/29/2025,5/30/2025,6/2/2025,6/3/2025,6/3/2025,6/4/2025,6/4/2025,6/5/2025,6/6/2025,6/6/2025,6/6/2025,,,,,,,,,,,,,,,,,,,,,,9/17/2025,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 import datetime
-from datetime import date, timedelta, datetime
+from datetime import date, timedelta, datetime, date as date_type
 from collections import deque
 import time
 import sys
@@ -58,7 +58,7 @@ def is_valid_day(day):
       - Annual holiday leave periods (15–28 Dec, 29 Dec–11 Jan)
     """
     # --- Weekend check ---
-    if day.today().weekday() >= 5:  # 5 = Saturday, 6 = Sunday
+    if day.weekday() >= 5:  # 5 = Saturday, 6 = Sunday
         return False
     # Month/day helper
     m, d = day.month, day.day
@@ -86,7 +86,7 @@ def is_valid_day(day):
     ]
 
     for start_date, end_date in holiday_ranges:
-        if (start_date<= day.today() <= end_date):
+        if (start_date<= day <= end_date):
             return False
     return True
 
@@ -107,10 +107,11 @@ def forms():
 # IMPORTANT: how to keep track of how many students in each training block? Should we make them classes? Because we 
 #            need to look at all the counts to decide where to place students after they complete contacts, and then 
 #            also for scheduling for forms (need two students and two instructors)
-
+# fixed_class_size is a boolean for using fy26 numbers or not
 # SIMULATION LOGIC 
-def run_simulation(sim_start_date, days, percent_aero, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2):
+def run_simulation(sim_start_date, days, percent_aero, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, fixed_class_size, class_size):
     # sim_start_date = date(2025, 11, 24)   # year, month, day
+    print("BEGINNING OF RUN SIMULATIONNNNN")
     current_day = sim_start_date
     result = []
 
@@ -118,21 +119,33 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
     while days > 0:  
         if students is None:
             break 
-        if not is_valid_day(current_day):
-            continue 
-        # if it is a monday
-        if current_day.weekday() == 0:
-            new_students = students_starting_weekly(os.path.join("students", "weekly_class_up_fy26.csv"), current_day)
-            # assign new_students to a syllabus 
-            for stu in new_students:
-                if Random.random() <= percent_aero:
-                    stu.syllabus_type = 2
-            students.extend(new_students)
-        schedule = schedule_one_day(current_day, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2)
-        result.append(schedule)
+        if is_valid_day(current_day):
+            # print("it is a valid day")
+            # if it is a monday
+            if current_day.weekday() == 0:
+                # print("it is a monday")
+                if fixed_class_size:
+                    new_students = []
+                    for i in range(class_size):
+                        FlightStudent.student_id += 1
+                        new_student = FlightStudent(FlightStudent.student_id, i//8, current_day)
+                        new_students.append(new_student)
+
+                else:
+                    new_students = students_starting_weekly(os.path.join("students", "weekly_class_up_fy26.csv"), current_day)
+                # assign new_students to a syllabus 
+                for stu in new_students:
+                    if random.random() <= percent_aero:
+                        stu.syllabus_type = 2
+                students.extend(new_students)
+            schedule = schedule_one_day(current_day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2)
+            result.append(schedule)
         days -= 1
         current_day += timedelta(days=1)
 
+
+    ## format is list: schedule, list: students    
+    return result, students
 
 # daytime_hours = 11 ## 7 to 6
 # nighttime_hours = 5
@@ -150,9 +163,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     key=lambda s: s.days_since_last_event or -1,  # None-safe
     reverse=True
 )
-    print([s.days_since_last_event for s in students])
-
-
     for s in students:
         # s.daily_events_done = 0  # unsure if I need this
         if s.completion_date is None:
@@ -718,7 +728,7 @@ def ask_user():
     tk.Button(root, text="Confirm", width=15, command=confirm).pack(pady=15)
 
     root.mainloop()
-    print("result: ", result)
+    # print("result: ", result)
     return result
 
 
@@ -745,8 +755,6 @@ def compute_average_waits(student_lists, remove_current_students=True, debug=Fal
         filtered = []
         for s in run:
             if None in s.completed_dates:
-                if debug:
-                    print(f"Skipping student {s.student_id} due to incomplete dates")
                 continue
 
             start = s.start_date.date() if isinstance(s.start_date, datetime) else s.start_date
@@ -948,61 +956,76 @@ def main():
 
     user_input = ask_user()
 
-    students = []
-
-    if not user_input["answer"]:
-
-        for i in range(int(user_input["slider1"])):
-            new_student = FlightStudent(FlightStudent.student_id+1, i//8, date.today())
-            FlightStudent.student_id += 1
-            if i % 10 == 1:
-                new_student.syllabus_type = 2
-            students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
-        
-    else:
-        students = load_students(os.path.join("students", "current_students.csv"))
-
-
+    
     instructors = load_instructors(os.path.join("instructors", "instructor_data.csv"))
 
     result = []
 
+    fixed_class_size = True
+    student_lists = []
+    class_size = [3,6]
+    for j in range(2):
+        students = []
+        FlightStudent.student_id = 0
+
+        if not user_input["answer"]:
+
+            for i in range(int(user_input["slider1"])):
+                FlightStudent.student_id += 1
+                new_student = FlightStudent(FlightStudent.student_id, i//8, date.today())
+                if i % 10 == 1:
+                    new_student.syllabus_type = 2
+                students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
+        else:
+            students = load_students(os.path.join("students", "current_students.csv"))
+
+
+        schedule, computed_students = run_simulation(date.today()+timedelta(14), (user_input["slider2"]*7), 10, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, fixed_class_size, class_size[j])
+        result.append(schedule)
+        student_lists.append(computed_students)
+
+    schedule, computed_students = run_simulation(date.today()+timedelta(14), (user_input["slider2"]*7), 10, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, False, 0)
+    result.append(schedule)
+    student_lists.append(computed_students)
+    
+    compare_multiple_simulations_with_blocks([student_lists, student_lists, student_lists], [3,6,"FY26"], not user_input["choice2"])
+    compare_multiple_simulations([student_lists, student_lists, student_lists], [3,6,"FY26"], not user_input["choice2"])
     # for i in syllabus:
     #     print(i)
 
-    for i in range(int(user_input["slider2"])*7):
-        current = date.today() + timedelta(days=i)
-        schedule = schedule_one_day(current, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2)
-        result.append(schedule)
+    # for i in range(int(user_input["slider2"])*7):
+    #     current = date.today() + timedelta(days=i)
+    #     schedule = schedule_one_day(current, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2)
+    #     result.append(schedule)
 
-    for i in result:
-        for j in i:
-            print(j)
+    # for i in result:
+    #     for j in i:
+    #         print(j)
 
 
 
-    student_wait_times = []
-    for s in students:
-        # dates = sorted(s.completed_dates)
-        dates = sorted(s.completed_dates, key=lambda d: (d is None, d))
-        date_to_compare = s.start_date
-        wait_times = []
+    # student_wait_times = []
+    # for s in students:
+    #     # dates = sorted(s.completed_dates)
+    #     dates = sorted(s.completed_dates, key=lambda d: (d is None, d))
+    #     date_to_compare = s.start_date
+    #     wait_times = []
 
-        for i in dates:
-            if i is None:
-                wait_times.append(None)
-                # do NOT update date_to_compare
-                continue
-            wait_times.append((i-date_to_compare).days)
-            date_to_compare = i
+    #     for i in dates:
+    #         if i is None:
+    #             wait_times.append(None)
+    #             # do NOT update date_to_compare
+    #             continue
+    #         wait_times.append((i-date_to_compare).days)
+    #         date_to_compare = i
 
-        student_wait_times.append([f"Student {s.student_id}", wait_times, f"night hours: {s.night_hours}"])
+    #     student_wait_times.append([f"Student {s.student_id}", wait_times, f"night hours: {s.night_hours}"])
 
-    print("Wait times for each student by block")
-    for i in student_wait_times:
-        print(i[0],i[1],i[2], "completion date:",s.completion_date )
+    # print("Wait times for each student by block")
+    # for i in student_wait_times:
+    #     print(i[0],i[1],i[2], "completion date:",s.completion_date )
 
-    print(f"Simulation run for {user_input['slider2']} weeks with {len(students)} students")
+    # print(f"Simulation run for {user_input['slider2']} weeks with {len(students)} students")
 
 
     # Need to put the students in in the format list of lists of simulation.
@@ -1010,8 +1033,6 @@ def main():
     # second element is the list of students with syllabus2 = 10%. this would be with class up sizes 1, 2,3, etc
     # third element is the same as above but a new percentage. Should be able to handle multiple variations.
 
-    compare_multiple_simulations_with_blocks([[students, students, students],[students, students, students],[students, students, students]], [1,2,3], not user_input["choice2"])
-    compare_multiple_simulations([[students, students, students],[students, students, students],[students, students, students]], [1,2,3], not user_input["choice2"])
 
 if __name__ == "__main__":
     main()
