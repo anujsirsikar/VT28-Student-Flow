@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 import os
 import tkinter as tk
 import numpy as np 
+import copy
 
 # Note: You can have more than one event in a day (especially for sims and flights) [but for first iteration, do one per day]
 
@@ -628,107 +629,160 @@ def students_starting_weekly(file_path, date):
     return new_students
     
 
+
 def ask_user():
     result = {}
 
     root = tk.Tk()
     root.title("VT28 Scheduling Simulation")
-    root.geometry("640x600")
+    root.geometry("640x700")
+    root.resizable(False, False)
 
-    root.resizable(False,False)
-
-    ##bring widow to front
+    # bring window to front (temporarily)
     root.update_idletasks()
     root.deiconify()
-
     root.after_idle(lambda: (
-    root.lift(),
-    root.attributes("-topmost", True),
-    root.after(100, lambda: root.attributes("-topmost", False))
+        root.lift(),
+        root.attributes("-topmost", True),
+        root.after(100, lambda: root.attributes("-topmost", False))
     ))
 
+    # ---------------- Question 1 ----------------
+    tk.Label(
+        root,
+        text="Would you like to include current students in simulation?",
+        font=("Arial", 12)
+    ).pack(pady=10)
 
-    #Question
-    tk.Label(root, text="Would you like to include current students in simulation?", font=("Arial", 12)).pack(pady=10)
-
-    ##yes/no answer
-    choice = tk.StringVar(value="yes")  # default = Yes
+    choice = tk.StringVar(value="yes")
 
     radio_frame = tk.Frame(root)
     radio_frame.pack()
 
-    tk.Radiobutton(
-        radio_frame, text="Yes", variable=choice, value="yes"
-    ).pack(side="left", padx=10)
+    tk.Radiobutton(radio_frame, text="Yes", variable=choice, value="yes").pack(side="left", padx=10)
+    tk.Radiobutton(radio_frame, text="No", variable=choice, value="no").pack(side="left", padx=10)
 
-    tk.Radiobutton(
-        radio_frame, text="No", variable=choice, value="no"
-    ).pack(side="left", padx=10)
-
-    ##first slider
-    slider1_label = tk.Label(root, text="If no, how many initial students do you want to start with?", fg="white")
+    # ---------------- Sliders ----------------
+    slider1_label = tk.Label(
+        root,
+        text="If no, how many initial students do you want to start with?",
+        fg="white"
+    )
     slider1_label.pack(pady=(15, 0))
 
     slider1 = tk.Scale(root, from_=0, to=150, orient="horizontal")
     slider1.pack()
 
-    ## second slider
-    slider2_label = tk.Label(root, text="How many weeks would you like to run the simulation for?", fg = "white")
+    slider2_label = tk.Label(
+        root,
+        text="How many weeks would you like to run the simulation for?",
+        fg="white"
+    )
     slider2_label.pack(pady=(10, 0))
 
     slider2 = tk.Scale(root, from_=0, to=52, orient="horizontal")
     slider2.pack()
 
-    ## grey out slider if yes
-    # ---------------- Toggle logic ----------------
     def toggle_sliders(*args):
         if choice.get() == "yes":
             slider1.set(0)
             slider1.config(state="disabled")
             slider1_label.config(fg="gray")
-
-            slider2.config(state="normal")
-            slider2_label.config(fg="white")
         else:
             slider1.config(state="normal")
             slider1_label.config(fg="white")
 
-            slider2.config(state="normal")
-            slider2_label.config(fg="white")
-
     choice.trace_add("write", toggle_sliders)
-    toggle_sliders()  # initialize state
+    toggle_sliders()
 
-    #Question
-    tk.Label(root, text="Do you want to include current students in average completion time analysis", font=("Arial", 12)).pack(pady=10)
+    # ---------------- Question 2 ----------------
+    tk.Label(
+        root,
+        text="Do you want to include current students in average completion time analysis?",
+        font=("Arial", 12)
+    ).pack(pady=10)
 
-    ##yes/no answer
-    choice2 = tk.StringVar(value="yes")  # default = Yes
+    choice2 = tk.StringVar(value="yes")
 
-    radio_frame = tk.Frame(root)
-    radio_frame.pack()
+    radio_frame2 = tk.Frame(root)
+    radio_frame2.pack()
 
-    tk.Radiobutton(
-        radio_frame, text="Yes", variable=choice2, value="yes"
-    ).pack(side="left", padx=10)
+    tk.Radiobutton(radio_frame2, text="Yes", variable=choice2, value="yes").pack(side="left", padx=10)
+    tk.Radiobutton(radio_frame2, text="No", variable=choice2, value="no").pack(side="left", padx=10)
 
-    tk.Radiobutton(
-        radio_frame, text="No", variable=choice2, value="no"
-    ).pack(side="left", padx=10)
+    # ============================================================
+    # NEW QUESTION 3 — Class sizes (multi-select)
+    # ============================================================
+    tk.Label(
+        root,
+        text="Select all class sizes you would like to simulate.",
+        font=("Arial", 12)
+    ).pack(pady=(20, 5))
 
+    class_sizes = [2, 5,8,10,13,15,17,20,25,30,35,40]
+    class_size_vars = {}
 
-     # ---------------- Confirm ----------------
+    class_size_frame = tk.Frame(root)
+    class_size_frame.pack()
+
+    for size in class_sizes:
+        var = tk.IntVar(value=0)
+        class_size_vars[size] = var
+        tk.Checkbutton(
+            class_size_frame,
+            text=str(size),
+            variable=var
+        ).pack(side="left", padx=8)
+
+    # ============================================================
+    # NEW QUESTION 4 — Percent syllabus two (multi-select)
+    # ============================================================
+    tk.Label(
+        root,
+        text="Select all percentages of students in syllabus two you would like to simulate.",
+        font=("Arial", 12)
+    ).pack(pady=(20, 5))
+
+    percentages = [0, 5, 10, 15, 20]
+    percent_vars = {}
+
+    percent_frame = tk.Frame(root)
+    percent_frame.pack()
+
+    for p in percentages:
+        var = tk.IntVar(value=0)
+        percent_vars[p] = var
+        tk.Checkbutton(
+            percent_frame,
+            text=f"{p}%",
+            variable=var
+        ).pack(side="left", padx=8)
+
+    # ---------------- Confirm ----------------
     def confirm():
-        result["answer"] = (choice.get() == "yes")
-        result["slider1"] = slider1.get()
-        result["slider2"] = slider2.get()
-        result["choice2"] = (choice2.get() == "yes")
-        root.destroy()
+        result["include_current_students"] = (choice.get() == "yes")
+        result["initial_students"] = slider1.get()
+        result["weeks"] = slider2.get()
+        result["include_in_analysis"] = (choice2.get() == "yes")
 
-    tk.Button(root, text="Confirm", width=15, command=confirm).pack(pady=15)
+        # collect multi-select results
+        selected_class_sizes = [size for size, var in class_size_vars.items() if var.get() == 1]
+        selected_percentages = [p for p, var in percent_vars.items() if var.get() == 1]
+
+        # apply defaults if none selected
+        if not selected_class_sizes:
+            selected_class_sizes = [5]
+
+        if not selected_percentages:
+            selected_percentages = [0]
+
+        result["class_sizes"] = selected_class_sizes
+        result["syllabus_two_percentages"] = selected_percentages
+
+        root.destroy()
+    tk.Button(root, text="Confirm", width=15, command=confirm).pack(pady=20)
 
     root.mainloop()
-    # print("result: ", result)
     return result
 
 
@@ -752,36 +806,33 @@ def compute_average_waits(student_lists, remove_current_students=True, debug=Fal
     average_waits = []
 
     for run_idx, run in enumerate(student_lists):
-        filtered = []
+        total_waits = []   # ✅ FIX: initialize early
+
         for s in run:
-            if None in s.completed_dates:
-                continue
-
             start = s.start_date.date() if isinstance(s.start_date, datetime) else s.start_date
-            completed_dates = [d.date() if isinstance(d, datetime) else d for d in s.completed_dates]
 
+            # Exclude current students if requested
             if remove_current_students and start < today:
-                if debug:
-                    print(f"Skipping student {s.student_id} due to start_date < today ({start})")
                 continue
 
-            s._start_date = start
-            s._completed_dates = completed_dates
-            filtered.append(s)
+            # 🚨 Penalize incomplete students instead of skipping
+            if None in s.completed_dates:
+                total_waits.append((today - start).days / 7)
+                continue
 
-        total_waits = [
-            (s._completed_dates[-1] - s._start_date).days / 7
-            for s in filtered
-        ]
+            completed_dates = [
+                d.date() if isinstance(d, datetime) else d
+                for d in s.completed_dates
+            ]
 
-        avg_wait = sum(total_waits)/len(total_waits) if total_waits else None
+            total_waits.append(
+                (completed_dates[-1] - start).days / 7
+            )
+
+        avg_wait = sum(total_waits) / len(total_waits) if total_waits else np.nan
         average_waits.append(avg_wait)
 
-    # Replace None with np.nan
-    y = [val if val is not None else np.nan for val in average_waits]
-    return y
-
-
+    return average_waits
 
 def compare_multiple_simulations(list_of_student_lists, class_up_size, remove_current_students=True, debug=False):
     """
@@ -955,83 +1006,73 @@ def main():
     FlightStudent.syllabus2 = syllabus2
 
     user_input = ask_user()
+    print(user_input)
 
     
     instructors = load_instructors(os.path.join("instructors", "instructor_data.csv"))
 
     result = []
+    simulation_data = []
+    percentages = user_input["syllabus_two_percentages"]
 
-    fixed_class_size = True
-    student_lists = []
-    class_size = [3,6]
-    for j in range(2):
+    ###each loop runs a simulation with specific class size going to syllabus two
+    for i in range(len(percentages)):
+
+        student_lists = []
+        class_size = user_input["class_sizes"]
+
+        ### each loop runs one run with the specified class size. 
+        for j in range(len(class_size)):
+            students = []
+            FlightStudent.student_id = 0
+
+            if not user_input["include_current_students"]:
+
+                for i in range(int(user_input["initial_students"])):
+                    FlightStudent.student_id += 1
+                    new_student = FlightStudent(FlightStudent.student_id, i//8, date.today())
+                    if i % 10 == 1:
+                        new_student.syllabus_type = 2
+                    students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
+            else:
+                students = load_students(os.path.join("students", "current_students.csv"))
+
+
+            schedule, computed_students = run_simulation(date.today()+timedelta(14), (user_input["weeks"]*7), percentages[i] , students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, True, class_size[j])
+            result.append(schedule)
+            student_lists.append(copy.deepcopy(computed_students))
+
         students = []
         FlightStudent.student_id = 0
 
-        if not user_input["answer"]:
+        if not user_input["include_current_students"]:
 
-            for i in range(int(user_input["slider1"])):
-                FlightStudent.student_id += 1
-                new_student = FlightStudent(FlightStudent.student_id, i//8, date.today())
-                if i % 10 == 1:
-                    new_student.syllabus_type = 2
-                students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
+                for i in range(int(user_input["initial_students"])):
+                    FlightStudent.student_id += 1
+                    new_student = FlightStudent(FlightStudent.student_id, i//8, date.today())
+                    if i % 10 == 1:
+                        new_student.syllabus_type = 2
+                    students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
         else:
             students = load_students(os.path.join("students", "current_students.csv"))
 
-
-        schedule, computed_students = run_simulation(date.today()+timedelta(14), (user_input["slider2"]*7), 10, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, fixed_class_size, class_size[j])
+        schedule, computed_students = run_simulation(date.today()+timedelta(14), (user_input["weeks"]*7), percentages[i], students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, False, 0)
         result.append(schedule)
-        student_lists.append(computed_students)
+        student_lists.append(copy.deepcopy(computed_students))
 
-    schedule, computed_students = run_simulation(date.today()+timedelta(14), (user_input["slider2"]*7), 10, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, False, 0)
-    result.append(schedule)
-    student_lists.append(computed_students)
-    
-    compare_multiple_simulations_with_blocks([student_lists, student_lists, student_lists], [3,6,"FY26"], not user_input["choice2"])
-    compare_multiple_simulations([student_lists, student_lists, student_lists], [3,6,"FY26"], not user_input["choice2"])
-    # for i in syllabus:
-    #     print(i)
-
-    # for i in range(int(user_input["slider2"])*7):
-    #     current = date.today() + timedelta(days=i)
-    #     schedule = schedule_one_day(current, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2)
-    #     result.append(schedule)
-
-    # for i in result:
-    #     for j in i:
-    #         print(j)
+        simulation_data.append(student_lists)
 
 
 
-    # student_wait_times = []
-    # for s in students:
-    #     # dates = sorted(s.completed_dates)
-    #     dates = sorted(s.completed_dates, key=lambda d: (d is None, d))
-    #     date_to_compare = s.start_date
-    #     wait_times = []
+    x_labels = class_size + ["FY26"]
 
-    #     for i in dates:
-    #         if i is None:
-    #             wait_times.append(None)
-    #             # do NOT update date_to_compare
-    #             continue
-    #         wait_times.append((i-date_to_compare).days)
-    #         date_to_compare = i
-
-    #     student_wait_times.append([f"Student {s.student_id}", wait_times, f"night hours: {s.night_hours}"])
-
-    # print("Wait times for each student by block")
-    # for i in student_wait_times:
-    #     print(i[0],i[1],i[2], "completion date:",s.completion_date )
-
-    # print(f"Simulation run for {user_input['slider2']} weeks with {len(students)} students")
+    compare_multiple_simulations_with_blocks(simulation_data, x_labels, not user_input["include_in_analysis"])
+    compare_multiple_simulations(simulation_data, x_labels, not user_input["include_in_analysis"])
 
 
-    # Need to put the students in in the format list of lists of simulation.
-    # First element is the list of students with syllabus2 == 0. this woudl be with class up sizes 1, 2, 3, etc
-    # second element is the list of students with syllabus2 = 10%. this would be with class up sizes 1, 2,3, etc
-    # third element is the same as above but a new percentage. Should be able to handle multiple variations.
+
+
+
 
 
 if __name__ == "__main__":
