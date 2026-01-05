@@ -206,7 +206,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     # want to leave these as objects because we will need to check their quals later on and check onwings 
     ## these are objects where the mapping is Object: hours ex. UTD object: 17.5
     instructors_available = [instructor for instructor in instructors if random.random() > Instructor.failure_rate]
-    instructor_hours = {instructor: Instructor.daily_hours for instructor in instructors_available}
+    instructor_hours = {instructor: [Instructor.daily_hours,0] for instructor in instructors_available}
 
     # looking at student and the event they are scheduled for
     for s, ev in events_to_attempt:
@@ -311,11 +311,10 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 s.total_wait_time += 1
             
         else: ##aircraft
-            # gonna need an aircraft and an instructor
-            # Later: add in stuff about day or night...
-            aircraft_found = 0
-            ## make sure actuallly values not copies
 
+            ## Adding in instructor max of 4 times a day to prevent booking one instructor on multiple aircraft at the same time. 
+
+            aircraft_found = 0
             can_be_night = False
 
             if ev != "warmup flight" and ev.block == "instruments":
@@ -327,9 +326,10 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     instructor_found = 0
                     if needed_time <= aircraft_hours[ac][1] and aircraft_hours[ac][2] < Aircraft.uses_per_day:
                         for inst in instructor_hours:
-                            if needed_time <= instructor_hours[inst]:
+                            if needed_time <= instructor_hours[inst][0] and instructor_hours[inst][1] < 4:
                                 aircraft_hours[ac][1] -= (needed_time + Aircraft.break_time)
-                                instructor_hours[inst] -= (needed_time + Instructor.break_time)
+                                instructor_hours[inst][0] -= (needed_time + Instructor.break_time)
+                                instructor_hours[inst][1] += 1
                                 successfull_events.append([s,ev, str(day), "night",ac,inst])
                                 s.event_complete(day)
                                 aircraft_hours[ac][2] += 1
@@ -356,9 +356,10 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 instructor_found = 0
                 if needed_time <= aircraft_hours[ac][0] and aircraft_hours[ac][2] < Aircraft.uses_per_day:
                     for inst in instructor_hours:
-                        if needed_time <= instructor_hours[inst]:
+                        if needed_time <= instructor_hours[inst][0] and instructor_hours[inst][1] < 4:
                             aircraft_hours[ac][0] -= (needed_time + Aircraft.break_time)
-                            instructor_hours[inst] -= (needed_time + Instructor.break_time)
+                            instructor_hours[inst][0] -= (needed_time + Instructor.break_time)
+                            instructor_hours[inst][1] += 1
                             successfull_events.append([s,ev, str(day), "day",ac,inst])
                             s.event_complete(day)
                             aircraft_hours[ac][2] += 1
@@ -719,7 +720,7 @@ def ask_user():
         font=("Arial", 12)
     ).pack(pady=(20, 5))
 
-    class_sizes = [2, 5,8,10,13,15,17,20,25,30,35,40]
+    class_sizes = [2, 5,8,10,13,15,17,20]
     class_size_vars = {}
 
     class_size_frame = tk.Frame(root)
