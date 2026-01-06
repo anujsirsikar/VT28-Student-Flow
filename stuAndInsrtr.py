@@ -9,6 +9,8 @@ class FlightStudent:
 
     syllabus1 = []
     syllabus2 = []
+    syllabus3 = []
+    syllabus4 = []
 
     student_id = 0
 
@@ -48,6 +50,10 @@ class FlightStudent:
         self.days_since_last_event = 0
         if self.syllabus_type == 2:
             syl = FlightStudent.syllabus2
+        elif self.syllabus_type == 3:
+            syl = FlightStudent.syllabus3
+        elif self.syllabus_type == 4:
+            syl = FlightStudent.syllabus4
 
         if len(syl[self.current_block])-1 <= self.next_event_index:
             self.completed_blocks[self.current_block] = 1
@@ -68,6 +74,7 @@ class Instructor:
         self.name = name
         self.section_lead = section_lead                   # boolean value  (12)
         self.formation_q = formation_q                     # boolean value (I'm guessing this means formation qualified) (13)
+        
         # Add this later:
         # self.onwing = (studentID)  <- add this to the constructor's parameters
         # should instructors have a status too?
