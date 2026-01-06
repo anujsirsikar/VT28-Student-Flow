@@ -334,6 +334,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 if not forms_students:
                     forms_students.append(s)
                 else:
+                    scheduled = 0
                     for stu in forms_students:
                         # figure out the other student's next event
                         block, event = stu.next_event()
@@ -382,7 +383,11 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                                 successfull_events.append([stu, ev, str(day), "day", available_aircraft[1], available_instructors[1]])
                                 s.event_complete(day)
                                 stu.event_complete(day)
-
+                                scheduled = 1
+                                
+                    if scheduled == 0:
+                        forms_students.append(s)
+                        
             else:
                 if can_be_night and s.night_hours < 3.3:
                     for ac in aircraft_hours:
