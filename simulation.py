@@ -1016,10 +1016,12 @@ def main():
     aircraft_list = [Aircraft(f"AC{i+1}") for i in range(18)]
 
     # Run the simulation
-    # run_simulation(students, syllabus)
+    # run_simulation(students, syllabus)-
 
     FlightStudent.syllabus1 = syllabus1
     FlightStudent.syllabus2 = syllabus2
+    FlightStudent.syllabus3 = syllabus3
+    FlightStudent.syllabus4 = syllabus4
 
     user_input = ask_user()
 
