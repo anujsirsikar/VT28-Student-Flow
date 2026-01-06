@@ -80,6 +80,16 @@ class Instructor:
         # should instructors have a status too?
 
     def __str__(self):
+        '''
+        if self.section_lead and self.formation_q:
+            return f"Instructor: {self.name}, qualled in both"
+        elif self.section_lead:
+            return f"Instructor: {self.name}, section lead"
+        elif self.formation_q:
+            return f"Instructor: {self.name}, formation q"
+        else:
+            return f"Instructor: {self.name}"
+        '''
         return f"Instructor: {self.name}"
     
     def __repr__(self):
