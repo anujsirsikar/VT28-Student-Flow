@@ -109,7 +109,7 @@ def forms():
 #            also for scheduling for forms (need two students and two instructors)
 # fixed_class_size is a boolean for using fy26 numbers or not
 # SIMULATION LOGIC 
-def run_simulation(sim_start_date, days, percent_aero, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, fixed_class_size, class_size):
+def run_simulation(sim_start_date, days, percent_aero, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4, fixed_class_size, class_size):
     # sim_start_date = date(2025, 11, 24)   # year, month, day
     print("BEGINNING OF RUN SIMULATIONNNNN")
     current_day = sim_start_date
@@ -138,7 +138,7 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
                     if random.random() <= percent_aero:
                         stu.syllabus_type = 2
                 students.extend(new_students)
-            schedule = schedule_one_day(current_day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2)
+            schedule = schedule_one_day(current_day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4)
             result.append(schedule)
         days -= 1
         current_day += timedelta(days=1)
@@ -153,7 +153,7 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
 instructor_rate = 0.9
 instructor_daily_hours = 12
 
-def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2):# grndSchool, contacts, aero, inst, forms, capstone):
+def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4):# grndSchool, contacts, aero, inst, forms, capstone):
     # events that will be attempted to schedule for each student
     events_to_attempt = []
     successfull_events = []
@@ -162,7 +162,10 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     students,
     key=lambda s: s.days_since_last_event or -1,  # None-safe
     reverse=True
-)
+    )
+
+    forms_students = []
+
     for s in students:
         # s.daily_events_done = 0  # unsure if I need this
         if s.completion_date is None:
@@ -177,6 +180,10 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 syllabus = syllabus1
                 if s.syllabus_type == 2:
                     syllabus = syllabus2
+                elif s.syllabus_type == 3:
+                    syllabus = syllabus3
+                elif s.syllabus_type == 4:
+                    syllabus = syllabus4
                 nxt = syllabus[block][event]
             
                 events_to_attempt.append((s,nxt))
@@ -311,65 +318,125 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             
         else: ##aircraft
             # gonna need an aircraft and an instructor
-            # Later: add in stuff about day or night...
             aircraft_found = 0
-            ## make sure actuallly values not copies
 
             can_be_night = False
 
             if ev != "warmup flight" and ev.block == "instruments":
                 ## then it can be completed at night
                 can_be_night = True
+            
+            # forms
+            if ev.block == "forms":
+                # need to check the forms_students list and see if anyone in there has to complete the same next event, if no then add student to list and keep moving (at the end of the day, check the forms_students list and any remaining students should be treated as not being scheduled)
+                # if so, then we need to check for two forms instructors, if no then add student to the list 
+                # if so, we schedule both students with those instructors (remove other student from forms_students list)
+                if not forms_students:
+                    forms_students.append(s)
+                else:
+                    for stu in forms_students:
+                        # figure out the other student's next event
+                        block, event = stu.next_event()
+                        syllabus = syllabus1
+                        if stu.syllabus_type == 2:
+                            syllabus = syllabus2
+                        elif stu.syllabus_type == 3:
+                            syllabus = syllabus3
+                        elif stu.syllabus_type == 4:
+                            syllabus = syllabus4
+                        stu_nxt = syllabus[block][event]
 
-            if can_be_night and s.night_hours < 3.3:
+                        if ev == stu_next:
+                            available_aircraft = []
+                            available_instructors = []
+                            for ac in aircraft_hours:
+                                if needed_time <= aircraft_hours[ac][1] and aircraft_hours[ac][2] < Aircraft.uses_per_day:
+                                    available_aircraft.append(ac)
+                                    if len(available_aircraft) == 2:
+                                        break
+                            section_lead_found = False
+                            formation_q_found = False
+                            for inst in instructor_hours:
+                                if needed_time > instructor_hours[inst]:
+                                    continue  # not enough hours, skip
+                                # If we still need a section lead and this instructor is one, take them
+                                if inst.section_lead and not section_lead_found:
+                                    available_instructors.append(inst)
+                                    section_lead_found = True
+                                # Else if we still need a formation-qualified instructor and this instructor is one, take them
+                                elif inst.formation_q and not formation_q_found:
+                                    available_instructors.append(inst)
+                                    formation_q_found = True
+                                # Stop once we have both roles
+                                if section_lead_found and formation_q_found:
+                                    break
+
+                            if len(available_aircraft) == 2 and len(available_instructors) == 2:
+                                for ac in available_aircraft:
+                                    aircraft_hours[ac][1] -= (needed_time + Aircraft.break_time)
+                                    aircraft_hours[ac][2] += 1
+                                for inst in available_instructors:
+                                    instructor_hours[inst] -= (needed_time + Instructor.break_time)
+
+                                successfull_events.append([s, ev, str(day), "day", available_aircraft[0], available_instructors[0]])
+                                successfull_events.append([stu, ev, str(day), "day", available_aircraft[1], available_instructors[1]])
+                                s.event_complete(day)
+                                stu.event_complete(day)
+
+            else:
+                if can_be_night and s.night_hours < 3.3:
+                    for ac in aircraft_hours:
+                        instructor_found = 0
+                        if needed_time <= aircraft_hours[ac][1] and aircraft_hours[ac][2] < Aircraft.uses_per_day:
+                            for inst in instructor_hours:
+                                if needed_time <= instructor_hours[inst]:
+                                    aircraft_hours[ac][1] -= (needed_time + Aircraft.break_time)
+                                    instructor_hours[inst] -= (needed_time + Instructor.break_time)
+                                    successfull_events.append([s,ev, str(day), "night",ac,inst])
+                                    s.event_complete(day)
+                                    aircraft_hours[ac][2] += 1
+                                    aircraft_found = 1
+                                    instructor_found = 1
+                                    s.night_hours += needed_time
+                                    break
+                            if instructor_found == 1:
+                                break
+                
+                if aircraft_found == 1:
+                    continue
+
+                # was getting an error so changed ev.names to ev
+                running_out_of_events = ev == "I4490" or ev == "N4101" or ev == "FAM4601" 
+
+                if ev == "FAM4601" or (aircraft_found == 0 and s.night_hours < 5 and running_out_of_events):
+                    s.days_since_last_event += 1
+                    s.total_wait_time += 1
+                    break
+
+
                 for ac in aircraft_hours:
                     instructor_found = 0
-                    if needed_time <= aircraft_hours[ac][1] and aircraft_hours[ac][2] < Aircraft.uses_per_day:
+                    if needed_time <= aircraft_hours[ac][0] and aircraft_hours[ac][2] < Aircraft.uses_per_day:
                         for inst in instructor_hours:
                             if needed_time <= instructor_hours[inst]:
-                                aircraft_hours[ac][1] -= (needed_time + Aircraft.break_time)
+                                aircraft_hours[ac][0] -= (needed_time + Aircraft.break_time)
                                 instructor_hours[inst] -= (needed_time + Instructor.break_time)
-                                successfull_events.append([s,ev, str(day), "night",ac,inst])
+                                successfull_events.append([s,ev, str(day), "day",ac,inst])
                                 s.event_complete(day)
                                 aircraft_hours[ac][2] += 1
                                 aircraft_found = 1
                                 instructor_found = 1
-                                s.night_hours += needed_time
                                 break
                         if instructor_found == 1:
                             break
-            
-            if aircraft_found == 1:
-                continue
-
-            # was getting an error so changed ev.names to ev
-            running_out_of_events = ev == "I4490" or ev == "N4101" or ev == "FAM4601" 
-
-            if ev == "FAM4601" or (aircraft_found == 0 and s.night_hours < 5 and running_out_of_events):
-                s.days_since_last_event += 1
-                s.total_wait_time += 1
-                break
-
-
-            for ac in aircraft_hours:
-                instructor_found = 0
-                if needed_time <= aircraft_hours[ac][0] and aircraft_hours[ac][2] < Aircraft.uses_per_day:
-                    for inst in instructor_hours:
-                        if needed_time <= instructor_hours[inst]:
-                            aircraft_hours[ac][0] -= (needed_time + Aircraft.break_time)
-                            instructor_hours[inst] -= (needed_time + Instructor.break_time)
-                            successfull_events.append([s,ev, str(day), "day",ac,inst])
-                            s.event_complete(day)
-                            aircraft_hours[ac][2] += 1
-                            aircraft_found = 1
-                            instructor_found = 1
-                            break
-                    if instructor_found == 1:
-                        break
-            if aircraft_found == 0:
-                # not scheduled
-                s.days_since_last_event += 1
-                s.total_wait_time += 1
+                if aircraft_found == 0:
+                    # not scheduled
+                    s.days_since_last_event += 1
+                    s.total_wait_time += 1
+    
+    for stu in forms_students:
+        stu.days_since_last_event += 1
+        stu.total_wait_time += 1
 
     return successfull_events
             
@@ -980,11 +1047,11 @@ def main():
             students = load_students(os.path.join("students", "current_students.csv"))
 
 
-        schedule, computed_students = run_simulation(date.today()+timedelta(14), (user_input["slider2"]*7), 10, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, fixed_class_size, class_size[j])
+        schedule, computed_students = run_simulation(date.today()+timedelta(14), (user_input["slider2"]*7), 10, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, fixed_class_size, class_size[j])
         result.append(schedule)
         student_lists.append(computed_students)
 
-    schedule, computed_students = run_simulation(date.today()+timedelta(14), (user_input["slider2"]*7), 10, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, False, 0)
+    schedule, computed_students = run_simulation(date.today()+timedelta(14), (user_input["slider2"]*7), 10, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, False, 0)
     result.append(schedule)
     student_lists.append(computed_students)
     

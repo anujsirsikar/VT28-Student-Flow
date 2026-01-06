@@ -68,6 +68,7 @@ class Instructor:
         self.name = name
         self.section_lead = section_lead                   # boolean value  (12)
         self.formation_q = formation_q                     # boolean value (I'm guessing this means formation qualified) (13)
+        
         # Add this later:
         # self.onwing = (studentID)  <- add this to the constructor's parameters
         # should instructors have a status too?
