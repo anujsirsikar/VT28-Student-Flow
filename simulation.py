@@ -327,7 +327,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 can_be_night = True
             
             # forms
-            if ev.block == "forms":
+            if ev != "warmup flight" and ev.block == "forms":
                 # need to check the forms_students list and see if anyone in there has to complete the same next event, if no then add student to list and keep moving (at the end of the day, check the forms_students list and any remaining students should be treated as not being scheduled)
                 # if so, then we need to check for two forms instructors, if no then add student to the list 
                 # if so, we schedule both students with those instructors (remove other student from forms_students list)
@@ -346,7 +346,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                             syllabus = syllabus4
                         stu_nxt = syllabus[block][event]
 
-                        if ev == stu_next:
+                        if ev == stu_nxt:
                             available_aircraft = []
                             available_instructors = []
                             for ac in aircraft_hours:
