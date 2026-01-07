@@ -22,6 +22,7 @@ import os
 import tkinter as tk
 import numpy as np 
 import copy
+import json
 
 # Note: You can have more than one event in a day (especially for sims and flights) [but for first iteration, do one per day]
 
@@ -115,6 +116,8 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
     current_day = sim_start_date
     result = []
 
+    daily_metrics = []
+
     # run the loop for the amount of days
     while days > 0:  
         if students is None:
@@ -138,15 +141,20 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
                     if random.random() <= percent_aero:
                         stu.syllabus_type = 2
                 students.extend(new_students)
-            schedule = schedule_one_day(current_day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4)
+            schedule, day_metrics = schedule_one_day(current_day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4)
             # keep track of resource use and students here (print it out or something)
             result.append(schedule)
+            daily_metrics.append(day_metrics)
         days -= 1
         current_day += timedelta(days=1)
 
 
     ## format is list: schedule, list: students    
-    return result, students
+    return result, {
+        "start_date": str(sim_start_date),
+        "days":daily_metrics}, students
+    
+    # return result, students
 
 # daytime_hours = 11 ## 7 to 6
 # nighttime_hours = 5
@@ -161,12 +169,37 @@ def increment_key(d, key):
     else:
         d[key] = 1
 
+def log_usage(bucket, resource, hours):
+    bucket.setdefault(str(resource), 0)
+    bucket[str(resource)] += hours
+
+
 def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4):# grndSchool, contacts, aero, inst, forms, capstone):
     # dictionaries for each resource (including instructors)
     # the keys will be names of the resource while the value will be how many times they were used.
     sims_used = {}
     aircraft_used = {}
     instructors_used = {}
+
+    day_metrics = {
+        "date":str(day),
+
+        "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+        },
+
+        "resources": {
+            "utd": {},
+            "oft": {},
+            "vtd": {},
+            "mr": {},
+            "aircraft": {},
+            "classroom": {},
+            "instructor": {}
+        }
+    }
 
 
     #print("NEW DAY")
@@ -246,6 +279,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             helper = 0
             fate = class_in_progress(ev, classroom_hours_events)
             if fate != 99:
+                log_usage(day_metrics["resources"]["classroom"],fate, needed_time)
                 successfull_events.append([s,ev, str(day), str(fate) + " Class: " + str(classroom_hours_events[fate][2]) + " Student: " + str(classroom_hours_events[fate][3][classroom_hours_events[fate][2]])])
                 s.event_complete(day)
                 classroom_hours_events[fate][3][classroom_hours_events[fate][2]] += 1
@@ -263,6 +297,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         capacity_index = classroom_hours_events[c][2]
                         classroom_hours_events[c][3][capacity_index] = 1
                         classroom_hours_events[c][2] += 1
+                        log_usage(day_metrics["resources"]["classroom"],c, needed_time)
                         successfull_events.append([s,ev, str(day), str(c) + " Class: " + str(classroom_hours_events[c][2]) + " Student: " + str(classroom_hours_events[c][3][classroom_hours_events[c][2]])])
                         classroom_hours_events[c][3][classroom_hours_events[c][2]] += 1
                         s.event_complete(day)
@@ -280,6 +315,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 if needed_time <= utd_hours[u]:
                     utd_hours[u] -=  (needed_time + Sim.break_time) #ADD BREAK Time
                     # schedule the student
+                    log_usage(day_metrics["resources"]["utd"],u,needed_time)
                     successfull_events.append([s,ev, str(day), u])
                     s.event_complete(day)
                     helper = 1
@@ -296,6 +332,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 if needed_time <= oft_hours[o]:
                     oft_hours[o] -= (needed_time + Sim.break_time)
                     # schedule the student
+                    log_usage(day_metrics["resources"]["oft"],o,needed_time)
                     successfull_events.append([s,ev, str(day), o])
                     s.event_complete(day)
                     helper = 1
@@ -311,7 +348,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             for v in vtd_hours:
                 if needed_time <= vtd_hours[v]:
                     vtd_hours[v] -= (needed_time + Sim.break_time)
-                    # schedule the student
+                    # schedule the studepnt
+                    log_usage(day_metrics["resources"]["vtd"],v,needed_time)
                     successfull_events.append([s,ev, str(day), v])
                     s.event_complete(day)
                     helper = 1
@@ -328,6 +366,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 if needed_time <= mr_hours[m]:
                     mr_hours[m] -= (needed_time + Sim.break_time)
                     # schedule the student
+                    log_usage(day_metrics["resources"]["mr"],m,needed_time)
                     successfull_events.append([s,ev, str(day), m])
                     s.event_complete(day)
                     helper = 1
@@ -404,7 +443,11 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                             #print("2: ", stu)
 
 
-
+                            
+                            log_usage(day_metrics["resources"]["aircraft"],available_aircraft[0],needed_time)
+                            log_usage(day_metrics["resources"]["instructor"],available_instructors[0],needed_time)
+                            log_usage(day_metrics["resources"]["aircraft"],available_aircraft[1],needed_time)
+                            log_usage(day_metrics["resources"]["instructor"],available_instructors[1],needed_time)
                             successfull_events.append([s, ev, str(day), "day", available_aircraft[0], available_instructors[0]])
                             successfull_events.append([stu, ev, str(day), "day", available_aircraft[1], available_instructors[1]])
                             s.event_complete(day)
@@ -427,6 +470,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                                     aircraft_hours[ac][1] -= (needed_time + Aircraft.break_time)
                                     instructor_hours[inst][0] -= (needed_time + Instructor.break_time)
                                     instructor_hours[inst][1] += 1
+                                    log_usage(day_metrics["resources"]["aircraft"],ac,needed_time)
+                                    log_usage(day_metrics["resources"]["instructor"],inst,needed_time)
                                     successfull_events.append([s,ev, str(day), "night",ac,inst])
                                     s.event_complete(day)
                                     aircraft_hours[ac][2] += 1
@@ -459,6 +504,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                                 aircraft_hours[ac][1] -= (needed_time + Aircraft.break_time)
                                 instructor_hours[inst][0] -= (needed_time + Instructor.break_time)
                                 instructor_hours[inst][1] += 1
+                                log_usage(day_metrics["resources"]["aircraft"],ac,needed_time)
+                                log_usage(day_metrics["resources"]["instructor"],inst,needed_time)
                                 successfull_events.append([s,ev, str(day), "night",ac,inst])
                                 s.event_complete(day)
                                 aircraft_hours[ac][2] += 1
@@ -484,7 +531,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     #print(aircraft_used)
     #print(instructors_used)
 
-    return successfull_events
+    return successfull_events, day_metrics
         
 
 # reads in events from a csv file and makes event objects per block and puts that in a list
@@ -1118,8 +1165,7 @@ def main():
     aircraft_list = [Aircraft(f"AC{i+1}") for i in range(18)]
 
     # Run the simulation
-    # run_simulation(students, syllabus)-
-
+    # run_simulation(students, syllabus).syllabus1 = syllabus1
     FlightStudent.syllabus1 = syllabus1
     FlightStudent.syllabus2 = syllabus2
     FlightStudent.syllabus3 = syllabus3
@@ -1134,6 +1180,10 @@ def main():
     result = []
     simulation_data = []
     percentages = user_input["syllabus_two_percentages"]
+
+    base = "outputs"
+
+   
 
     ###each loop runs a simulation with specific class size going to syllabus two
     for i in range(len(percentages)):
@@ -1157,9 +1207,19 @@ def main():
             else:
                 students = load_students(os.path.join("students", "current_students.csv"))
 
-            schedule, computed_students = run_simulation(date.today()+timedelta(14), (user_input["weeks"]*7), percentages[i] , students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, True, class_size[j])
+            schedule, simulation_json, computed_students = run_simulation(date.today()+timedelta(14), (user_input["weeks"]*7), percentages[i] , students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, True, class_size[j])
             result.append(schedule)
             student_lists.append(copy.deepcopy(computed_students))
+
+            pct_folder = os.path.join(base, f"pct{int(percentages[i])}")
+            class_folder = os.path.join(pct_folder, f"class{class_size[j]}")
+
+            os.makedirs(class_folder, exist_ok=True)
+
+            filename = os.path.join(class_folder, f"run_{(i+1)*(j+1):02d}.json")
+
+            with open(filename, "w") as f:
+                json.dump(simulation_json, f, indent=2)
 
         students = []
 
@@ -1174,7 +1234,7 @@ def main():
         else:
             students = load_students(os.path.join("students", "current_students.csv"))
 
-        schedule, computed_students = run_simulation(date.today()+timedelta(14), (user_input["weeks"]*7), percentages[i], students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, False, 0)
+        schedule, simulation_json, computed_students = run_simulation(date.today()+timedelta(14), (user_input["weeks"]*7), percentages[i], students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, False, 0)
         result.append(schedule)
         student_lists.append(copy.deepcopy(computed_students))
 

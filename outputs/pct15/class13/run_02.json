@@ -1,0 +1,7770 @@
+{
+  "start_date": "2026-01-20",
+  "days": [
+    {
+      "date": "2026-01-20",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 8,
+          "Aircraft: AC3": 8,
+          "Aircraft: AC4": 8,
+          "Aircraft: AC5": 8,
+          "Aircraft: AC6": 8,
+          "Aircraft: AC8": 8,
+          "Aircraft: AC11": 8,
+          "Aircraft: AC12": 8,
+          "Aircraft: AC13": 8,
+          "Aircraft: AC14": 8,
+          "Aircraft: AC15": 8,
+          "Aircraft: AC16": 8,
+          "Aircraft: AC17": 8,
+          "Aircraft: AC18": 8
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 8,
+          "Instructor: 2": 8,
+          "Instructor: 3": 8,
+          "Instructor: 4": 8,
+          "Instructor: 5": 8,
+          "Instructor: 6": 8,
+          "Instructor: 7": 8,
+          "Instructor: 8": 8,
+          "Instructor: 9": 8,
+          "Instructor: 11": 8,
+          "Instructor: 12": 8,
+          "Instructor: 13": 8,
+          "Instructor: 14": 8,
+          "Instructor: 15": 8
+        }
+      }
+    },
+    {
+      "date": "2026-01-21",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 7.9
+        },
+        "oft": {
+          "Name: OFT1": 10.899999999999999
+        },
+        "vtd": {
+          "Name: VTD1": 7.8
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 8,
+          "Aircraft: AC2": 8,
+          "Aircraft: AC4": 8,
+          "Aircraft: AC6": 8,
+          "Aircraft: AC7": 8,
+          "Aircraft: AC9": 8,
+          "Aircraft: AC10": 8,
+          "Aircraft: AC11": 8,
+          "Aircraft: AC12": 8,
+          "Aircraft: AC14": 8,
+          "Aircraft: AC15": 8,
+          "Aircraft: AC16": 8,
+          "Aircraft: AC17": 8
+        },
+        "classroom": {
+          "CL1": 3.9000000000000004,
+          "CL2": 7.0,
+          "CL3": 4.800000000000001,
+          "CL4": 6.8,
+          "CL5": 1.7,
+          "CL6": 4.0
+        },
+        "instructor": {
+          "Instructor: 1": 8,
+          "Instructor: 2": 8,
+          "Instructor: 3": 8,
+          "Instructor: 5": 8,
+          "Instructor: 8": 8,
+          "Instructor: 9": 8,
+          "Instructor: 10": 8,
+          "Instructor: 11": 8,
+          "Instructor: 13": 8,
+          "Instructor: 14": 8,
+          "Instructor: 15": 8,
+          "Instructor: 16": 8,
+          "Instructor: 18": 8
+        }
+      }
+    },
+    {
+      "date": "2026-01-22",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 11.700000000000001,
+          "Name: UTD2": 3.9000000000000004
+        },
+        "oft": {
+          "Name: OFT1": 11.500000000000002
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 5.2
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 8,
+          "Aircraft: AC3": 8,
+          "Aircraft: AC6": 8,
+          "Aircraft: AC7": 8,
+          "Aircraft: AC8": 8,
+          "Aircraft: AC9": 8,
+          "Aircraft: AC10": 8,
+          "Aircraft: AC12": 8,
+          "Aircraft: AC13": 8,
+          "Aircraft: AC14": 8,
+          "Aircraft: AC15": 8,
+          "Aircraft: AC16": 8,
+          "Aircraft: AC17": 8,
+          "Aircraft: AC18": 8
+        },
+        "classroom": {
+          "CL1": 6.8,
+          "CL2": 8.7,
+          "CL3": 1.7,
+          "CL4": 14.3,
+          "CL5": 6.3999999999999995,
+          "CL6": 5.0
+        },
+        "instructor": {
+          "Instructor: 1": 8,
+          "Instructor: 2": 8,
+          "Instructor: 3": 8,
+          "Instructor: 4": 8,
+          "Instructor: 5": 8,
+          "Instructor: 6": 8,
+          "Instructor: 7": 8,
+          "Instructor: 8": 8,
+          "Instructor: 9": 8,
+          "Instructor: 10": 8,
+          "Instructor: 13": 8,
+          "Instructor: 15": 8,
+          "Instructor: 17": 8,
+          "Instructor: 18": 8
+        }
+      }
+    },
+    {
+      "date": "2026-01-23",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 8,
+          "Aircraft: AC3": 8,
+          "Aircraft: AC4": 8,
+          "Aircraft: AC5": 8,
+          "Aircraft: AC9": 6.0,
+          "Aircraft: AC10": 1.6,
+          "Aircraft: AC12": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 9.6,
+          "Instructor: 3": 9.6,
+          "Instructor: 4": 8,
+          "Instructor: 5": 8,
+          "Instructor: 6": 6.0
+        }
+      }
+    },
+    {
+      "date": "2026-01-26",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 11.700000000000001,
+          "Name: UTD2": 12.000000000000002,
+          "Name: UTD3": 12.000000000000004,
+          "Name: UTD4": 6.5
+        },
+        "oft": {
+          "Name: OFT1": 13.800000000000002,
+          "Name: OFT2": 13.400000000000002,
+          "Name: OFT3": 14.8,
+          "Name: OFT4": 1.3
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 11.700000000000001,
+          "Name: VTD4": 11.700000000000001,
+          "Name: VTD5": 1.3
+        },
+        "mr": {
+          "Name: MR1": 3.9000000000000004
+        },
+        "aircraft": {
+          "Aircraft: AC1": 5.5,
+          "Aircraft: AC2": 6.0,
+          "Aircraft: AC3": 7.800000000000001,
+          "Aircraft: AC4": 6.6,
+          "Aircraft: AC5": 6.5,
+          "Aircraft: AC7": 5.3,
+          "Aircraft: AC8": 6.2,
+          "Aircraft: AC9": 5.8,
+          "Aircraft: AC11": 5.2,
+          "Aircraft: AC12": 5.5,
+          "Aircraft: AC14": 6.5,
+          "Aircraft: AC15": 6.2,
+          "Aircraft: AC16": 6.4,
+          "Aircraft: AC18": 6.6000000000000005
+        },
+        "classroom": {
+          "CL1": 8.4,
+          "CL2": 66.39999999999999,
+          "CL3": 46.0,
+          "CL4": 15.0,
+          "CL5": 13.5,
+          "CL6": 9.3
+        },
+        "instructor": {
+          "Instructor: 3": 5.5,
+          "Instructor: 4": 6.0,
+          "Instructor: 5": 7.800000000000001,
+          "Instructor: 12": 6.6,
+          "Instructor: 13": 6.5,
+          "Instructor: 14": 5.3,
+          "Instructor: 15": 6.2,
+          "Instructor: 16": 5.8,
+          "Instructor: 18": 5.2,
+          "Instructor: 19": 5.5,
+          "Instructor: 22": 6.5,
+          "Instructor: 23": 6.2,
+          "Instructor: 25": 6.4,
+          "Instructor: 26": 6.6000000000000005
+        }
+      }
+    },
+    {
+      "date": "2026-01-27",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 1.6,
+          "Aircraft: AC2": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 1.6,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-01-28",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 2.6
+        },
+        "oft": {
+          "Name: OFT1": 10.5
+        },
+        "vtd": {
+          "Name: VTD1": 6.5
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 6.8,
+          "Aircraft: AC3": 6.300000000000001,
+          "Aircraft: AC5": 5.5,
+          "Aircraft: AC6": 6.4,
+          "Aircraft: AC7": 6.8,
+          "Aircraft: AC8": 6.0,
+          "Aircraft: AC9": 2.9000000000000004,
+          "Aircraft: AC10": 1.6
+        },
+        "classroom": {
+          "CL1": 3.4,
+          "CL2": 8.0,
+          "CL3": 6.5009999999999994,
+          "CL4": 3.4,
+          "CL5": 1.6
+        },
+        "instructor": {
+          "Instructor: 1": 8.4,
+          "Instructor: 2": 7.9,
+          "Instructor: 3": 5.5,
+          "Instructor: 4": 6.4,
+          "Instructor: 6": 6.8,
+          "Instructor: 7": 6.0,
+          "Instructor: 8": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-01-29",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 6.5
+        },
+        "oft": {
+          "Name: OFT1": 11.900000000000002,
+          "Name: OFT2": 2.6
+        },
+        "vtd": {
+          "Name: VTD1": 10.4
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 6.3,
+          "Aircraft: AC3": 5.6,
+          "Aircraft: AC4": 5.699999999999999,
+          "Aircraft: AC5": 6.8,
+          "Aircraft: AC6": 3.3,
+          "Aircraft: AC8": 1.3,
+          "Aircraft: AC9": 1.3
+        },
+        "classroom": {
+          "CL1": 4.0,
+          "CL2": 5.1,
+          "CL3": 16.402,
+          "CL4": 10.0,
+          "CL5": 5.49,
+          "CL6": 3.4
+        },
+        "instructor": {
+          "Instructor: 1": 7.6,
+          "Instructor: 2": 6.8999999999999995,
+          "Instructor: 5": 5.699999999999999,
+          "Instructor: 6": 6.8,
+          "Instructor: 8": 3.3
+        }
+      }
+    },
+    {
+      "date": "2026-01-30",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 3.9000000000000004
+        },
+        "oft": {
+          "Name: OFT1": 7.8
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 3.9000000000000004
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.699999999999999,
+          "Aircraft: AC2": 8.0,
+          "Aircraft: AC3": 7.8,
+          "Aircraft: AC4": 6.4,
+          "Aircraft: AC5": 3.3,
+          "Aircraft: AC7": 1.6,
+          "Aircraft: AC8": 1.6
+        },
+        "classroom": {
+          "CL1": 6.3,
+          "CL2": 8.0,
+          "CL3": 12.68,
+          "CL4": 8.0,
+          "CL5": 5.49,
+          "CL6": 7.4
+        },
+        "instructor": {
+          "Instructor: 1": 8.299999999999999,
+          "Instructor: 3": 9.6,
+          "Instructor: 4": 7.8,
+          "Instructor: 5": 6.4,
+          "Instructor: 7": 3.3
+        }
+      }
+    },
+    {
+      "date": "2026-02-02",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 5.2
+        },
+        "oft": {
+          "Name: OFT1": 5.3999999999999995
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 1.3
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC3": 6.3999999999999995,
+          "Aircraft: AC4": 6.2,
+          "Aircraft: AC5": 5.3999999999999995,
+          "Aircraft: AC6": 6.2,
+          "Aircraft: AC7": 3.3,
+          "Aircraft: AC9": 1.6
+        },
+        "classroom": {
+          "CL1": 6.0,
+          "CL2": 9.0,
+          "CL3": 12.280000000000001,
+          "CL4": 11.3,
+          "CL5": 5.0,
+          "CL6": 5.9
+        },
+        "instructor": {
+          "Instructor: 1": 8.0,
+          "Instructor: 2": 7.800000000000001,
+          "Instructor: 4": 5.3999999999999995,
+          "Instructor: 5": 6.2,
+          "Instructor: 6": 1.7
+        }
+      }
+    },
+    {
+      "date": "2026-02-03",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 3.9000000000000004
+        },
+        "oft": {
+          "Name: OFT1": 11.9
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 7.4,
+          "Aircraft: AC2": 7.9,
+          "Aircraft: AC3": 6.1,
+          "Aircraft: AC4": 7.6,
+          "Aircraft: AC5": 7.3,
+          "Aircraft: AC6": 1.6,
+          "Aircraft: AC9": 1.6
+        },
+        "classroom": {
+          "CL1": 8.0,
+          "CL2": 13.5,
+          "CL3": 8.5,
+          "CL4": 5.4,
+          "CL5": 7.6,
+          "CL6": 9.3
+        },
+        "instructor": {
+          "Instructor: 1": 9.0,
+          "Instructor: 2": 9.5,
+          "Instructor: 3": 6.1,
+          "Instructor: 5": 7.6,
+          "Instructor: 6": 7.3
+        }
+      }
+    },
+    {
+      "date": "2026-02-04",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 5.2
+        },
+        "oft": {
+          "Name: OFT1": 12.3
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001
+        },
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC2": 6.3,
+          "Aircraft: AC4": 6.6000000000000005,
+          "Aircraft: AC5": 7.6,
+          "Aircraft: AC6": 5.6,
+          "Aircraft: AC7": 5.4,
+          "Aircraft: AC8": 1.6,
+          "Aircraft: AC10": 1.6
+        },
+        "classroom": {
+          "CL1": 5.0,
+          "CL2": 5.4,
+          "CL3": 17.5,
+          "CL4": 6.99,
+          "CL5": 8.0,
+          "CL6": 11.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.9,
+          "Instructor: 2": 8.200000000000001,
+          "Instructor: 3": 7.6,
+          "Instructor: 4": 5.6,
+          "Instructor: 5": 5.4
+        }
+      }
+    },
+    {
+      "date": "2026-02-05",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 6.8
+        },
+        "oft": {
+          "Name: OFT1": 13.5,
+          "Name: OFT2": 2.6
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 3.9000000000000004
+        },
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.3,
+          "Aircraft: AC2": 6.3,
+          "Aircraft: AC4": 6.4,
+          "Aircraft: AC5": 6.199999999999999,
+          "Aircraft: AC6": 5.4,
+          "Aircraft: AC8": 5.3999999999999995,
+          "Aircraft: AC9": 6.199999999999999,
+          "Aircraft: AC10": 6.6000000000000005,
+          "Aircraft: AC11": 2.9000000000000004,
+          "Aircraft: AC12": 1.3
+        },
+        "classroom": {
+          "CL1": 14.7,
+          "CL2": 13.5,
+          "CL3": 11.4,
+          "CL4": 13.0,
+          "CL5": 10.4,
+          "CL6": 18.980000000000004
+        },
+        "instructor": {
+          "Instructor: 1": 7.6,
+          "Instructor: 3": 7.6,
+          "Instructor: 4": 6.4,
+          "Instructor: 9": 6.199999999999999,
+          "Instructor: 10": 5.4,
+          "Instructor: 13": 5.3999999999999995,
+          "Instructor: 15": 6.199999999999999,
+          "Instructor: 18": 6.6000000000000005,
+          "Instructor: 20": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-02-06",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 3.9000000000000004
+        },
+        "oft": {
+          "Name: OFT1": 12.600000000000001,
+          "Name: OFT2": 4.1
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 2.6
+        },
+        "mr": {
+          "Name: MR1": 3.0
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.0,
+          "Aircraft: AC2": 6.6000000000000005,
+          "Aircraft: AC5": 6.4,
+          "Aircraft: AC7": 6.2,
+          "Aircraft: AC9": 6.1000000000000005,
+          "Aircraft: AC11": 6.200000000000001,
+          "Aircraft: AC12": 6.699999999999999,
+          "Aircraft: AC13": 2.7,
+          "Aircraft: AC14": 1.6,
+          "Aircraft: AC15": 1.6
+        },
+        "classroom": {
+          "CL1": 11.399999999999999,
+          "CL2": 16.0,
+          "CL3": 9.0,
+          "CL4": 12.2,
+          "CL5": 17.4,
+          "CL6": 31.4
+        },
+        "instructor": {
+          "Instructor: 2": 7.6,
+          "Instructor: 3": 8.200000000000001,
+          "Instructor: 6": 6.4,
+          "Instructor: 7": 6.2,
+          "Instructor: 10": 6.1000000000000005,
+          "Instructor: 11": 6.200000000000001,
+          "Instructor: 12": 6.699999999999999,
+          "Instructor: 13": 2.7
+        }
+      }
+    },
+    {
+      "date": "2026-02-09",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.6,
+          "Name: UTD2": 4.2
+        },
+        "oft": {
+          "Name: OFT1": 12.5,
+          "Name: OFT2": 2.3
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 2.6
+        },
+        "mr": {
+          "Name: MR1": 1.7
+        },
+        "aircraft": {
+          "Aircraft: AC2": 6.300000000000001,
+          "Aircraft: AC3": 6.6,
+          "Aircraft: AC4": 6.0,
+          "Aircraft: AC5": 6.0,
+          "Aircraft: AC6": 3.0,
+          "Aircraft: AC8": 1.3
+        },
+        "classroom": {
+          "CL1": 13.0,
+          "CL2": 8.0,
+          "CL3": 16.9,
+          "CL4": 8.2,
+          "CL5": 10.0,
+          "CL6": 11.4
+        },
+        "instructor": {
+          "Instructor: 1": 7.6000000000000005,
+          "Instructor: 2": 7.8999999999999995,
+          "Instructor: 3": 6.0,
+          "Instructor: 4": 6.0,
+          "Instructor: 5": 1.7
+        }
+      }
+    },
+    {
+      "date": "2026-02-10",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 14.0,
+          "Name: UTD2": 12.600000000000001
+        },
+        "oft": {
+          "Name: OFT1": 13.3,
+          "Name: OFT2": 2.0
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 2.6
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 5.6,
+          "Aircraft: AC3": 5.6000000000000005,
+          "Aircraft: AC4": 6.3,
+          "Aircraft: AC5": 7.4,
+          "Aircraft: AC6": 3.3,
+          "Aircraft: AC7": 1.6
+        },
+        "classroom": {
+          "CL1": 8.100999999999999,
+          "CL2": 7.1000000000000005,
+          "CL3": 9.0,
+          "CL4": 8.0,
+          "CL5": 16.0,
+          "CL6": 13.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.199999999999999,
+          "Instructor: 2": 7.200000000000001,
+          "Instructor: 4": 6.3,
+          "Instructor: 5": 7.4,
+          "Instructor: 6": 1.7
+        }
+      }
+    },
+    {
+      "date": "2026-02-11",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.100000000000001
+        },
+        "oft": {
+          "Name: OFT1": 9.2
+        },
+        "vtd": {
+          "Name: VTD1": 5.2
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 9.0,
+          "Aircraft: AC2": 7.9,
+          "Aircraft: AC7": 2.9000000000000004,
+          "Aircraft: AC8": 1.6
+        },
+        "classroom": {
+          "CL1": 16.0,
+          "CL2": 8.0,
+          "CL3": 3.2,
+          "CL4": 2.0,
+          "CL5": 2.0,
+          "CL6": 3.4
+        },
+        "instructor": {
+          "Instructor: 2": 10.6,
+          "Instructor: 3": 9.5,
+          "Instructor: 4": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-02-12",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 11.4
+        },
+        "oft": {
+          "Name: OFT1": 2.3
+        },
+        "vtd": {
+          "Name: VTD1": 6.5
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 6.4,
+          "Aircraft: AC3": 7.6,
+          "Aircraft: AC4": 6.8,
+          "Aircraft: AC5": 1.6,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {
+          "CL1": 5.0,
+          "CL2": 2.0,
+          "CL3": 1.0,
+          "CL4": 8.0,
+          "CL5": 4.0,
+          "CL6": 3.4
+        },
+        "instructor": {
+          "Instructor: 1": 8.0,
+          "Instructor: 3": 9.2,
+          "Instructor: 4": 6.8
+        }
+      }
+    },
+    {
+      "date": "2026-02-13",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 8.899999999999999
+        },
+        "oft": {},
+        "vtd": {
+          "Name: VTD1": 9.1
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.2,
+          "Aircraft: AC3": 6.5,
+          "Aircraft: AC4": 4.7,
+          "Aircraft: AC5": 1.6,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {
+          "CL1": 13.5,
+          "CL2": 8.0,
+          "CL3": 3.4,
+          "CL4": 5.0,
+          "CL5": 8.0,
+          "CL6": 4.4
+        },
+        "instructor": {
+          "Instructor: 2": 7.800000000000001,
+          "Instructor: 3": 8.1,
+          "Instructor: 4": 4.7
+        }
+      }
+    },
+    {
+      "date": "2026-02-16",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 12.799999999999999,
+          "Name: UTD2": 4.9
+        },
+        "oft": {
+          "Name: OFT1": 14.899999999999999,
+          "Name: OFT2": 13.0,
+          "Name: OFT3": 1.3
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.2,
+          "Aircraft: AC3": 5.8,
+          "Aircraft: AC4": 5.7,
+          "Aircraft: AC5": 6.1000000000000005,
+          "Aircraft: AC6": 6.699999999999999,
+          "Aircraft: AC7": 3.3,
+          "Aircraft: AC8": 1.6,
+          "Aircraft: AC9": 1.6
+        },
+        "classroom": {
+          "CL1": 17.0,
+          "CL2": 12.0,
+          "CL3": 15.19,
+          "CL4": 6.7,
+          "CL5": 13.8,
+          "CL6": 13.5
+        },
+        "instructor": {
+          "Instructor: 2": 7.800000000000001,
+          "Instructor: 3": 7.4,
+          "Instructor: 5": 5.7,
+          "Instructor: 7": 6.1000000000000005,
+          "Instructor: 8": 6.699999999999999,
+          "Instructor: 9": 3.3
+        }
+      }
+    },
+    {
+      "date": "2026-02-17",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.5,
+          "Name: UTD2": 1.3
+        },
+        "oft": {
+          "Name: OFT1": 13.0,
+          "Name: OFT2": 2.6
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 2.6
+        },
+        "mr": {
+          "Name: MR1": 4.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.4,
+          "Aircraft: AC3": 4.8,
+          "Aircraft: AC4": 6.3,
+          "Aircraft: AC7": 5.6,
+          "Aircraft: AC9": 5.9,
+          "Aircraft: AC10": 6.699999999999999,
+          "Aircraft: AC11": 3.3,
+          "Aircraft: AC13": 1.6,
+          "Aircraft: AC14": 1.6
+        },
+        "classroom": {
+          "CL1": 13.0,
+          "CL2": 27.0,
+          "CL3": 7.3,
+          "CL4": 14.200000000000001,
+          "CL5": 16.0,
+          "CL6": 16.0
+        },
+        "instructor": {
+          "Instructor: 1": 8.0,
+          "Instructor: 3": 6.4,
+          "Instructor: 4": 6.3,
+          "Instructor: 5": 5.6,
+          "Instructor: 6": 5.9,
+          "Instructor: 7": 6.699999999999999,
+          "Instructor: 8": 3.3
+        }
+      }
+    },
+    {
+      "date": "2026-02-18",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 9.1
+        },
+        "oft": {
+          "Name: OFT1": 13.2,
+          "Name: OFT2": 6.3
+        },
+        "vtd": {
+          "Name: VTD1": 10.4
+        },
+        "mr": {
+          "Name: MR1": 1.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.199999999999999,
+          "Aircraft: AC3": 7.6,
+          "Aircraft: AC4": 7.9,
+          "Aircraft: AC5": 3.0,
+          "Aircraft: AC6": 1.3
+        },
+        "classroom": {
+          "CL1": 7.49,
+          "CL2": 8.2,
+          "CL3": 8.0,
+          "CL4": 8.0,
+          "CL5": 12.2,
+          "CL6": 13.0
+        },
+        "instructor": {
+          "Instructor: 3": 7.499999999999999,
+          "Instructor: 4": 7.6,
+          "Instructor: 5": 7.9,
+          "Instructor: 7": 1.7,
+          "Instructor: 9": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-02-19",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 12.7
+        },
+        "oft": {
+          "Name: OFT1": 13.100000000000001,
+          "Name: OFT2": 8.7
+        },
+        "vtd": {
+          "Name: VTD1": 9.1
+        },
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 5.0,
+          "Aircraft: AC3": 5.5,
+          "Aircraft: AC5": 6.0,
+          "Aircraft: AC6": 4.7,
+          "Aircraft: AC7": 1.6,
+          "Aircraft: AC8": 1.6
+        },
+        "classroom": {
+          "CL1": 7.5,
+          "CL2": 26.0,
+          "CL3": 10.0,
+          "CL4": 7.0,
+          "CL5": 13.5,
+          "CL6": 16.0
+        },
+        "instructor": {
+          "Instructor: 3": 6.6,
+          "Instructor: 5": 5.5,
+          "Instructor: 6": 6.0,
+          "Instructor: 8": 4.7,
+          "Instructor: 11": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-02-20",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 14.0,
+          "Name: UTD2": 4.0
+        },
+        "oft": {
+          "Name: OFT1": 11.8
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 3.9000000000000004
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 7.5,
+          "Aircraft: AC2": 6.0,
+          "Aircraft: AC3": 6.300000000000001,
+          "Aircraft: AC5": 3.4,
+          "Aircraft: AC6": 1.6,
+          "Aircraft: AC7": 1.6
+        },
+        "classroom": {
+          "CL1": 7.1,
+          "CL2": 8.0,
+          "CL3": 5.4,
+          "CL4": 17.2,
+          "CL5": 7.5,
+          "CL6": 10.0
+        },
+        "instructor": {
+          "Instructor: 1": 9.1,
+          "Instructor: 3": 7.6,
+          "Instructor: 5": 6.300000000000001,
+          "Instructor: 8": 3.4
+        }
+      }
+    },
+    {
+      "date": "2026-02-23",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 15.100000000000001,
+          "Name: UTD2": 7.8
+        },
+        "oft": {
+          "Name: OFT1": 8.4
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 1.3
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 7.9,
+          "Aircraft: AC2": 6.6000000000000005,
+          "Aircraft: AC3": 6.6000000000000005,
+          "Aircraft: AC4": 6.4,
+          "Aircraft: AC5": 4.7,
+          "Aircraft: AC6": 1.6,
+          "Aircraft: AC7": 1.6
+        },
+        "classroom": {
+          "CL1": 11.99,
+          "CL2": 9.0,
+          "CL3": 7.4,
+          "CL4": 13.0,
+          "CL5": 27.0,
+          "CL6": 8.0
+        },
+        "instructor": {
+          "Instructor: 1": 9.5,
+          "Instructor: 2": 8.200000000000001,
+          "Instructor: 6": 6.6000000000000005,
+          "Instructor: 7": 6.4,
+          "Instructor: 8": 4.7
+        }
+      }
+    },
+    {
+      "date": "2026-02-24",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 11.9
+        },
+        "oft": {
+          "Name: OFT1": 6.3
+        },
+        "vtd": {
+          "Name: VTD1": 10.4
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.0,
+          "Aircraft: AC2": 6.4,
+          "Aircraft: AC3": 6.300000000000001,
+          "Aircraft: AC4": 6.8,
+          "Aircraft: AC5": 7.300000000000001,
+          "Aircraft: AC6": 3.0,
+          "Aircraft: AC7": 1.6,
+          "Aircraft: AC8": 1.6
+        },
+        "classroom": {
+          "CL1": 13.5,
+          "CL2": 4.0,
+          "CL3": 6.3,
+          "CL4": 11.3,
+          "CL5": 15.0,
+          "CL6": 16.4
+        },
+        "instructor": {
+          "Instructor: 1": 7.6,
+          "Instructor: 2": 8.0,
+          "Instructor: 3": 6.300000000000001,
+          "Instructor: 6": 6.8,
+          "Instructor: 7": 7.300000000000001,
+          "Instructor: 8": 3.0
+        }
+      }
+    },
+    {
+      "date": "2026-02-25",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 15.8,
+          "Name: UTD2": 3.9000000000000004
+        },
+        "oft": {
+          "Name: OFT1": 11.8,
+          "Name: OFT2": 3.5
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 2.6
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.300000000000001,
+          "Aircraft: AC3": 6.3,
+          "Aircraft: AC4": 6.7,
+          "Aircraft: AC5": 6.4,
+          "Aircraft: AC7": 6.699999999999999,
+          "Aircraft: AC8": 7.3999999999999995,
+          "Aircraft: AC11": 6.4,
+          "Aircraft: AC12": 5.0,
+          "Aircraft: AC14": 1.6,
+          "Aircraft: AC16": 1.6
+        },
+        "classroom": {
+          "CL1": 4.0,
+          "CL2": 8.0,
+          "CL3": 26.0,
+          "CL4": 13.6,
+          "CL5": 13.5,
+          "CL6": 12.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.9,
+          "Instructor: 2": 7.9,
+          "Instructor: 3": 6.7,
+          "Instructor: 5": 6.4,
+          "Instructor: 6": 6.699999999999999,
+          "Instructor: 7": 7.3999999999999995,
+          "Instructor: 9": 6.4,
+          "Instructor: 12": 5.0
+        }
+      }
+    },
+    {
+      "date": "2026-02-26",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.700000000000003,
+          "Name: UTD2": 13.3,
+          "Name: UTD3": 5.5
+        },
+        "oft": {
+          "Name: OFT1": 12.3,
+          "Name: OFT2": 12.8,
+          "Name: OFT3": 11.9
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 11.700000000000001,
+          "Name: VTD3": 6.5
+        },
+        "mr": {
+          "Name: MR1": 5.2
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.500000000000001,
+          "Aircraft: AC2": 6.4,
+          "Aircraft: AC4": 6.7,
+          "Aircraft: AC5": 6.3999999999999995,
+          "Aircraft: AC6": 6.0,
+          "Aircraft: AC7": 6.1,
+          "Aircraft: AC9": 6.5,
+          "Aircraft: AC10": 6.199999999999999,
+          "Aircraft: AC11": 6.3,
+          "Aircraft: AC12": 6.3,
+          "Aircraft: AC13": 6.2,
+          "Aircraft: AC14": 6.300000000000001,
+          "Aircraft: AC15": 6.5,
+          "Aircraft: AC16": 6.199999999999999,
+          "Aircraft: AC18": 6.300000000000001
+        },
+        "classroom": {
+          "CL1": 14.4,
+          "CL2": 13.0,
+          "CL3": 18.0,
+          "CL4": 22.3,
+          "CL5": 14.9,
+          "CL6": 15.499999999999998
+        },
+        "instructor": {
+          "Instructor: 1": 6.500000000000001,
+          "Instructor: 2": 6.4,
+          "Instructor: 4": 6.7,
+          "Instructor: 6": 6.3999999999999995,
+          "Instructor: 7": 6.0,
+          "Instructor: 9": 6.1,
+          "Instructor: 11": 6.5,
+          "Instructor: 12": 6.199999999999999,
+          "Instructor: 13": 6.3,
+          "Instructor: 15": 6.3,
+          "Instructor: 16": 6.2,
+          "Instructor: 17": 6.300000000000001,
+          "Instructor: 18": 6.5,
+          "Instructor: 19": 6.199999999999999,
+          "Instructor: 20": 6.300000000000001
+        }
+      }
+    },
+    {
+      "date": "2026-02-27",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 2.8
+        },
+        "vtd": {
+          "Name: VTD1": 3.9000000000000004
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC4": 6.8,
+          "Aircraft: AC5": 5.300000000000001,
+          "Aircraft: AC6": 3.4,
+          "Aircraft: AC7": 1.3,
+          "Aircraft: AC9": 1.3
+        },
+        "classroom": {
+          "CL1": 62.39999999999999,
+          "CL2": 61.79999999999999,
+          "CL3": 65.19999999999999,
+          "CL4": 94.39999999999998,
+          "CL5": 80.89999999999999,
+          "CL6": 61.99999999999999
+        },
+        "instructor": {
+          "Instructor: 1": 8.1,
+          "Instructor: 3": 6.6000000000000005,
+          "Instructor: 4": 3.4
+        }
+      }
+    },
+    {
+      "date": "2026-03-02",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.100000000000001,
+          "Name: UTD2": 13.0
+        },
+        "oft": {
+          "Name: OFT1": 3.9000000000000004
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD4": 1.3
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.1,
+          "Aircraft: AC3": 5.7,
+          "Aircraft: AC4": 6.0,
+          "Aircraft: AC6": 7.9,
+          "Aircraft: AC8": 3.3,
+          "Aircraft: AC10": 1.6
+        },
+        "classroom": {
+          "CL1": 29.2,
+          "CL2": 8.0,
+          "CL3": 6.8,
+          "CL4": 8.0,
+          "CL5": 6.6,
+          "CL6": 13.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.699999999999999,
+          "Instructor: 2": 7.300000000000001,
+          "Instructor: 3": 6.0,
+          "Instructor: 5": 7.9,
+          "Instructor: 6": 1.7
+        }
+      }
+    },
+    {
+      "date": "2026-03-03",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 8.6
+        },
+        "oft": {
+          "Name: OFT1": 2.3
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 2.6
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.1,
+          "Aircraft: AC3": 6.2,
+          "Aircraft: AC5": 6.000000000000001,
+          "Aircraft: AC6": 6.300000000000001,
+          "Aircraft: AC7": 3.3,
+          "Aircraft: AC9": 1.6
+        },
+        "classroom": {
+          "CL1": 6.8,
+          "CL2": 5.0,
+          "CL3": 6.8,
+          "CL4": 2.0,
+          "CL5": 2.0,
+          "CL6": 13.5
+        },
+        "instructor": {
+          "Instructor: 1": 7.699999999999999,
+          "Instructor: 2": 7.800000000000001,
+          "Instructor: 4": 6.000000000000001,
+          "Instructor: 6": 6.300000000000001,
+          "Instructor: 7": 1.7
+        }
+      }
+    },
+    {
+      "date": "2026-03-04",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.2,
+          "Name: UTD2": 10.5
+        },
+        "oft": {},
+        "vtd": {
+          "Name: VTD1": 10.4
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.3,
+          "Aircraft: AC2": 6.2,
+          "Aircraft: AC4": 6.2,
+          "Aircraft: AC5": 6.1,
+          "Aircraft: AC6": 3.2,
+          "Aircraft: AC8": 1.6,
+          "Aircraft: AC9": 1.6
+        },
+        "classroom": {
+          "CL1": 6.8,
+          "CL2": 13.5,
+          "CL3": 5.6,
+          "CL4": 8.0,
+          "CL5": 3.4,
+          "CL6": 8.0
+        },
+        "instructor": {
+          "Instructor: 2": 7.9,
+          "Instructor: 3": 7.800000000000001,
+          "Instructor: 4": 6.2,
+          "Instructor: 5": 6.1,
+          "Instructor: 6": 3.2
+        }
+      }
+    },
+    {
+      "date": "2026-03-05",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 7.5
+        },
+        "oft": {
+          "Name: OFT1": 5.6
+        },
+        "vtd": {
+          "Name: VTD1": 5.2
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.3,
+          "Aircraft: AC2": 6.0,
+          "Aircraft: AC3": 6.500000000000001,
+          "Aircraft: AC4": 6.1,
+          "Aircraft: AC6": 4.8,
+          "Aircraft: AC7": 1.6,
+          "Aircraft: AC8": 1.6
+        },
+        "classroom": {
+          "CL1": 6.6,
+          "CL2": 8.0,
+          "CL3": 4.0,
+          "CL4": 16.0,
+          "CL5": 3.4,
+          "CL6": 16.4
+        },
+        "instructor": {
+          "Instructor: 1": 7.9,
+          "Instructor: 2": 7.6,
+          "Instructor: 3": 6.500000000000001,
+          "Instructor: 4": 6.1,
+          "Instructor: 5": 4.8
+        }
+      }
+    },
+    {
+      "date": "2026-03-06",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.100000000000001,
+          "Name: UTD2": 5.5
+        },
+        "oft": {
+          "Name: OFT1": 8.1
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 3.9000000000000004
+        },
+        "mr": {
+          "Name: MR1": 1.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.300000000000001,
+          "Aircraft: AC2": 7.7,
+          "Aircraft: AC3": 6.300000000000001,
+          "Aircraft: AC4": 6.199999999999999,
+          "Aircraft: AC5": 6.5,
+          "Aircraft: AC6": 6.0,
+          "Aircraft: AC7": 6.300000000000001,
+          "Aircraft: AC9": 6.2,
+          "Aircraft: AC10": 1.3,
+          "Aircraft: AC11": 1.3
+        },
+        "classroom": {
+          "CL1": 16.0,
+          "CL2": 13.0,
+          "CL3": 15.2,
+          "CL4": 10.599999999999998,
+          "CL5": 12.200000000000001,
+          "CL6": 23.4
+        },
+        "instructor": {
+          "Instructor: 1": 7.6000000000000005,
+          "Instructor: 2": 9.0,
+          "Instructor: 3": 6.300000000000001,
+          "Instructor: 5": 6.199999999999999,
+          "Instructor: 6": 6.5,
+          "Instructor: 7": 6.0,
+          "Instructor: 9": 6.300000000000001,
+          "Instructor: 10": 6.2
+        }
+      }
+    },
+    {
+      "date": "2026-03-09",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 14.7,
+          "Name: UTD2": 5.5
+        },
+        "oft": {
+          "Name: OFT1": 12.500000000000002,
+          "Name: OFT2": 6.8999999999999995
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001
+        },
+        "mr": {
+          "Name: MR1": 5.1
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.7,
+          "Aircraft: AC3": 7.9,
+          "Aircraft: AC5": 6.0,
+          "Aircraft: AC6": 5.6,
+          "Aircraft: AC7": 6.1,
+          "Aircraft: AC9": 6.2,
+          "Aircraft: AC10": 4.9,
+          "Aircraft: AC11": 1.6,
+          "Aircraft: AC12": 1.6
+        },
+        "classroom": {
+          "CL1": 5.6,
+          "CL2": 11.3,
+          "CL3": 8.8,
+          "CL4": 32.0,
+          "CL5": 33.6,
+          "CL6": 11.4
+        },
+        "instructor": {
+          "Instructor: 3": 8.3,
+          "Instructor: 4": 7.9,
+          "Instructor: 5": 6.0,
+          "Instructor: 6": 5.6,
+          "Instructor: 8": 6.1,
+          "Instructor: 10": 7.800000000000001,
+          "Instructor: 13": 4.9
+        }
+      }
+    },
+    {
+      "date": "2026-03-10",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 14.000000000000002
+        },
+        "oft": {
+          "Name: OFT1": 12.600000000000001,
+          "Name: OFT2": 13.3
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 6.5
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 5.7,
+          "Aircraft: AC2": 6.4,
+          "Aircraft: AC3": 6.3,
+          "Aircraft: AC7": 6.6000000000000005,
+          "Aircraft: AC9": 5.7,
+          "Aircraft: AC10": 8.0,
+          "Aircraft: AC11": 1.6,
+          "Aircraft: AC13": 1.6
+        },
+        "classroom": {
+          "CL1": 19.2,
+          "CL2": 17.0,
+          "CL3": 14.4,
+          "CL4": 20.0,
+          "CL5": 8.3,
+          "CL6": 13.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.300000000000001,
+          "Instructor: 2": 8.0,
+          "Instructor: 4": 6.3,
+          "Instructor: 6": 6.6000000000000005,
+          "Instructor: 7": 5.7,
+          "Instructor: 8": 8.0
+        }
+      }
+    },
+    {
+      "date": "2026-03-11",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 12.8,
+          "Name: UTD2": 6.8
+        },
+        "oft": {
+          "Name: OFT1": 13.399999999999999,
+          "Name: OFT2": 14.200000000000001,
+          "Name: OFT3": 1.3
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 1.3
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC3": 5.4,
+          "Aircraft: AC4": 6.4,
+          "Aircraft: AC5": 5.8999999999999995,
+          "Aircraft: AC6": 6.5,
+          "Aircraft: AC7": 6.5,
+          "Aircraft: AC8": 5.9,
+          "Aircraft: AC9": 2.9000000000000004,
+          "Aircraft: AC10": 1.6
+        },
+        "classroom": {
+          "CL1": 16.0,
+          "CL2": 14.8,
+          "CL3": 12.0,
+          "CL4": 54.0,
+          "CL5": 9.0,
+          "CL6": 32.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.0,
+          "Instructor: 2": 8.0,
+          "Instructor: 6": 5.8999999999999995,
+          "Instructor: 9": 6.5,
+          "Instructor: 10": 6.5,
+          "Instructor: 12": 5.9,
+          "Instructor: 13": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-03-12",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 14.4,
+          "Name: UTD2": 13.000000000000002,
+          "Name: UTD3": 7.1
+        },
+        "oft": {
+          "Name: OFT1": 13.600000000000001,
+          "Name: OFT2": 13.000000000000002,
+          "Name: OFT3": 13.3,
+          "Name: OFT4": 2.8
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 11.700000000000001,
+          "Name: VTD3": 10.4
+        },
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC2": 5.8,
+          "Aircraft: AC4": 5.8,
+          "Aircraft: AC7": 7.5,
+          "Aircraft: AC13": 6.3,
+          "Aircraft: AC14": 6.5,
+          "Aircraft: AC15": 5.8999999999999995,
+          "Aircraft: AC17": 7.7
+        },
+        "classroom": {
+          "CL1": 15.9,
+          "CL2": 30.8,
+          "CL3": 27.0,
+          "CL4": 22.7,
+          "CL5": 20.0,
+          "CL6": 46.00399999999999
+        },
+        "instructor": {
+          "Instructor: 3": 5.8,
+          "Instructor: 4": 5.8,
+          "Instructor: 5": 7.5,
+          "Instructor: 6": 6.3,
+          "Instructor: 8": 6.5,
+          "Instructor: 9": 5.8999999999999995,
+          "Instructor: 10": 7.7
+        }
+      }
+    },
+    {
+      "date": "2026-03-13",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 1.6,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 1.6,
+          "Instructor: 10": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-03-16",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 12.700000000000001,
+          "Name: UTD2": 13.4,
+          "Name: UTD3": 1.3
+        },
+        "oft": {
+          "Name: OFT1": 13.200000000000001,
+          "Name: OFT2": 10.0
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 11.700000000000001,
+          "Name: VTD3": 6.5
+        },
+        "mr": {
+          "Name: MR1": 3.9000000000000004
+        },
+        "aircraft": {
+          "Aircraft: AC1": 5.6,
+          "Aircraft: AC2": 6.6,
+          "Aircraft: AC3": 6.199999999999999,
+          "Aircraft: AC4": 6.4,
+          "Aircraft: AC5": 6.1000000000000005,
+          "Aircraft: AC6": 6.699999999999999,
+          "Aircraft: AC7": 7.4,
+          "Aircraft: AC9": 6.5,
+          "Aircraft: AC10": 6.7,
+          "Aircraft: AC11": 5.9,
+          "Aircraft: AC12": 5.8,
+          "Aircraft: AC13": 5.9,
+          "Aircraft: AC15": 5.8,
+          "Aircraft: AC16": 6.4,
+          "Aircraft: AC17": 8.0
+        },
+        "classroom": {
+          "CL1": 94.8,
+          "CL2": 47.300000000000004,
+          "CL3": 64.5,
+          "CL4": 55.7,
+          "CL5": 94.39999999999998,
+          "CL6": 108.0
+        },
+        "instructor": {
+          "Instructor: 3": 5.6,
+          "Instructor: 8": 6.6,
+          "Instructor: 9": 6.199999999999999,
+          "Instructor: 10": 6.4,
+          "Instructor: 12": 6.1000000000000005,
+          "Instructor: 13": 6.699999999999999,
+          "Instructor: 15": 7.4,
+          "Instructor: 16": 6.5,
+          "Instructor: 18": 6.7,
+          "Instructor: 20": 5.9,
+          "Instructor: 21": 5.8,
+          "Instructor: 23": 5.9,
+          "Instructor: 24": 5.8,
+          "Instructor: 25": 6.4,
+          "Instructor: 29": 8.0
+        }
+      }
+    },
+    {
+      "date": "2026-03-17",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 1.3,
+          "Aircraft: AC2": 1.3
+        },
+        "classroom": {
+          "CL1": 58.39999999999999,
+          "CL2": 58.39999999999999,
+          "CL3": 14.6,
+          "CL4": 5.0,
+          "CL5": 3.4,
+          "CL6": 3.6
+        },
+        "instructor": {
+          "Instructor: 1": 1.3,
+          "Instructor: 2": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-03-18",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.700000000000003
+        },
+        "oft": {
+          "Name: OFT1": 12.3,
+          "Name: OFT2": 14.3,
+          "Name: OFT3": 2.3
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 11.700000000000001,
+          "Name: VTD3": 2.6
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 5.8,
+          "Aircraft: AC2": 5.7,
+          "Aircraft: AC3": 6.0,
+          "Aircraft: AC4": 6.0,
+          "Aircraft: AC8": 6.2,
+          "Aircraft: AC10": 5.6,
+          "Aircraft: AC11": 6.3,
+          "Aircraft: AC14": 6.2,
+          "Aircraft: AC15": 5.6,
+          "Aircraft: AC17": 5.9,
+          "Aircraft: AC18": 6.8
+        },
+        "classroom": {
+          "CL1": 42.199999999999996,
+          "CL2": 32.7,
+          "CL3": 27.4,
+          "CL4": 66.79999999999998,
+          "CL5": 43.46,
+          "CL6": 35.4
+        },
+        "instructor": {
+          "Instructor: 1": 5.8,
+          "Instructor: 3": 5.7,
+          "Instructor: 4": 6.0,
+          "Instructor: 5": 6.0,
+          "Instructor: 9": 6.2,
+          "Instructor: 10": 5.6,
+          "Instructor: 13": 6.3,
+          "Instructor: 14": 6.2,
+          "Instructor: 15": 5.6,
+          "Instructor: 18": 5.9,
+          "Instructor: 20": 6.8
+        }
+      }
+    },
+    {
+      "date": "2026-03-19",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 1.3,
+          "Aircraft: AC2": 1.3
+        },
+        "classroom": {
+          "CL1": 16.0,
+          "CL2": 3.4,
+          "CL3": 8.0
+        },
+        "instructor": {
+          "Instructor: 1": 1.3,
+          "Instructor: 2": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-03-20",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 6.7,
+          "Aircraft: AC3": 6.300000000000001,
+          "Aircraft: AC4": 6.8,
+          "Aircraft: AC5": 6.4,
+          "Aircraft: AC7": 6.3,
+          "Aircraft: AC9": 2.6,
+          "Aircraft: AC11": 1.6,
+          "Aircraft: AC12": 1.6
+        },
+        "classroom": {
+          "CL1": 13.6,
+          "CL2": 1.7,
+          "CL3": 8.0,
+          "CL4": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 8.3,
+          "Instructor: 4": 6.300000000000001,
+          "Instructor: 5": 6.8,
+          "Instructor: 7": 6.4,
+          "Instructor: 8": 6.3,
+          "Instructor: 10": 4.2
+        }
+      }
+    },
+    {
+      "date": "2026-03-23",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 15.9,
+          "Name: UTD2": 15.9
+        },
+        "oft": {
+          "Name: OFT1": 10.5
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 2.6
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.7,
+          "Aircraft: AC2": 6.3999999999999995,
+          "Aircraft: AC3": 6.2,
+          "Aircraft: AC4": 6.4,
+          "Aircraft: AC5": 5.9,
+          "Aircraft: AC7": 6.3,
+          "Aircraft: AC8": 5.800000000000001,
+          "Aircraft: AC10": 5.8,
+          "Aircraft: AC11": 8.0,
+          "Aircraft: AC13": 1.6,
+          "Aircraft: AC15": 1.6
+        },
+        "classroom": {
+          "CL1": 68.0,
+          "CL2": 60.30000000000001,
+          "CL3": 56.400000000000006,
+          "CL4": 45.3,
+          "CL5": 37.699999999999996,
+          "CL6": 90.39999999999999
+        },
+        "instructor": {
+          "Instructor: 1": 8.3,
+          "Instructor: 2": 8.0,
+          "Instructor: 4": 6.2,
+          "Instructor: 5": 6.4,
+          "Instructor: 6": 5.9,
+          "Instructor: 7": 6.3,
+          "Instructor: 8": 5.800000000000001,
+          "Instructor: 12": 5.8,
+          "Instructor: 13": 8.0
+        }
+      }
+    },
+    {
+      "date": "2026-03-24",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 15.9,
+          "Name: UTD2": 10.899999999999999
+        },
+        "oft": {
+          "Name: OFT1": 13.8,
+          "Name: OFT2": 12.9
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 2.6
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.8,
+          "Aircraft: AC3": 5.7,
+          "Aircraft: AC6": 6.6,
+          "Aircraft: AC7": 5.8,
+          "Aircraft: AC8": 6.0,
+          "Aircraft: AC9": 2.8,
+          "Aircraft: AC10": 1.6,
+          "Aircraft: AC11": 1.6
+        },
+        "classroom": {
+          "CL1": 25.6,
+          "CL2": 26.500000000000004,
+          "CL3": 25.7,
+          "CL4": 13.0,
+          "CL5": 18.38,
+          "CL6": 14.3
+        },
+        "instructor": {
+          "Instructor: 1": 8.4,
+          "Instructor: 2": 7.300000000000001,
+          "Instructor: 4": 6.6,
+          "Instructor: 5": 5.8,
+          "Instructor: 6": 6.0,
+          "Instructor: 7": 2.8
+        }
+      }
+    },
+    {
+      "date": "2026-03-25",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 14.099999999999998,
+          "Name: UTD2": 15.8,
+          "Name: UTD3": 14.6,
+          "Name: UTD4": 10.5
+        },
+        "oft": {
+          "Name: OFT1": 12.700000000000001,
+          "Name: OFT2": 5.5
+        },
+        "vtd": {
+          "Name: VTD1": 10.4
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.3999999999999995,
+          "Aircraft: AC3": 6.0,
+          "Aircraft: AC4": 5.699999999999999,
+          "Aircraft: AC7": 6.0,
+          "Aircraft: AC8": 5.6000000000000005,
+          "Aircraft: AC9": 4.9,
+          "Aircraft: AC10": 3.8,
+          "Aircraft: AC11": 1.6,
+          "Aircraft: AC13": 1.6
+        },
+        "classroom": {
+          "CL1": 8.0,
+          "CL2": 20.0,
+          "CL3": 46.5,
+          "CL4": 16.3,
+          "CL5": 13.2,
+          "CL6": 9.7
+        },
+        "instructor": {
+          "Instructor: 1": 8.0,
+          "Instructor: 4": 6.0,
+          "Instructor: 5": 5.699999999999999,
+          "Instructor: 6": 6.0,
+          "Instructor: 7": 5.6000000000000005,
+          "Instructor: 8": 4.9,
+          "Instructor: 9": 5.4
+        }
+      }
+    },
+    {
+      "date": "2026-03-26",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 15.8,
+          "Name: UTD2": 12.5,
+          "Name: UTD3": 1.6
+        },
+        "oft": {
+          "Name: OFT1": 13.600000000000001,
+          "Name: OFT2": 10.5
+        },
+        "vtd": {
+          "Name: VTD1": 10.4
+        },
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.300000000000001,
+          "Aircraft: AC2": 5.8999999999999995,
+          "Aircraft: AC3": 6.0,
+          "Aircraft: AC4": 5.9,
+          "Aircraft: AC5": 7.6000000000000005,
+          "Aircraft: AC6": 5.800000000000001,
+          "Aircraft: AC7": 7.800000000000001,
+          "Aircraft: AC11": 1.6,
+          "Aircraft: AC12": 1.6
+        },
+        "classroom": {
+          "CL1": 11.8,
+          "CL2": 40.5,
+          "CL3": 24.0,
+          "CL4": 6.200000000000001,
+          "CL5": 8.8,
+          "CL6": 20.3
+        },
+        "instructor": {
+          "Instructor: 1": 7.9,
+          "Instructor: 3": 7.5,
+          "Instructor: 4": 6.0,
+          "Instructor: 5": 5.9,
+          "Instructor: 6": 7.6000000000000005,
+          "Instructor: 7": 5.800000000000001,
+          "Instructor: 8": 7.800000000000001
+        }
+      }
+    },
+    {
+      "date": "2026-03-27",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 2.3
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 2.9000000000000004,
+          "Aircraft: AC2": 1.3,
+          "Aircraft: AC3": 1.3
+        },
+        "classroom": {
+          "CL1": 8.0,
+          "CL2": 3.4,
+          "CL3": 3.4,
+          "CL4": 4.0
+        },
+        "instructor": {
+          "Instructor: 1": 4.2,
+          "Instructor: 2": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-03-30",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 14.200000000000001,
+          "Name: UTD2": 15.8,
+          "Name: UTD3": 12.300000000000002
+        },
+        "oft": {
+          "Name: OFT1": 13.400000000000002,
+          "Name: OFT2": 12.2
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 5.2
+        },
+        "mr": {
+          "Name: MR1": 9.9
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.2,
+          "Aircraft: AC2": 5.9,
+          "Aircraft: AC4": 6.300000000000001,
+          "Aircraft: AC8": 6.5,
+          "Aircraft: AC9": 6.0,
+          "Aircraft: AC10": 6.4,
+          "Aircraft: AC11": 6.3,
+          "Aircraft: AC13": 6.3,
+          "Aircraft: AC14": 6.8,
+          "Aircraft: AC15": 6.2,
+          "Aircraft: AC16": 6.0,
+          "Aircraft: AC17": 6.3
+        },
+        "classroom": {
+          "CL1": 22.8,
+          "CL2": 29.89999999999999,
+          "CL3": 52.0,
+          "CL4": 18.4,
+          "CL5": 21.9,
+          "CL6": 28.980000000000004
+        },
+        "instructor": {
+          "Instructor: 2": 6.2,
+          "Instructor: 5": 5.9,
+          "Instructor: 9": 6.300000000000001,
+          "Instructor: 10": 6.5,
+          "Instructor: 11": 6.0,
+          "Instructor: 12": 6.4,
+          "Instructor: 13": 6.3,
+          "Instructor: 14": 6.3,
+          "Instructor: 15": 6.8,
+          "Instructor: 17": 6.2,
+          "Instructor: 19": 6.0,
+          "Instructor: 20": 6.3
+        }
+      }
+    },
+    {
+      "date": "2026-03-31",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 1.6,
+          "Aircraft: AC2": 1.6
+        },
+        "classroom": {
+          "CL1": 5.49
+        },
+        "instructor": {
+          "Instructor: 1": 1.6,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-04-01",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.6,
+          "Aircraft: AC2": 6.5,
+          "Aircraft: AC3": 5.6,
+          "Aircraft: AC5": 1.6,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {
+          "CL1": 8.0,
+          "CL2": 10.2,
+          "CL3": 16.0,
+          "CL4": 3.4,
+          "CL5": 5.49
+        },
+        "instructor": {
+          "Instructor: 3": 8.2,
+          "Instructor: 4": 6.5,
+          "Instructor: 5": 5.6,
+          "Instructor: 9": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-04-02",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 8.5
+        },
+        "oft": {
+          "Name: OFT1": 6.6
+        },
+        "vtd": {
+          "Name: VTD1": 9.1
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 7.5,
+          "Aircraft: AC2": 6.0,
+          "Aircraft: AC3": 4.7,
+          "Aircraft: AC4": 1.3,
+          "Aircraft: AC5": 1.3
+        },
+        "classroom": {
+          "CL1": 36.6,
+          "CL2": 73.69999999999999,
+          "CL3": 46.5,
+          "CL4": 87.49999999999999,
+          "CL5": 80.79999999999998,
+          "CL6": 55.0
+        },
+        "instructor": {
+          "Instructor: 3": 8.8,
+          "Instructor: 4": 6.0,
+          "Instructor: 5": 4.7,
+          "Instructor: 9": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-04-03",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 12.6
+        },
+        "oft": {
+          "Name: OFT1": 7.8
+        },
+        "vtd": {
+          "Name: VTD1": 10.4
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.5,
+          "Aircraft: AC2": 5.2,
+          "Aircraft: AC3": 3.4,
+          "Aircraft: AC4": 1.6,
+          "Aircraft: AC5": 1.6
+        },
+        "classroom": {
+          "CL1": 58.39999999999999,
+          "CL2": 58.39999999999999,
+          "CL3": 58.39999999999999,
+          "CL4": 14.6,
+          "CL5": 32.0,
+          "CL6": 15.7
+        },
+        "instructor": {
+          "Instructor: 1": 8.1,
+          "Instructor: 2": 6.800000000000001,
+          "Instructor: 3": 3.4
+        }
+      }
+    },
+    {
+      "date": "2026-04-06",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 14.3
+        },
+        "oft": {
+          "Name: OFT1": 5.8
+        },
+        "vtd": {
+          "Name: VTD1": 7.8
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC3": 6.6,
+          "Aircraft: AC4": 4.800000000000001,
+          "Aircraft: AC5": 1.6,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {
+          "CL1": 4.0,
+          "CL2": 39.0,
+          "CL3": 1.6
+        },
+        "instructor": {
+          "Instructor: 2": 8.2,
+          "Instructor: 3": 6.4
+        }
+      }
+    },
+    {
+      "date": "2026-04-07",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 12.8
+        },
+        "oft": {
+          "Name: OFT1": 10.0
+        },
+        "vtd": {
+          "Name: VTD1": 3.9000000000000004
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.3999999999999995,
+          "Aircraft: AC2": 6.699999999999999,
+          "Aircraft: AC3": 3.2,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {
+          "CL1": 16.0,
+          "CL2": 6.0
+        },
+        "instructor": {
+          "Instructor: 2": 8.0,
+          "Instructor: 3": 8.299999999999999,
+          "Instructor: 4": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-04-08",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD2": 14.400000000000002,
+          "Name: UTD3": 15.6,
+          "Name: UTD4": 1.6
+        },
+        "oft": {
+          "Name: OFT1": 6.3
+        },
+        "vtd": {
+          "Name: VTD1": 2.6
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 6.3,
+          "Aircraft: AC3": 6.699999999999999,
+          "Aircraft: AC4": 3.3,
+          "Aircraft: AC5": 1.6
+        },
+        "classroom": {
+          "CL1": 10.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.9,
+          "Instructor: 2": 8.299999999999999,
+          "Instructor: 3": 1.7
+        }
+      }
+    },
+    {
+      "date": "2026-04-09",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 12.799999999999999,
+          "Name: UTD2": 2.0
+        },
+        "oft": {
+          "Name: OFT1": 13.8,
+          "Name: OFT2": 6.3
+        },
+        "vtd": {
+          "Name: VTD1": 7.8
+        },
+        "mr": {
+          "Name: MR1": 4.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.3,
+          "Aircraft: AC2": 6.3,
+          "Aircraft: AC3": 6.199999999999999,
+          "Aircraft: AC5": 6.300000000000001,
+          "Aircraft: AC6": 6.6,
+          "Aircraft: AC7": 2.8,
+          "Aircraft: AC10": 1.3
+        },
+        "classroom": {
+          "CL1": 27.0,
+          "CL2": 4.7,
+          "CL3": 4.0,
+          "CL4": 14.7,
+          "CL5": 5.4,
+          "CL6": 4.0
+        },
+        "instructor": {
+          "Instructor: 6": 6.3,
+          "Instructor: 7": 6.3,
+          "Instructor: 9": 7.499999999999999,
+          "Instructor: 12": 6.300000000000001,
+          "Instructor: 14": 7.8999999999999995,
+          "Instructor: 18": 1.5
+        }
+      }
+    },
+    {
+      "date": "2026-04-10",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 14.600000000000001,
+          "Name: UTD2": 6.5
+        },
+        "oft": {
+          "Name: OFT1": 6.2
+        },
+        "vtd": {
+          "Name: VTD2": 7.8
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.2,
+          "Aircraft: AC2": 6.8,
+          "Aircraft: AC4": 6.0,
+          "Aircraft: AC6": 4.6,
+          "Aircraft: AC7": 1.3,
+          "Aircraft: AC8": 1.3
+        },
+        "classroom": {
+          "CL1": 8.0,
+          "CL2": 1.6,
+          "CL3": 1.6,
+          "CL4": 16.0,
+          "CL5": 1.3,
+          "CL6": 8.0
+        },
+        "instructor": {
+          "Instructor: 2": 7.5,
+          "Instructor: 4": 6.8,
+          "Instructor: 5": 6.0,
+          "Instructor: 6": 4.6,
+          "Instructor: 10": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-04-13",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 2.9000000000000004
+        },
+        "oft": {
+          "Name: OFT1": 7.6
+        },
+        "vtd": {
+          "Name: VTD1": 10.4
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.2,
+          "Aircraft: AC2": 6.3,
+          "Aircraft: AC4": 5.7,
+          "Aircraft: AC5": 6.300000000000001,
+          "Aircraft: AC6": 1.6,
+          "Aircraft: AC7": 1.6
+        },
+        "classroom": {
+          "CL1": 26.0,
+          "CL2": 10.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.800000000000001,
+          "Instructor: 3": 7.9,
+          "Instructor: 4": 5.7,
+          "Instructor: 5": 6.300000000000001
+        }
+      }
+    },
+    {
+      "date": "2026-04-14",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 2.9000000000000004
+        },
+        "oft": {
+          "Name: OFT1": 12.3
+        },
+        "vtd": {
+          "Name: VTD1": 9.1
+        },
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.2,
+          "Aircraft: AC3": 5.9,
+          "Aircraft: AC4": 6.4,
+          "Aircraft: AC5": 6.5,
+          "Aircraft: AC8": 1.6,
+          "Aircraft: AC9": 1.6
+        },
+        "classroom": {
+          "CL1": 4.0,
+          "CL2": 3.4,
+          "CL3": 3.2,
+          "CL4": 27.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.800000000000001,
+          "Instructor: 2": 7.5,
+          "Instructor: 3": 6.4,
+          "Instructor: 4": 6.5
+        }
+      }
+    },
+    {
+      "date": "2026-04-15",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 15.600000000000001,
+          "Name: UTD2": 3.2
+        },
+        "oft": {
+          "Name: OFT1": 11.5
+        },
+        "vtd": {
+          "Name: VTD1": 7.8
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.3,
+          "Aircraft: AC4": 5.7,
+          "Aircraft: AC5": 6.4,
+          "Aircraft: AC6": 6.5,
+          "Aircraft: AC7": 1.6,
+          "Aircraft: AC9": 1.6
+        },
+        "classroom": {
+          "CL1": 3.4,
+          "CL2": 3.4,
+          "CL3": 3.4,
+          "CL4": 8.0
+        },
+        "instructor": {
+          "Instructor: 3": 7.9,
+          "Instructor: 8": 5.7,
+          "Instructor: 9": 8.0,
+          "Instructor: 11": 6.5
+        }
+      }
+    },
+    {
+      "date": "2026-04-16",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 9.799999999999999
+        },
+        "oft": {
+          "Name: OFT1": 1.0
+        },
+        "vtd": {
+          "Name: VTD1": 5.2
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.7,
+          "Aircraft: AC2": 5.5,
+          "Aircraft: AC3": 5.9,
+          "Aircraft: AC4": 6.4,
+          "Aircraft: AC5": 6.7,
+          "Aircraft: AC8": 1.6,
+          "Aircraft: AC9": 1.6
+        },
+        "classroom": {
+          "CL1": 3.4,
+          "CL2": 4.0,
+          "CL3": 3.4,
+          "CL4": 26.0
+        },
+        "instructor": {
+          "Instructor: 1": 8.3,
+          "Instructor: 3": 7.1,
+          "Instructor: 4": 5.9,
+          "Instructor: 6": 6.4,
+          "Instructor: 7": 6.7
+        }
+      }
+    },
+    {
+      "date": "2026-04-17",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.200000000000003,
+          "Name: UTD2": 7.6
+        },
+        "oft": {
+          "Name: OFT1": 13.3
+        },
+        "vtd": {
+          "Name: VTD1": 9.1
+        },
+        "mr": {
+          "Name: MR1": 1.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.3,
+          "Aircraft: AC2": 5.800000000000001,
+          "Aircraft: AC4": 6.0,
+          "Aircraft: AC5": 6.699999999999999,
+          "Aircraft: AC6": 6.3,
+          "Aircraft: AC8": 6.699999999999999,
+          "Aircraft: AC9": 3.2,
+          "Aircraft: AC10": 1.6,
+          "Aircraft: AC11": 1.6
+        },
+        "classroom": {
+          "CL1": 4.6,
+          "CL2": 8.0,
+          "CL3": 4.800000000000001,
+          "CL4": 8.0,
+          "CL5": 6.0,
+          "CL6": 3.4
+        },
+        "instructor": {
+          "Instructor: 1": 7.9,
+          "Instructor: 3": 7.4,
+          "Instructor: 4": 6.0,
+          "Instructor: 5": 6.699999999999999,
+          "Instructor: 6": 6.3,
+          "Instructor: 7": 6.699999999999999,
+          "Instructor: 8": 3.2
+        }
+      }
+    },
+    {
+      "date": "2026-04-20",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.600000000000001,
+          "Name: UTD2": 10.5
+        },
+        "oft": {
+          "Name: OFT1": 10.899999999999999
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.500000000000001,
+          "Aircraft: AC2": 6.2,
+          "Aircraft: AC4": 6.3,
+          "Aircraft: AC5": 6.6000000000000005,
+          "Aircraft: AC6": 1.6,
+          "Aircraft: AC7": 1.6
+        },
+        "classroom": {
+          "CL1": 4.800000000000001,
+          "CL2": 2.0,
+          "CL3": 1.7,
+          "CL4": 8.0,
+          "CL5": 8.0
+        },
+        "instructor": {
+          "Instructor: 3": 8.100000000000001,
+          "Instructor: 4": 6.2,
+          "Instructor: 5": 6.3,
+          "Instructor: 6": 6.6000000000000005,
+          "Instructor: 9": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-04-21",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 12.3,
+          "Name: UTD2": 3.6
+        },
+        "oft": {
+          "Name: OFT1": 6.7
+        },
+        "vtd": {
+          "Name: VTD1": 6.5
+        },
+        "mr": {
+          "Name: MR1": 6.0
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.200000000000001,
+          "Aircraft: AC4": 6.200000000000001,
+          "Aircraft: AC5": 6.5,
+          "Aircraft: AC6": 1.6,
+          "Aircraft: AC7": 1.6
+        },
+        "classroom": {
+          "CL1": 8.0,
+          "CL2": 1.7,
+          "CL3": 2.0,
+          "CL4": 1.6,
+          "CL5": 3.4,
+          "CL6": 5.0
+        },
+        "instructor": {
+          "Instructor: 2": 7.800000000000001,
+          "Instructor: 3": 7.800000000000001,
+          "Instructor: 4": 6.5
+        }
+      }
+    },
+    {
+      "date": "2026-04-22",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 1.3,
+          "Aircraft: AC2": 1.3
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 1.3,
+          "Instructor: 3": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-04-23",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 8.8
+        },
+        "oft": {
+          "Name: OFT1": 13.900000000000002
+        },
+        "vtd": {
+          "Name: VTD1": 3.9000000000000004
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC3": 5.699999999999999,
+          "Aircraft: AC4": 6.5,
+          "Aircraft: AC5": 5.0,
+          "Aircraft: AC6": 1.6,
+          "Aircraft: AC7": 1.6
+        },
+        "classroom": {
+          "CL1": 5.0,
+          "CL2": 1.3,
+          "CL3": 1.6,
+          "CL4": 8.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.299999999999999,
+          "Instructor: 5": 6.5,
+          "Instructor: 6": 5.0,
+          "Instructor: 11": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-04-24",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 4.5
+        },
+        "oft": {
+          "Name: OFT1": 13.0
+        },
+        "vtd": {
+          "Name: VTD1": 6.5
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 5.5,
+          "Aircraft: AC3": 6.5,
+          "Aircraft: AC4": 3.2,
+          "Aircraft: AC5": 1.6,
+          "Aircraft: AC7": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7,
+          "CL2": 13.5,
+          "CL3": 5.0,
+          "CL4": 3.4
+        },
+        "instructor": {
+          "Instructor: 1": 7.1,
+          "Instructor: 2": 8.1,
+          "Instructor: 3": 3.2
+        }
+      }
+    },
+    {
+      "date": "2026-04-27",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 4.2
+        },
+        "oft": {
+          "Name: OFT1": 9.5
+        },
+        "vtd": {
+          "Name: VTD1": 5.2
+        },
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 5.6,
+          "Aircraft: AC2": 6.300000000000001,
+          "Aircraft: AC4": 6.4,
+          "Aircraft: AC6": 1.6,
+          "Aircraft: AC7": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7,
+          "CL2": 4.0,
+          "CL3": 13.5,
+          "CL4": 3.4
+        },
+        "instructor": {
+          "Instructor: 4": 5.6,
+          "Instructor: 5": 6.300000000000001,
+          "Instructor: 7": 6.4,
+          "Instructor: 9": 1.6,
+          "Instructor: 10": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-04-28",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 2.6
+        },
+        "oft": {
+          "Name: OFT1": 5.3
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.0,
+          "Aircraft: AC2": 2.6,
+          "Aircraft: AC3": 1.3
+        },
+        "classroom": {
+          "CL1": 1.3,
+          "CL2": 1.7,
+          "CL3": 1.6,
+          "CL4": 13.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.3,
+          "Instructor: 2": 2.6
+        }
+      }
+    },
+    {
+      "date": "2026-04-29",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 2.9000000000000004
+        },
+        "oft": {
+          "Name: OFT1": 6.8999999999999995
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 2.9000000000000004,
+          "Aircraft: AC2": 1.6,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7,
+          "CL2": 1.6,
+          "CL3": 2.0,
+          "CL4": 1.7
+        },
+        "instructor": {
+          "Instructor: 2": 4.5,
+          "Instructor: 3": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-04-30",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 9.7
+        },
+        "oft": {
+          "Name: OFT1": 1.3
+        },
+        "vtd": {
+          "Name: VTD1": 3.9000000000000004
+        },
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.1000000000000005,
+          "Aircraft: AC2": 1.6,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {
+          "CL1": 1.3,
+          "CL2": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 7.700000000000001,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-05-01",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 3.6
+        },
+        "oft": {
+          "Name: OFT1": 4.8
+        },
+        "vtd": {
+          "Name: VTD1": 2.6
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.300000000000001,
+          "Aircraft: AC2": 3.3,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {
+          "CL1": 1.6,
+          "CL2": 1.3
+        },
+        "instructor": {
+          "Instructor: 1": 7.9,
+          "Instructor: 2": 3.3
+        }
+      }
+    },
+    {
+      "date": "2026-05-04",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 1.6
+        },
+        "oft": {
+          "Name: OFT1": 4.5
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.0,
+          "Aircraft: AC2": 3.2,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 7.6,
+          "Instructor: 2": 3.2
+        }
+      }
+    },
+    {
+      "date": "2026-05-05",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 2.6,
+          "Aircraft: AC2": 1.3,
+          "Aircraft: AC4": 1.3
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 2": 3.9000000000000004,
+          "Instructor: 3": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-05-06",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 1.7
+        },
+        "aircraft": {
+          "Aircraft: AC2": 2.6,
+          "Aircraft: AC3": 1.6,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 2": 4.2,
+          "Instructor: 10": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-05-07",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 1.7
+        },
+        "aircraft": {
+          "Aircraft: AC2": 2.9000000000000004,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {
+          "CL1": 1.6
+        },
+        "instructor": {
+          "Instructor: 1": 2.9000000000000004,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-05-08",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 1.6
+        },
+        "oft": {
+          "Name: OFT1": 4.0
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 1.6,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {
+          "CL1": 1.6
+        },
+        "instructor": {
+          "Instructor: 2": 1.6,
+          "Instructor: 9": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-05-11",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 3.2
+        },
+        "oft": {
+          "Name: OFT1": 4.0
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 1.6,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 1.6,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-05-12",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 7.2
+        },
+        "oft": {
+          "Name: OFT1": 14.3,
+          "Name: OFT2": 1.0
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC3": 6.699999999999999,
+          "Aircraft: AC4": 6.4,
+          "Aircraft: AC5": 5.9,
+          "Aircraft: AC7": 1.6,
+          "Aircraft: AC8": 1.6
+        },
+        "classroom": {
+          "CL1": 5.1,
+          "CL2": 1.7,
+          "CL3": 4.0,
+          "CL4": 4.0
+        },
+        "instructor": {
+          "Instructor: 1": 8.299999999999999,
+          "Instructor: 3": 8.0,
+          "Instructor: 4": 5.9
+        }
+      }
+    },
+    {
+      "date": "2026-05-13",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 5.6
+        },
+        "oft": {
+          "Name: OFT1": 13.3,
+          "Name: OFT2": 11.3
+        },
+        "vtd": {
+          "Name: VTD1": 3.9000000000000004
+        },
+        "mr": {
+          "Name: MR1": 6.3999999999999995
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.8,
+          "Aircraft: AC2": 6.2,
+          "Aircraft: AC5": 6.3,
+          "Aircraft: AC8": 4.2,
+          "Aircraft: AC9": 1.6,
+          "Aircraft: AC10": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7,
+          "CL2": 3.4,
+          "CL3": 13.0,
+          "CL4": 8.0,
+          "CL5": 3.4,
+          "CL6": 13.5
+        },
+        "instructor": {
+          "Instructor: 1": 8.4,
+          "Instructor: 2": 7.800000000000001,
+          "Instructor: 4": 6.3,
+          "Instructor: 5": 4.2
+        }
+      }
+    },
+    {
+      "date": "2026-05-14",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.3,
+          "Name: UTD2": 1.3
+        },
+        "oft": {
+          "Name: OFT1": 13.0,
+          "Name: OFT2": 14.7,
+          "Name: OFT3": 14.3,
+          "Name: OFT4": 1.3
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 5.2
+        },
+        "mr": {
+          "Name: MR1": 13.2
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.6000000000000005,
+          "Aircraft: AC2": 5.9,
+          "Aircraft: AC4": 6.300000000000001,
+          "Aircraft: AC5": 6.4,
+          "Aircraft: AC6": 5.6000000000000005,
+          "Aircraft: AC7": 6.4,
+          "Aircraft: AC8": 6.3999999999999995,
+          "Aircraft: AC9": 8.1,
+          "Aircraft: AC10": 8.0,
+          "Aircraft: AC11": 6.4,
+          "Aircraft: AC12": 1.3,
+          "Aircraft: AC13": 1.3
+        },
+        "classroom": {
+          "CL1": 10.9,
+          "CL2": 9.4,
+          "CL3": 16.0,
+          "CL4": 9.7,
+          "CL5": 11.4,
+          "CL6": 14.8
+        },
+        "instructor": {
+          "Instructor: 2": 7.9,
+          "Instructor: 3": 7.2,
+          "Instructor: 4": 6.300000000000001,
+          "Instructor: 6": 6.4,
+          "Instructor: 9": 5.6000000000000005,
+          "Instructor: 10": 6.4,
+          "Instructor: 11": 6.3999999999999995,
+          "Instructor: 12": 8.1,
+          "Instructor: 14": 8.0,
+          "Instructor: 15": 6.4
+        }
+      }
+    },
+    {
+      "date": "2026-05-15",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.700000000000001,
+          "Name: UTD2": 15.600000000000001,
+          "Name: UTD3": 1.3
+        },
+        "oft": {
+          "Name: OFT1": 14.600000000000001,
+          "Name: OFT2": 14.3,
+          "Name: OFT3": 11.8,
+          "Name: OFT4": 4.0
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 6.5
+        },
+        "mr": {
+          "Name: MR1": 6.8
+        },
+        "aircraft": {
+          "Aircraft: AC2": 6.5,
+          "Aircraft: AC3": 6.1,
+          "Aircraft: AC4": 6.6000000000000005,
+          "Aircraft: AC5": 6.8,
+          "Aircraft: AC6": 6.300000000000001,
+          "Aircraft: AC7": 6.7,
+          "Aircraft: AC8": 6.2,
+          "Aircraft: AC9": 6.300000000000001,
+          "Aircraft: AC10": 6.6000000000000005,
+          "Aircraft: AC11": 5.8,
+          "Aircraft: AC12": 4.9,
+          "Aircraft: AC13": 1.6,
+          "Aircraft: AC14": 1.6
+        },
+        "classroom": {
+          "CL1": 12.0,
+          "CL2": 8.0,
+          "CL3": 5.7,
+          "CL4": 6.7,
+          "CL5": 16.0,
+          "CL6": 26.0
+        },
+        "instructor": {
+          "Instructor: 1": 8.1,
+          "Instructor: 6": 6.1,
+          "Instructor: 8": 6.6000000000000005,
+          "Instructor: 12": 6.8,
+          "Instructor: 13": 6.300000000000001,
+          "Instructor: 16": 8.3,
+          "Instructor: 17": 6.2,
+          "Instructor: 18": 6.300000000000001,
+          "Instructor: 20": 6.6000000000000005,
+          "Instructor: 21": 5.8,
+          "Instructor: 22": 4.9
+        }
+      }
+    },
+    {
+      "date": "2026-05-18",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 14.600000000000001
+        },
+        "vtd": {
+          "Name: VTD1": 2.6
+        },
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.6,
+          "Aircraft: AC3": 3.1,
+          "Aircraft: AC4": 1.6,
+          "Aircraft: AC5": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 8.2,
+          "Instructor: 2": 4.7
+        }
+      }
+    },
+    {
+      "date": "2026-05-19",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC4": 6.8,
+          "Aircraft: AC5": 1.3,
+          "Aircraft: AC7": 1.3
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 8.1,
+          "Instructor: 2": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-05-20",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 1.3
+        },
+        "oft": {},
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 6.8,
+          "Aircraft: AC3": 6.6,
+          "Aircraft: AC4": 4.6,
+          "Aircraft: AC5": 1.6,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 8.4,
+          "Instructor: 7": 6.6,
+          "Instructor: 10": 6.199999999999999
+        }
+      }
+    },
+    {
+      "date": "2026-05-21",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.000000000000002,
+          "Name: UTD2": 5.3
+        },
+        "oft": {
+          "Name: OFT1": 13.3
+        },
+        "vtd": {
+          "Name: VTD1": 2.6
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.8,
+          "Aircraft: AC2": 6.6,
+          "Aircraft: AC3": 6.200000000000001,
+          "Aircraft: AC4": 6.300000000000001,
+          "Aircraft: AC5": 6.4,
+          "Aircraft: AC8": 6.3999999999999995,
+          "Aircraft: AC10": 6.3,
+          "Aircraft: AC11": 3.2,
+          "Aircraft: AC12": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7,
+          "CL2": 1.7,
+          "CL3": 5.0,
+          "CL4": 3.3,
+          "CL5": 1.7,
+          "CL6": 2.0
+        },
+        "instructor": {
+          "Instructor: 1": 8.4,
+          "Instructor: 2": 8.2,
+          "Instructor: 3": 6.200000000000001,
+          "Instructor: 5": 6.300000000000001,
+          "Instructor: 6": 6.4,
+          "Instructor: 8": 6.3999999999999995,
+          "Instructor: 9": 6.3,
+          "Instructor: 11": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-05-22",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.700000000000003,
+          "Name: UTD2": 6.5
+        },
+        "oft": {
+          "Name: OFT1": 13.6,
+          "Name: OFT2": 11.600000000000001
+        },
+        "vtd": {
+          "Name: VTD1": 2.6
+        },
+        "mr": {
+          "Name: MR1": 1.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.7,
+          "Aircraft: AC2": 6.8,
+          "Aircraft: AC3": 6.4,
+          "Aircraft: AC4": 6.3,
+          "Aircraft: AC5": 8.1,
+          "Aircraft: AC6": 6.3,
+          "Aircraft: AC7": 3.3,
+          "Aircraft: AC8": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7,
+          "CL2": 1.7,
+          "CL3": 13.5,
+          "CL4": 1.3,
+          "CL5": 8.0,
+          "CL6": 3.4
+        },
+        "instructor": {
+          "Instructor: 1": 8.3,
+          "Instructor: 6": 6.8,
+          "Instructor: 7": 6.4,
+          "Instructor: 13": 6.3,
+          "Instructor: 14": 9.7,
+          "Instructor: 16": 6.3,
+          "Instructor: 20": 1.7
+        }
+      }
+    },
+    {
+      "date": "2026-05-25",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 8.5
+        },
+        "oft": {
+          "Name: OFT1": 14.600000000000001,
+          "Name: OFT2": 5.7
+        },
+        "vtd": {
+          "Name: VTD1": 7.8
+        },
+        "mr": {
+          "Name: MR1": 3.0
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.5,
+          "Aircraft: AC3": 6.8,
+          "Aircraft: AC4": 6.7,
+          "Aircraft: AC5": 6.5,
+          "Aircraft: AC7": 6.5,
+          "Aircraft: AC8": 1.6,
+          "Aircraft: AC10": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7,
+          "CL2": 4.7,
+          "CL3": 5.1,
+          "CL4": 4.0,
+          "CL5": 5.0,
+          "CL6": 3.4
+        },
+        "instructor": {
+          "Instructor: 1": 8.1,
+          "Instructor: 2": 8.4,
+          "Instructor: 4": 6.7,
+          "Instructor: 5": 6.5,
+          "Instructor: 6": 6.5
+        }
+      }
+    },
+    {
+      "date": "2026-05-26",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 4.800000000000001,
+          "Aircraft: AC2": 1.6,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 6.4,
+          "Instructor: 9": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-05-27",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.200000000000001
+        },
+        "oft": {
+          "Name: OFT2": 13.7,
+          "Name: OFT3": 9.7
+        },
+        "vtd": {
+          "Name: VTD1": 10.4
+        },
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC3": 6.4,
+          "Aircraft: AC4": 6.7,
+          "Aircraft: AC5": 6.3,
+          "Aircraft: AC6": 6.7,
+          "Aircraft: AC7": 6.3,
+          "Aircraft: AC8": 6.4,
+          "Aircraft: AC9": 7.7,
+          "Aircraft: AC10": 3.3,
+          "Aircraft: AC11": 1.6,
+          "Aircraft: AC12": 1.6
+        },
+        "classroom": {
+          "CL1": 11.4,
+          "CL2": 6.300000000000001,
+          "CL3": 12.1,
+          "CL4": 13.0,
+          "CL5": 27.0,
+          "CL6": 12.0
+        },
+        "instructor": {
+          "Instructor: 1": 8.0,
+          "Instructor: 2": 8.3,
+          "Instructor: 3": 6.3,
+          "Instructor: 4": 6.7,
+          "Instructor: 5": 6.3,
+          "Instructor: 6": 6.4,
+          "Instructor: 7": 7.7,
+          "Instructor: 8": 3.3
+        }
+      }
+    },
+    {
+      "date": "2026-05-28",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 9.3
+        },
+        "vtd": {
+          "Name: VTD1": 2.6
+        },
+        "mr": {
+          "Name: MR1": 4.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.5,
+          "Aircraft: AC3": 6.1,
+          "Aircraft: AC5": 6.6,
+          "Aircraft: AC6": 6.0,
+          "Aircraft: AC7": 2.9000000000000004,
+          "Aircraft: AC11": 1.3
+        },
+        "classroom": {
+          "CL1": 2.6,
+          "CL2": 2.0
+        },
+        "instructor": {
+          "Instructor: 3": 7.8,
+          "Instructor: 6": 6.1,
+          "Instructor: 7": 6.6,
+          "Instructor: 9": 7.3,
+          "Instructor: 10": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-05-29",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 6.5
+        },
+        "oft": {
+          "Name: OFT1": 5.2
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {
+          "Name: MR1": 4.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.5,
+          "Aircraft: AC4": 5.5,
+          "Aircraft: AC5": 6.1,
+          "Aircraft: AC6": 6.300000000000001,
+          "Aircraft: AC7": 1.6,
+          "Aircraft: AC8": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 8.1,
+          "Instructor: 2": 7.1,
+          "Instructor: 3": 6.1,
+          "Instructor: 9": 6.300000000000001
+        }
+      }
+    },
+    {
+      "date": "2026-06-01",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 5.7
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.5,
+          "Aircraft: AC3": 2.6,
+          "Aircraft: AC5": 1.3,
+          "Aircraft: AC6": 1.3
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 7.8,
+          "Instructor: 2": 3.9000000000000004
+        }
+      }
+    },
+    {
+      "date": "2026-06-02",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 8.0
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.6000000000000005,
+          "Aircraft: AC2": 4.2,
+          "Aircraft: AC3": 1.6,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {
+          "CL1": 3.4
+        },
+        "instructor": {
+          "Instructor: 1": 8.200000000000001,
+          "Instructor: 3": 5.800000000000001
+        }
+      }
+    },
+    {
+      "date": "2026-06-03",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 5.7
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.4,
+          "Aircraft: AC3": 4.6000000000000005,
+          "Aircraft: AC4": 1.6,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {
+          "CL1": 3.4,
+          "CL2": 1.7
+        },
+        "instructor": {
+          "Instructor: 3": 8.0,
+          "Instructor: 4": 4.6000000000000005,
+          "Instructor: 10": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-06-04",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 3.4
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.2,
+          "Aircraft: AC2": 1.6,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {
+          "CL1": 2.6
+        },
+        "instructor": {
+          "Instructor: 1": 7.800000000000001,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-06-05",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 3.3
+        },
+        "oft": {
+          "Name: OFT1": 4.3
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {
+          "Name: MR1": 2.6
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.0,
+          "Aircraft: AC2": 6.699999999999999,
+          "Aircraft: AC3": 6.2,
+          "Aircraft: AC6": 3.2,
+          "Aircraft: AC7": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7,
+          "CL2": 1.6,
+          "CL3": 3.4
+        },
+        "instructor": {
+          "Instructor: 1": 7.6,
+          "Instructor: 2": 8.299999999999999,
+          "Instructor: 3": 6.2,
+          "Instructor: 5": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-06-08",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 2.9000000000000004
+        },
+        "oft": {
+          "Name: OFT1": 1.7
+        },
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 2.6
+        },
+        "aircraft": {
+          "Aircraft: AC1": 5.6000000000000005,
+          "Aircraft: AC2": 6.6,
+          "Aircraft: AC3": 4.9,
+          "Aircraft: AC4": 1.3,
+          "Aircraft: AC5": 1.3
+        },
+        "classroom": {
+          "CL1": 1.7,
+          "CL2": 1.3
+        },
+        "instructor": {
+          "Instructor: 1": 6.9,
+          "Instructor: 2": 7.8999999999999995,
+          "Instructor: 3": 4.9
+        }
+      }
+    },
+    {
+      "date": "2026-06-09",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 4.1,
+          "Aircraft: AC3": 1.3,
+          "Aircraft: AC4": 1.3
+        },
+        "classroom": {
+          "CL1": 1.7,
+          "CL2": 1.3
+        },
+        "instructor": {
+          "Instructor: 1": 5.3999999999999995,
+          "Instructor: 2": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-06-10",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 1.3
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 2.9000000000000004,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7,
+          "CL2": 3.4
+        },
+        "instructor": {
+          "Instructor: 1": 2.9000000000000004,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-06-11",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 2.9000000000000004,
+          "Aircraft: AC2": 1.6
+        },
+        "classroom": {
+          "CL1": 1.3,
+          "CL2": 3.4
+        },
+        "instructor": {
+          "Instructor: 1": 2.9000000000000004,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-06-12",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 1.3
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 1.6,
+          "Aircraft: AC2": 1.6
+        },
+        "classroom": {
+          "CL1": 2.6,
+          "CL2": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 1.6,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-06-15",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 2.6
+        },
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 1.6,
+          "Aircraft: AC2": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 1.6,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-06-16",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 1.3,
+          "Aircraft: AC2": 1.3
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 2": 1.3,
+          "Instructor: 3": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-06-17",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 1.6,
+          "Aircraft: AC2": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 1.6,
+          "Instructor: 9": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-06-18",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 1.6,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 1.6,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-06-19",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 1.6,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 2": 1.6,
+          "Instructor: 3": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-06-22",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 1.6,
+          "Aircraft: AC2": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 2": 1.6,
+          "Instructor: 3": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-06-23",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 2.9000000000000004
+        },
+        "oft": {
+          "Name: OFT1": 1.3
+        },
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC3": 6.699999999999999,
+          "Aircraft: AC7": 4.6000000000000005,
+          "Aircraft: AC8": 1.6,
+          "Aircraft: AC11": 1.6
+        },
+        "classroom": {
+          "CL1": 6.8,
+          "CL2": 1.3
+        },
+        "instructor": {
+          "Instructor: 1": 8.299999999999999,
+          "Instructor: 2": 6.200000000000001
+        }
+      }
+    },
+    {
+      "date": "2026-06-24",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 1.3,
+          "Aircraft: AC2": 1.3
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 1.3,
+          "Instructor: 2": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-06-25",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC3": 1.6,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 3": 1.6,
+          "Instructor: 9": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-06-26",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 8.0
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 1.6,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 1.6,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-06-29",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 4.0
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 1.6,
+          "Aircraft: AC2": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 3": 1.6,
+          "Instructor: 10": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-06-30",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC3": 3.3,
+          "Aircraft: AC5": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 3.3,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-07-01",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 11.8
+        },
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 4.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.6000000000000005,
+          "Aircraft: AC2": 3.0,
+          "Aircraft: AC4": 1.6,
+          "Aircraft: AC5": 1.6
+        },
+        "classroom": {
+          "CL1": 3.4
+        },
+        "instructor": {
+          "Instructor: 1": 8.200000000000001,
+          "Instructor: 2": 4.6
+        }
+      }
+    },
+    {
+      "date": "2026-07-02",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 1.0
+        },
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 8.1
+        },
+        "aircraft": {
+          "Aircraft: AC3": 5.0,
+          "Aircraft: AC4": 1.6,
+          "Aircraft: AC5": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 2": 6.6,
+          "Instructor: 3": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-07-03",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 1.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 3.3,
+          "Aircraft: AC2": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 3.3,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-07-06",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 4.0
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 3.0,
+          "Aircraft: AC2": 1.3
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 3.0,
+          "Instructor: 3": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-07-07",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 14.0
+        },
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 1.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 1.6,
+          "Aircraft: AC2": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 1.6,
+          "Instructor: 9": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-07-08",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 9.3
+        },
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC2": 3.3,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 3": 3.3,
+          "Instructor: 9": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-07-09",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 4.0
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {
+          "Name: MR1": 1.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 5.1,
+          "Aircraft: AC2": 1.6,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 6.699999999999999,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-07-10",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 8.0
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.8,
+          "Aircraft: AC2": 1.6,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 8.4,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-07-13",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 4.0
+        },
+        "oft": {
+          "Name: OFT1": 4.0
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {
+          "Name: MR2": 1.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.8,
+          "Aircraft: AC2": 6.5,
+          "Aircraft: AC3": 3.3,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {
+          "CL1": 3.4,
+          "CL2": 1.7,
+          "CL3": 1.6
+        },
+        "instructor": {
+          "Instructor: 1": 8.4,
+          "Instructor: 2": 8.1,
+          "Instructor: 4": 1.7
+        }
+      }
+    },
+    {
+      "date": "2026-07-14",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 5.7
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.699999999999999,
+          "Aircraft: AC3": 4.6,
+          "Aircraft: AC5": 1.6,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 8.299999999999999,
+          "Instructor: 3": 6.199999999999999
+        }
+      }
+    },
+    {
+      "date": "2026-07-15",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 2.9000000000000004
+        },
+        "oft": {
+          "Name: OFT1": 9.0
+        },
+        "vtd": {
+          "Name: VTD1": 7.8
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.699999999999999,
+          "Aircraft: AC2": 5.699999999999999,
+          "Aircraft: AC3": 6.7,
+          "Aircraft: AC6": 5.8,
+          "Aircraft: AC7": 6.0,
+          "Aircraft: AC8": 1.6,
+          "Aircraft: AC9": 1.6
+        },
+        "classroom": {
+          "CL1": 5.1,
+          "CL2": 3.9000000000000004,
+          "CL3": 4.0,
+          "CL4": 8.0,
+          "CL5": 4.0,
+          "CL6": 5.0
+        },
+        "instructor": {
+          "Instructor: 1": 8.299999999999999,
+          "Instructor: 3": 7.299999999999999,
+          "Instructor: 4": 6.7,
+          "Instructor: 5": 5.8,
+          "Instructor: 6": 6.0
+        }
+      }
+    },
+    {
+      "date": "2026-07-16",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 14.7,
+          "Name: UTD2": 10.8
+        },
+        "oft": {
+          "Name: OFT1": 13.400000000000002,
+          "Name: OFT2": 12.9,
+          "Name: OFT3": 5.3
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 2.6
+        },
+        "mr": {
+          "Name: MR1": 5.1
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.7,
+          "Aircraft: AC3": 5.699999999999999,
+          "Aircraft: AC4": 6.8,
+          "Aircraft: AC5": 6.0,
+          "Aircraft: AC8": 6.7,
+          "Aircraft: AC11": 6.5,
+          "Aircraft: AC12": 6.4,
+          "Aircraft: AC13": 6.8,
+          "Aircraft: AC14": 6.3,
+          "Aircraft: AC16": 3.3,
+          "Aircraft: AC17": 1.6
+        },
+        "classroom": {
+          "CL1": 8.4,
+          "CL2": 9.9,
+          "CL3": 13.0,
+          "CL4": 15.4,
+          "CL5": 8.0,
+          "CL6": 15.1
+        },
+        "instructor": {
+          "Instructor: 1": 8.3,
+          "Instructor: 2": 7.299999999999999,
+          "Instructor: 3": 6.8,
+          "Instructor: 4": 6.0,
+          "Instructor: 5": 6.7,
+          "Instructor: 6": 6.5,
+          "Instructor: 8": 6.4,
+          "Instructor: 11": 6.8,
+          "Instructor: 12": 6.3,
+          "Instructor: 13": 1.7
+        }
+      }
+    },
+    {
+      "date": "2026-07-17",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 10.1
+        },
+        "oft": {
+          "Name: OFT1": 14.5,
+          "Name: OFT2": 7.199999999999999
+        },
+        "vtd": {
+          "Name: VTD1": 6.5
+        },
+        "mr": {
+          "Name: MR1": 12.399999999999999
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.3,
+          "Aircraft: AC3": 5.9,
+          "Aircraft: AC4": 5.6,
+          "Aircraft: AC6": 5.3,
+          "Aircraft: AC7": 6.7,
+          "Aircraft: AC8": 6.0,
+          "Aircraft: AC9": 6.3,
+          "Aircraft: AC10": 6.500000000000001,
+          "Aircraft: AC14": 6.1,
+          "Aircraft: AC15": 4.8,
+          "Aircraft: AC17": 1.6,
+          "Aircraft: AC18": 1.6
+        },
+        "classroom": {
+          "CL1": 14.7,
+          "CL2": 6.0,
+          "CL3": 24.0,
+          "CL4": 13.8,
+          "CL5": 5.7,
+          "CL6": 6.8
+        },
+        "instructor": {
+          "Instructor: 1": 7.9,
+          "Instructor: 2": 7.5,
+          "Instructor: 4": 5.6,
+          "Instructor: 5": 5.3,
+          "Instructor: 7": 6.7,
+          "Instructor: 11": 6.0,
+          "Instructor: 13": 6.3,
+          "Instructor: 14": 6.500000000000001,
+          "Instructor: 17": 6.1,
+          "Instructor: 19": 4.8
+        }
+      }
+    },
+    {
+      "date": "2026-07-20",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 10.7
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {
+          "Name: MR1": 1.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.7,
+          "Aircraft: AC2": 2.9000000000000004,
+          "Aircraft: AC3": 1.3,
+          "Aircraft: AC5": 1.3
+        },
+        "classroom": {
+          "CL1": 16.0,
+          "CL2": 1.3,
+          "CL3": 1.6,
+          "CL4": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 8.0,
+          "Instructor: 3": 4.2
+        }
+      }
+    },
+    {
+      "date": "2026-07-21",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 2.9000000000000004
+        },
+        "oft": {
+          "Name: OFT1": 15.3
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC3": 6.5,
+          "Aircraft: AC4": 3.3,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7,
+          "CL2": 1.7
+        },
+        "instructor": {
+          "Instructor: 2": 8.1,
+          "Instructor: 5": 1.7,
+          "Instructor: 10": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-07-22",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 2.9000000000000004
+        },
+        "oft": {
+          "Name: OFT1": 5.3
+        },
+        "vtd": {},
+        "mr": {
+          "Name: MR2": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.3,
+          "Aircraft: AC2": 5.1,
+          "Aircraft: AC5": 1.6,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7,
+          "CL2": 1.3
+        },
+        "instructor": {
+          "Instructor: 1": 7.9,
+          "Instructor: 2": 6.699999999999999
+        }
+      }
+    },
+    {
+      "date": "2026-07-23",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 1.3
+        },
+        "oft": {
+          "Name: OFT1": 6.5
+        },
+        "vtd": {
+          "Name: VTD2": 1.3
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 6.4,
+          "Aircraft: AC3": 3.3,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {
+          "CL1": 1.3
+        },
+        "instructor": {
+          "Instructor: 1": 8.0,
+          "Instructor: 2": 3.3
+        }
+      }
+    },
+    {
+      "date": "2026-07-24",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 3.5999999999999996
+        },
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.6000000000000005,
+          "Aircraft: AC2": 3.4,
+          "Aircraft: AC3": 1.6,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 8.200000000000001,
+          "Instructor: 2": 5.0
+        }
+      }
+    },
+    {
+      "date": "2026-07-27",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 3.7
+        },
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 1.3,
+          "Aircraft: AC3": 1.3
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 3": 1.3,
+          "Instructor: 10": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-07-28",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 1.3
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 3.1,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {
+          "CL1": 1.3
+        },
+        "instructor": {
+          "Instructor: 2": 3.1,
+          "Instructor: 3": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-07-29",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 1.3
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 2.9000000000000004,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 2.9000000000000004,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-07-30",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC3": 3.0,
+          "Aircraft: AC4": 1.6,
+          "Aircraft: AC5": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 4.6,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-07-31",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 1.3,
+          "Aircraft: AC2": 1.3
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 1.3,
+          "Instructor: 3": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-08-03",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 1.6,
+          "Aircraft: AC2": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 1.6,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-08-04",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC3": 1.6,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {
+          "CL1": 1.3
+        },
+        "instructor": {
+          "Instructor: 1": 1.6,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-08-05",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 1.3
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 1.6,
+          "Aircraft: AC2": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 1.6,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-08-06",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC2": 1.6,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 2": 1.6,
+          "Instructor: 3": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-08-07",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 3.3,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {
+          "CL1": 3.4
+        },
+        "instructor": {
+          "Instructor: 2": 3.3,
+          "Instructor: 9": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-08-10",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 6.5
+        },
+        "oft": {
+          "Name: OFT1": 3.0
+        },
+        "vtd": {
+          "Name: VTD1": 3.9000000000000004
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.4,
+          "Aircraft: AC2": 5.5,
+          "Aircraft: AC5": 2.8,
+          "Aircraft: AC6": 1.3,
+          "Aircraft: AC8": 1.3
+        },
+        "classroom": {
+          "CL1": 6.8,
+          "CL2": 5.0,
+          "CL3": 8.0,
+          "CL4": 1.6,
+          "CL5": 1.7
+        },
+        "instructor": {
+          "Instructor: 2": 7.7,
+          "Instructor: 4": 5.5,
+          "Instructor: 5": 2.8,
+          "Instructor: 9": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-08-11",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 4.9
+        },
+        "oft": {},
+        "vtd": {
+          "Name: VTD1": 2.6
+        },
+        "mr": {
+          "Name: MR1": 10.2
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.2,
+          "Aircraft: AC2": 5.5,
+          "Aircraft: AC3": 3.9000000000000004,
+          "Aircraft: AC4": 1.6,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {
+          "CL1": 13.5,
+          "CL2": 5.0,
+          "CL3": 1.3
+        },
+        "instructor": {
+          "Instructor: 2": 7.800000000000001,
+          "Instructor: 3": 7.1,
+          "Instructor: 4": 3.9000000000000004
+        }
+      }
+    },
+    {
+      "date": "2026-08-12",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 6.9
+        },
+        "oft": {
+          "Name: OFT1": 9.3
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {
+          "Name: MR1": 6.8
+        },
+        "aircraft": {
+          "Aircraft: AC1": 5.9,
+          "Aircraft: AC3": 4.2,
+          "Aircraft: AC4": 1.6,
+          "Aircraft: AC5": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7,
+          "CL2": 6.4,
+          "CL3": 4.0,
+          "CL4": 13.5
+        },
+        "instructor": {
+          "Instructor: 1": 7.5,
+          "Instructor: 3": 5.800000000000001
+        }
+      }
+    },
+    {
+      "date": "2026-08-13",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 7.699999999999999
+        },
+        "oft": {
+          "Name: OFT1": 16.0,
+          "Name: OFT2": 12.5
+        },
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 5.8,
+          "Aircraft: AC2": 4.2,
+          "Aircraft: AC3": 1.6,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7,
+          "CL2": 13.0,
+          "CL3": 4.0,
+          "CL4": 1.7
+        },
+        "instructor": {
+          "Instructor: 2": 7.4,
+          "Instructor: 3": 5.800000000000001
+        }
+      }
+    },
+    {
+      "date": "2026-08-14",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 1.6,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 3": 1.6,
+          "Instructor: 9": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-08-17",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.0,
+          "Name: UTD2": 1.3
+        },
+        "oft": {
+          "Name: OFT1": 16.0,
+          "Name: OFT2": 14.3,
+          "Name: OFT3": 4.3
+        },
+        "vtd": {
+          "Name: VTD1": 6.5
+        },
+        "mr": {
+          "Name: MR1": 1.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.3,
+          "Aircraft: AC2": 6.4,
+          "Aircraft: AC3": 6.300000000000001,
+          "Aircraft: AC4": 7.0,
+          "Aircraft: AC5": 6.4,
+          "Aircraft: AC6": 6.7,
+          "Aircraft: AC7": 6.3,
+          "Aircraft: AC9": 1.6,
+          "Aircraft: AC12": 1.6
+        },
+        "classroom": {
+          "CL1": 13.4,
+          "CL2": 7.0,
+          "CL3": 18.7,
+          "CL4": 12.4,
+          "CL5": 14.0,
+          "CL6": 26.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.9,
+          "Instructor: 2": 8.0,
+          "Instructor: 5": 6.300000000000001,
+          "Instructor: 6": 7.0,
+          "Instructor: 8": 6.4,
+          "Instructor: 9": 6.7,
+          "Instructor: 10": 6.3
+        }
+      }
+    },
+    {
+      "date": "2026-08-18",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 15.9,
+          "Name: UTD2": 5.2
+        },
+        "oft": {
+          "Name: OFT1": 15.3,
+          "Name: OFT2": 13.6,
+          "Name: OFT3": 12.900000000000002,
+          "Name: OFT4": 3.3
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC2": 6.699999999999999,
+          "Aircraft: AC3": 6.7,
+          "Aircraft: AC4": 6.2,
+          "Aircraft: AC5": 6.6000000000000005,
+          "Aircraft: AC6": 6.300000000000001,
+          "Aircraft: AC7": 6.2,
+          "Aircraft: AC8": 6.500000000000001,
+          "Aircraft: AC9": 6.0,
+          "Aircraft: AC10": 6.6,
+          "Aircraft: AC11": 6.6000000000000005,
+          "Aircraft: AC12": 2.6,
+          "Aircraft: AC14": 1.6,
+          "Aircraft: AC15": 1.6
+        },
+        "classroom": {
+          "CL1": 22.099999999999998,
+          "CL2": 28.7,
+          "CL3": 30.0,
+          "CL4": 18.5,
+          "CL5": 28.099999999999998,
+          "CL6": 19.3
+        },
+        "instructor": {
+          "Instructor: 2": 8.299999999999999,
+          "Instructor: 3": 8.3,
+          "Instructor: 5": 6.2,
+          "Instructor: 6": 6.6000000000000005,
+          "Instructor: 8": 6.300000000000001,
+          "Instructor: 9": 6.2,
+          "Instructor: 11": 6.500000000000001,
+          "Instructor: 14": 6.0,
+          "Instructor: 15": 6.6,
+          "Instructor: 16": 6.6000000000000005,
+          "Instructor: 17": 2.6
+        }
+      }
+    },
+    {
+      "date": "2026-08-19",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 15.0,
+          "Name: UTD2": 10.4
+        },
+        "oft": {
+          "Name: OFT1": 13.200000000000001,
+          "Name: OFT2": 10.399999999999999
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 5.2
+        },
+        "mr": {
+          "Name: MR1": 10.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.699999999999999,
+          "Aircraft: AC2": 6.7,
+          "Aircraft: AC3": 6.000000000000001,
+          "Aircraft: AC4": 6.4,
+          "Aircraft: AC5": 6.1,
+          "Aircraft: AC6": 6.0,
+          "Aircraft: AC7": 6.200000000000001,
+          "Aircraft: AC8": 6.4,
+          "Aircraft: AC9": 6.4,
+          "Aircraft: AC10": 3.3,
+          "Aircraft: AC11": 1.6,
+          "Aircraft: AC12": 1.6
+        },
+        "classroom": {
+          "CL1": 35.6,
+          "CL2": 26.9,
+          "CL3": 12.7,
+          "CL4": 22.8,
+          "CL5": 38.8,
+          "CL6": 25.7
+        },
+        "instructor": {
+          "Instructor: 2": 8.299999999999999,
+          "Instructor: 5": 6.7,
+          "Instructor: 6": 6.000000000000001,
+          "Instructor: 7": 6.4,
+          "Instructor: 9": 7.699999999999999,
+          "Instructor: 10": 6.0,
+          "Instructor: 11": 6.200000000000001,
+          "Instructor: 12": 6.4,
+          "Instructor: 13": 6.4,
+          "Instructor: 17": 3.3
+        }
+      }
+    },
+    {
+      "date": "2026-08-20",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 4.0
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 6.8,
+          "Aircraft: AC4": 1.3,
+          "Aircraft: AC5": 1.3
+        },
+        "classroom": {
+          "CL1": 6.99
+        },
+        "instructor": {
+          "Instructor: 1": 8.1,
+          "Instructor: 2": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-08-21",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 8.9
+        },
+        "oft": {
+          "Name: OFT1": 14.8,
+          "Name: OFT2": 6.0
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.3,
+          "Aircraft: AC2": 3.2,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 7.9,
+          "Instructor: 2": 3.2
+        }
+      }
+    },
+    {
+      "date": "2026-08-24",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 5.3
+        },
+        "oft": {
+          "Name: OFT1": 13.8,
+          "Name: OFT2": 2.6
+        },
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 3.0
+        },
+        "aircraft": {
+          "Aircraft: AC2": 6.300000000000001,
+          "Aircraft: AC3": 3.3,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 7.9,
+          "Instructor: 2": 3.3
+        }
+      }
+    },
+    {
+      "date": "2026-08-25",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 1.0
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 4.9,
+          "Aircraft: AC2": 1.3,
+          "Aircraft: AC3": 1.3
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 2": 6.2,
+          "Instructor: 3": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-08-26",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 1.3
+        },
+        "oft": {
+          "Name: OFT1": 6.7
+        },
+        "vtd": {
+          "Name: VTD1": 6.5
+        },
+        "mr": {
+          "Name: MR1": 1.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.0,
+          "Aircraft: AC2": 3.4,
+          "Aircraft: AC3": 1.6,
+          "Aircraft: AC5": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 7.6,
+          "Instructor: 2": 5.0
+        }
+      }
+    },
+    {
+      "date": "2026-08-27",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 7.9
+        },
+        "vtd": {
+          "Name: VTD1": 2.6
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 6.2,
+          "Aircraft: AC4": 6.8,
+          "Aircraft: AC8": 3.3,
+          "Aircraft: AC9": 1.6
+        },
+        "classroom": {
+          "CL1": 1.6
+        },
+        "instructor": {
+          "Instructor: 3": 7.800000000000001,
+          "Instructor: 4": 6.8,
+          "Instructor: 6": 1.7,
+          "Instructor: 14": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-08-28",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 2.9000000000000004,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 2.9000000000000004,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-08-31",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 3.0,
+          "Aircraft: AC4": 1.6,
+          "Aircraft: AC5": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 4.6,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-09-01",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 1.6
+        },
+        "oft": {
+          "Name: OFT1": 4.0
+        },
+        "vtd": {
+          "Name: VTD1": 5.2
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC3": 6.8,
+          "Aircraft: AC5": 6.8,
+          "Aircraft: AC6": 1.6,
+          "Aircraft: AC7": 1.6
+        },
+        "classroom": {
+          "CL1": 1.3,
+          "CL2": 3.4,
+          "CL3": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 8.4,
+          "Instructor: 2": 8.4
+        }
+      }
+    },
+    {
+      "date": "2026-09-02",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 2.9000000000000004
+        },
+        "oft": {
+          "Name: OFT1": 1.3
+        },
+        "vtd": {
+          "Name: VTD1": 2.6
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.8,
+          "Aircraft: AC6": 6.8,
+          "Aircraft: AC7": 3.2,
+          "Aircraft: AC8": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 8.4,
+          "Instructor: 2": 8.4,
+          "Instructor: 3": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-09-03",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.8,
+          "Name: UTD2": 1.6
+        },
+        "oft": {
+          "Name: OFT1": 9.1
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 1.3
+        },
+        "mr": {
+          "Name: MR1": 6.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.4,
+          "Aircraft: AC2": 6.8,
+          "Aircraft: AC3": 6.6000000000000005,
+          "Aircraft: AC5": 6.699999999999999,
+          "Aircraft: AC6": 6.500000000000001,
+          "Aircraft: AC7": 6.6,
+          "Aircraft: AC9": 4.6,
+          "Aircraft: AC11": 1.3,
+          "Aircraft: AC13": 1.3
+        },
+        "classroom": {
+          "CL1": 13.0,
+          "CL2": 11.7,
+          "CL3": 18.0,
+          "CL4": 27.6,
+          "CL5": 27.4,
+          "CL6": 35.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.7,
+          "Instructor: 2": 8.1,
+          "Instructor: 3": 6.6000000000000005,
+          "Instructor: 7": 6.699999999999999,
+          "Instructor: 9": 6.500000000000001,
+          "Instructor: 11": 6.6,
+          "Instructor: 12": 4.6
+        }
+      }
+    },
+    {
+      "date": "2026-09-04",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD2": 12.4,
+          "Name: UTD3": 1.6
+        },
+        "oft": {
+          "Name: OFT1": 14.3,
+          "Name: OFT2": 6.3999999999999995
+        },
+        "vtd": {
+          "Name: VTD1": 10.4
+        },
+        "mr": {
+          "Name: MR2": 5.1
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.199999999999999,
+          "Aircraft: AC2": 6.5,
+          "Aircraft: AC5": 6.2,
+          "Aircraft: AC6": 6.4,
+          "Aircraft: AC7": 6.6,
+          "Aircraft: AC9": 6.4,
+          "Aircraft: AC11": 6.0,
+          "Aircraft: AC12": 1.6,
+          "Aircraft: AC13": 1.6
+        },
+        "classroom": {
+          "CL1": 8.7,
+          "CL2": 16.0,
+          "CL3": 15.4,
+          "CL4": 32.0,
+          "CL5": 20.4,
+          "CL6": 27.4
+        },
+        "instructor": {
+          "Instructor: 2": 7.799999999999999,
+          "Instructor: 3": 8.1,
+          "Instructor: 5": 6.2,
+          "Instructor: 7": 6.4,
+          "Instructor: 8": 6.6,
+          "Instructor: 9": 6.4,
+          "Instructor: 10": 6.0
+        }
+      }
+    },
+    {
+      "date": "2026-09-07",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.3,
+          "Name: UTD2": 9.4
+        },
+        "oft": {
+          "Name: OFT1": 15.3,
+          "Name: OFT2": 11.399999999999999
+        },
+        "vtd": {
+          "Name: VTD1": 6.5
+        },
+        "mr": {
+          "Name: MR1": 6.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.199999999999999,
+          "Aircraft: AC3": 6.4,
+          "Aircraft: AC4": 6.0,
+          "Aircraft: AC5": 5.9,
+          "Aircraft: AC6": 6.3,
+          "Aircraft: AC7": 5.8999999999999995,
+          "Aircraft: AC8": 5.6,
+          "Aircraft: AC9": 1.6,
+          "Aircraft: AC10": 1.6
+        },
+        "classroom": {
+          "CL1": 42.4,
+          "CL2": 18.4,
+          "CL3": 10.4,
+          "CL4": 24.0,
+          "CL5": 29.0,
+          "CL6": 11.7
+        },
+        "instructor": {
+          "Instructor: 1": 7.799999999999999,
+          "Instructor: 2": 8.0,
+          "Instructor: 3": 6.0,
+          "Instructor: 4": 5.9,
+          "Instructor: 5": 6.3,
+          "Instructor: 6": 5.8999999999999995,
+          "Instructor: 7": 5.6
+        }
+      }
+    },
+    {
+      "date": "2026-09-08",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 3.3,
+          "Aircraft: AC2": 1.3,
+          "Aircraft: AC3": 1.3
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 2": 4.6,
+          "Instructor: 3": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-09-09",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 3.3,
+          "Aircraft: AC5": 1.6,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 4.9,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-09-10",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC3": 3.3,
+          "Aircraft: AC4": 1.6,
+          "Aircraft: AC5": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 4.9,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-09-11",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC3": 3.3,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 2": 3.3,
+          "Instructor: 9": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-09-14",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 3.3,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 3.3,
+          "Instructor: 3": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-09-15",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 6.6
+        },
+        "oft": {
+          "Name: OFT1": 13.600000000000001,
+          "Name: OFT2": 13.7,
+          "Name: OFT3": 3.5
+        },
+        "vtd": {
+          "Name: VTD1": 7.8
+        },
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.5,
+          "Aircraft: AC3": 6.500000000000001,
+          "Aircraft: AC4": 6.0,
+          "Aircraft: AC5": 6.500000000000001,
+          "Aircraft: AC6": 5.9,
+          "Aircraft: AC8": 6.5,
+          "Aircraft: AC9": 5.8,
+          "Aircraft: AC10": 1.6,
+          "Aircraft: AC11": 1.6
+        },
+        "classroom": {
+          "CL1": 16.4,
+          "CL2": 25.6,
+          "CL3": 11.4,
+          "CL4": 54.0,
+          "CL5": 9.4,
+          "CL6": 22.0
+        },
+        "instructor": {
+          "Instructor: 1": 8.1,
+          "Instructor: 2": 8.100000000000001,
+          "Instructor: 3": 6.0,
+          "Instructor: 4": 6.500000000000001,
+          "Instructor: 5": 5.9,
+          "Instructor: 6": 6.5,
+          "Instructor: 7": 5.8
+        }
+      }
+    },
+    {
+      "date": "2026-09-16",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 12.200000000000001,
+          "Name: UTD2": 13.0,
+          "Name: UTD3": 6.5
+        },
+        "oft": {
+          "Name: OFT1": 13.3,
+          "Name: OFT2": 4.0
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 5.2
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.4,
+          "Aircraft: AC2": 6.500000000000001,
+          "Aircraft: AC3": 6.5,
+          "Aircraft: AC4": 6.6000000000000005,
+          "Aircraft: AC5": 4.7,
+          "Aircraft: AC8": 1.6,
+          "Aircraft: AC9": 1.6
+        },
+        "classroom": {
+          "CL1": 19.200000000000003,
+          "CL2": 30.0,
+          "CL3": 15.7,
+          "CL4": 11.599999999999998,
+          "CL5": 43.7,
+          "CL6": 18.0
+        },
+        "instructor": {
+          "Instructor: 1": 8.0,
+          "Instructor: 2": 8.100000000000001,
+          "Instructor: 4": 6.5,
+          "Instructor: 5": 6.6000000000000005,
+          "Instructor: 6": 4.7
+        }
+      }
+    },
+    {
+      "date": "2026-09-17",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 14.600000000000001,
+          "Name: UTD2": 10.1
+        },
+        "oft": {
+          "Name: OFT1": 12.900000000000002,
+          "Name: OFT2": 1.3
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 2.6
+        },
+        "mr": {
+          "Name: MR1": 4.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.199999999999999,
+          "Aircraft: AC2": 6.199999999999999,
+          "Aircraft: AC3": 6.7,
+          "Aircraft: AC4": 6.7,
+          "Aircraft: AC5": 6.0,
+          "Aircraft: AC6": 4.6,
+          "Aircraft: AC8": 6.300000000000001,
+          "Aircraft: AC9": 4.9,
+          "Aircraft: AC10": 1.3,
+          "Aircraft: AC11": 1.3
+        },
+        "classroom": {
+          "CL1": 10.6,
+          "CL2": 42.5,
+          "CL3": 52.0,
+          "CL4": 17.099999999999998,
+          "CL5": 18.3,
+          "CL6": 18.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.499999999999999,
+          "Instructor: 2": 7.499999999999999,
+          "Instructor: 3": 6.7,
+          "Instructor: 5": 6.7,
+          "Instructor: 6": 6.0,
+          "Instructor: 7": 4.6,
+          "Instructor: 8": 6.300000000000001,
+          "Instructor: 9": 4.9
+        }
+      }
+    },
+    {
+      "date": "2026-09-18",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 14.3,
+          "Name: UTD2": 15.2,
+          "Name: UTD3": 8.1
+        },
+        "oft": {
+          "Name: OFT1": 14.5,
+          "Name: OFT2": 6.5
+        },
+        "vtd": {
+          "Name: VTD1": 10.4
+        },
+        "mr": {
+          "Name: MR1": 1.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.300000000000001,
+          "Aircraft: AC2": 6.0,
+          "Aircraft: AC3": 6.3999999999999995,
+          "Aircraft: AC4": 5.9,
+          "Aircraft: AC5": 6.1000000000000005,
+          "Aircraft: AC6": 7.7,
+          "Aircraft: AC7": 7.9,
+          "Aircraft: AC8": 6.0,
+          "Aircraft: AC10": 3.4,
+          "Aircraft: AC12": 1.6,
+          "Aircraft: AC14": 1.6
+        },
+        "classroom": {
+          "CL1": 42.199999999999996,
+          "CL2": 17.4,
+          "CL3": 26.5,
+          "CL4": 10.6,
+          "CL5": 41.0,
+          "CL6": 17.3
+        },
+        "instructor": {
+          "Instructor: 2": 7.9,
+          "Instructor: 3": 7.6,
+          "Instructor: 4": 6.3999999999999995,
+          "Instructor: 5": 5.9,
+          "Instructor: 6": 6.1000000000000005,
+          "Instructor: 8": 7.7,
+          "Instructor: 9": 7.9,
+          "Instructor: 10": 6.0,
+          "Instructor: 12": 3.4
+        }
+      }
+    },
+    {
+      "date": "2026-09-21",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 15.1,
+          "Name: UTD2": 14.3,
+          "Name: UTD3": 8.5
+        },
+        "oft": {
+          "Name: OFT1": 14.8,
+          "Name: OFT2": 13.3,
+          "Name: OFT3": 8.3
+        },
+        "vtd": {
+          "Name: VTD1": 11.700000000000001,
+          "Name: VTD2": 1.3
+        },
+        "mr": {
+          "Name: MR1": 3.0
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.3,
+          "Aircraft: AC2": 6.4,
+          "Aircraft: AC4": 6.2,
+          "Aircraft: AC5": 6.300000000000001,
+          "Aircraft: AC7": 6.5,
+          "Aircraft: AC8": 6.1,
+          "Aircraft: AC11": 6.5,
+          "Aircraft: AC12": 5.3,
+          "Aircraft: AC14": 3.4,
+          "Aircraft: AC17": 1.6,
+          "Aircraft: AC18": 1.6
+        },
+        "classroom": {
+          "CL1": 51.0,
+          "CL2": 19.7,
+          "CL3": 27.7,
+          "CL4": 8.4,
+          "CL5": 16.0,
+          "CL6": 12.0
+        },
+        "instructor": {
+          "Instructor: 3": 7.9,
+          "Instructor: 5": 6.4,
+          "Instructor: 7": 6.2,
+          "Instructor: 8": 6.300000000000001,
+          "Instructor: 10": 8.1,
+          "Instructor: 11": 6.1,
+          "Instructor: 13": 6.5,
+          "Instructor: 14": 5.3,
+          "Instructor: 16": 3.4
+        }
+      }
+    },
+    {
+      "date": "2026-09-22",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.8,
+          "Name: UTD2": 15.0,
+          "Name: UTD3": 2.0
+        },
+        "oft": {
+          "Name: OFT1": 11.4
+        },
+        "vtd": {
+          "Name: VTD1": 7.8
+        },
+        "mr": {
+          "Name: MR1": 2.6
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.8,
+          "Aircraft: AC2": 5.6,
+          "Aircraft: AC3": 5.8,
+          "Aircraft: AC4": 6.6000000000000005,
+          "Aircraft: AC6": 6.2,
+          "Aircraft: AC7": 1.3,
+          "Aircraft: AC8": 1.3
+        },
+        "classroom": {
+          "CL1": 24.0,
+          "CL2": 4.6,
+          "CL3": 11.6,
+          "CL4": 7.4,
+          "CL5": 13.5,
+          "CL6": 5.4
+        },
+        "instructor": {
+          "Instructor: 2": 8.1,
+          "Instructor: 3": 6.8999999999999995,
+          "Instructor: 4": 5.8,
+          "Instructor: 5": 6.6000000000000005,
+          "Instructor: 6": 6.2
+        }
+      }
+    },
+    {
+      "date": "2026-09-23",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 15.4,
+          "Name: UTD2": 4.0
+        },
+        "oft": {
+          "Name: OFT1": 8.299999999999999
+        },
+        "vtd": {
+          "Name: VTD1": 3.9000000000000004
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.6,
+          "Aircraft: AC3": 6.1000000000000005,
+          "Aircraft: AC4": 5.3,
+          "Aircraft: AC5": 3.2,
+          "Aircraft: AC6": 1.3,
+          "Aircraft: AC8": 1.3
+        },
+        "classroom": {
+          "CL1": 5.3,
+          "CL2": 4.800000000000001,
+          "CL3": 4.0,
+          "CL4": 8.0,
+          "CL5": 13.5,
+          "CL6": 2.0
+        },
+        "instructor": {
+          "Instructor: 2": 7.8999999999999995,
+          "Instructor: 5": 6.1000000000000005,
+          "Instructor: 9": 6.6,
+          "Instructor: 11": 3.2
+        }
+      }
+    },
+    {
+      "date": "2026-09-24",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 13.700000000000001,
+          "Name: UTD2": 8.0
+        },
+        "oft": {
+          "Name: OFT1": 6.6
+        },
+        "vtd": {
+          "Name: VTD1": 6.5
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.300000000000001,
+          "Aircraft: AC2": 5.6,
+          "Aircraft: AC3": 6.1000000000000005,
+          "Aircraft: AC4": 1.6,
+          "Aircraft: AC5": 1.6
+        },
+        "classroom": {
+          "CL1": 13.0,
+          "CL2": 9.7,
+          "CL3": 5.0,
+          "CL4": 4.0,
+          "CL5": 3.4,
+          "CL6": 8.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.9,
+          "Instructor: 2": 7.199999999999999,
+          "Instructor: 3": 6.1000000000000005
+        }
+      }
+    },
+    {
+      "date": "2026-09-25",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 10.100000000000001
+        },
+        "oft": {
+          "Name: OFT1": 14.5
+        },
+        "vtd": {
+          "Name: VTD1": 5.2
+        },
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.1,
+          "Aircraft: AC3": 5.8999999999999995,
+          "Aircraft: AC4": 5.6000000000000005,
+          "Aircraft: AC5": 2.9000000000000004,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {
+          "CL1": 2.0,
+          "CL2": 3.7,
+          "CL3": 13.5,
+          "CL4": 13.0,
+          "CL5": 5.0,
+          "CL6": 6.7
+        },
+        "instructor": {
+          "Instructor: 1": 7.699999999999999,
+          "Instructor: 2": 7.5,
+          "Instructor: 3": 5.6000000000000005,
+          "Instructor: 4": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-09-28",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 6.5
+        },
+        "oft": {
+          "Name: OFT1": 12.5
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 4.6,
+          "Aircraft: AC2": 1.6,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {
+          "CL1": 3.4,
+          "CL2": 1.3
+        },
+        "instructor": {
+          "Instructor: 1": 6.199999999999999,
+          "Instructor: 9": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-09-29",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 3.6
+        },
+        "oft": {
+          "Name: OFT1": 12.3
+        },
+        "vtd": {
+          "Name: VTD1": 3.9000000000000004
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.3,
+          "Aircraft: AC3": 6.7,
+          "Aircraft: AC4": 5.6,
+          "Aircraft: AC6": 1.6,
+          "Aircraft: AC7": 1.6
+        },
+        "classroom": {
+          "CL1": 5.1,
+          "CL2": 4.0,
+          "CL3": 2.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.9,
+          "Instructor: 2": 8.3,
+          "Instructor: 3": 5.6
+        }
+      }
+    },
+    {
+      "date": "2026-09-30",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 14.700000000000001,
+          "Name: UTD2": 14.5
+        },
+        "oft": {
+          "Name: OFT1": 8.9
+        },
+        "vtd": {
+          "Name: VTD1": 9.1
+        },
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.8,
+          "Aircraft: AC2": 6.3,
+          "Aircraft: AC3": 7.7,
+          "Aircraft: AC5": 7.8,
+          "Aircraft: AC6": 3.4,
+          "Aircraft: AC7": 1.6,
+          "Aircraft: AC8": 1.6
+        },
+        "classroom": {
+          "CL1": 6.8,
+          "CL2": 11.9,
+          "CL3": 3.4,
+          "CL4": 13.0,
+          "CL5": 4.0,
+          "CL6": 27.0
+        },
+        "instructor": {
+          "Instructor: 1": 8.4,
+          "Instructor: 2": 7.9,
+          "Instructor: 3": 7.7,
+          "Instructor: 4": 7.8,
+          "Instructor: 5": 3.4
+        }
+      }
+    },
+    {
+      "date": "2026-10-01",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 4.9
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 6.7,
+          "Aircraft: AC3": 1.3,
+          "Aircraft: AC5": 1.3
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 8.0,
+          "Instructor: 2": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-10-02",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 1.7
+        },
+        "vtd": {
+          "Name: VTD1": 2.6
+        },
+        "mr": {
+          "Name: MR1": 2.6
+        },
+        "aircraft": {
+          "Aircraft: AC2": 3.3,
+          "Aircraft: AC5": 1.6,
+          "Aircraft: AC8": 1.6
+        },
+        "classroom": {
+          "CL1": 1.3
+        },
+        "instructor": {
+          "Instructor: 2": 4.9,
+          "Instructor: 3": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-10-05",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 1.3
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 4.8,
+          "Aircraft: AC5": 1.3,
+          "Aircraft: AC6": 1.3
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 3": 6.1,
+          "Instructor: 9": 1.3
+        }
+      }
+    },
+    {
+      "date": "2026-10-06",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {
+          "Name: MR1": 1.3
+        },
+        "aircraft": {
+          "Aircraft: AC2": 4.6000000000000005,
+          "Aircraft: AC3": 1.6,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 2": 6.200000000000001,
+          "Instructor: 3": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-10-07",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 3.2,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 3": 3.2,
+          "Instructor: 9": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-10-08",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 1.6,
+          "Aircraft: AC2": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 1.6,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-10-09",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.4,
+          "Aircraft: AC2": 1.6,
+          "Aircraft: AC4": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 8.0,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-10-12",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 3.3,
+          "Aircraft: AC3": 1.6,
+          "Aircraft: AC5": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 3": 4.9,
+          "Instructor: 9": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-10-13",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 1.7
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 1.6,
+          "Aircraft: AC2": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 1.6,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-10-14",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 3.3
+        },
+        "oft": {
+          "Name: OFT1": 8.8
+        },
+        "vtd": {
+          "Name: VTD1": 7.8
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.5,
+          "Aircraft: AC2": 6.3,
+          "Aircraft: AC3": 4.7,
+          "Aircraft: AC5": 1.6,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {
+          "CL1": 3.4,
+          "CL2": 5.1,
+          "CL3": 2.0,
+          "CL4": 6.6,
+          "CL5": 8.0,
+          "CL6": 4.0
+        },
+        "instructor": {
+          "Instructor: 2": 8.1,
+          "Instructor: 3": 7.9,
+          "Instructor: 4": 4.7
+        }
+      }
+    },
+    {
+      "date": "2026-10-15",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 14.4,
+          "Name: UTD2": 6.2
+        },
+        "oft": {
+          "Name: OFT1": 7.1
+        },
+        "vtd": {
+          "Name: VTD1": 9.1
+        },
+        "mr": {
+          "Name: MR2": 9.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.300000000000001,
+          "Aircraft: AC2": 6.5,
+          "Aircraft: AC3": 6.5,
+          "Aircraft: AC5": 3.3,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {
+          "CL1": 17.4,
+          "CL2": 7.4,
+          "CL3": 3.3,
+          "CL4": 2.0,
+          "CL5": 13.0,
+          "CL6": 3.4
+        },
+        "instructor": {
+          "Instructor: 1": 7.9,
+          "Instructor: 3": 8.1,
+          "Instructor: 4": 6.5,
+          "Instructor: 5": 1.7
+        }
+      }
+    },
+    {
+      "date": "2026-10-16",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 4.9
+        },
+        "oft": {
+          "Name: OFT1": 9.6
+        },
+        "vtd": {
+          "Name: VTD1": 2.6
+        },
+        "mr": {
+          "Name: MR1": 5.1
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.200000000000001,
+          "Aircraft: AC5": 3.2,
+          "Aircraft: AC6": 1.3,
+          "Aircraft: AC7": 1.3
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 7.500000000000001,
+          "Instructor: 2": 4.5
+        }
+      }
+    },
+    {
+      "date": "2026-10-19",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 6.9
+        },
+        "oft": {
+          "Name: OFT1": 13.3
+        },
+        "vtd": {
+          "Name: VTD1": 2.6
+        },
+        "mr": {
+          "Name: MR1": 3.0
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.500000000000001,
+          "Aircraft: AC2": 5.0,
+          "Aircraft: AC4": 1.6,
+          "Aircraft: AC5": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 8.100000000000001,
+          "Instructor: 2": 6.6
+        }
+      }
+    },
+    {
+      "date": "2026-10-20",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 14.3,
+          "Name: OFT2": 3.5
+        },
+        "vtd": {
+          "Name: VTD1": 3.9000000000000004
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.6,
+          "Aircraft: AC2": 6.7,
+          "Aircraft: AC4": 1.6,
+          "Aircraft: AC5": 1.6
+        },
+        "classroom": {
+          "CL1": 1.7
+        },
+        "instructor": {
+          "Instructor: 1": 8.2,
+          "Instructor: 2": 8.3
+        }
+      }
+    },
+    {
+      "date": "2026-10-21",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 3.3,
+          "Aircraft: AC2": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 2": 3.3,
+          "Instructor: 9": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-10-22",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT1": 4.0
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.699999999999999,
+          "Aircraft: AC2": 1.6,
+          "Aircraft: AC5": 1.6
+        },
+        "classroom": {
+          "CL1": 1.3
+        },
+        "instructor": {
+          "Instructor: 1": 8.299999999999999,
+          "Instructor: 2": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-10-23",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 10.8
+        },
+        "oft": {
+          "Name: OFT1": 13.600000000000001
+        },
+        "vtd": {
+          "Name: VTD1": 6.5
+        },
+        "mr": {
+          "Name: MR1": 1.7
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.699999999999999,
+          "Aircraft: AC2": 6.199999999999999,
+          "Aircraft: AC3": 6.8,
+          "Aircraft: AC4": 6.0,
+          "Aircraft: AC5": 3.0,
+          "Aircraft: AC6": 1.3
+        },
+        "classroom": {
+          "CL1": 3.4,
+          "CL2": 8.0,
+          "CL3": 2.0,
+          "CL4": 3.4,
+          "CL5": 4.0
+        },
+        "instructor": {
+          "Instructor: 1": 7.999999999999999,
+          "Instructor: 2": 7.499999999999999,
+          "Instructor: 3": 6.8,
+          "Instructor: 4": 6.0,
+          "Instructor: 5": 1.7
+        }
+      }
+    },
+    {
+      "date": "2026-10-26",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 14.3
+        },
+        "oft": {
+          "Name: OFT1": 13.5,
+          "Name: OFT3": 1.3
+        },
+        "vtd": {
+          "Name: VTD1": 2.6
+        },
+        "mr": {
+          "Name: MR1": 9.0
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.5,
+          "Aircraft: AC2": 5.9,
+          "Aircraft: AC3": 6.5,
+          "Aircraft: AC4": 6.4,
+          "Aircraft: AC5": 1.6,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {
+          "CL1": 3.4,
+          "CL2": 5.0,
+          "CL3": 4.0,
+          "CL4": 13.0
+        },
+        "instructor": {
+          "Instructor: 1": 8.1,
+          "Instructor: 2": 7.5,
+          "Instructor: 3": 6.5,
+          "Instructor: 4": 6.4
+        }
+      }
+    },
+    {
+      "date": "2026-10-27",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 2.6
+        },
+        "oft": {
+          "Name: OFT1": 3.9000000000000004
+        },
+        "vtd": {
+          "Name: VTD1": 1.3
+        },
+        "mr": {
+          "Name: MR1": 3.4
+        },
+        "aircraft": {
+          "Aircraft: AC1": 6.0,
+          "Aircraft: AC4": 6.0,
+          "Aircraft: AC5": 4.9,
+          "Aircraft: AC6": 1.3,
+          "Aircraft: AC7": 1.3
+        },
+        "classroom": {
+          "CL1": 3.4
+        },
+        "instructor": {
+          "Instructor: 1": 7.3,
+          "Instructor: 2": 7.3,
+          "Instructor: 3": 4.9
+        }
+      }
+    },
+    {
+      "date": "2026-10-28",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 2.6
+        },
+        "oft": {
+          "Name: OFT1": 9.3
+        },
+        "vtd": {
+          "Name: VTD1": 3.9000000000000004
+        },
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.0,
+          "Aircraft: AC4": 6.3,
+          "Aircraft: AC5": 3.2,
+          "Aircraft: AC6": 1.6
+        },
+        "classroom": {
+          "CL1": 1.6,
+          "CL2": 4.0
+        },
+        "instructor": {
+          "Instructor: 2": 7.6,
+          "Instructor: 3": 7.9,
+          "Instructor: 4": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-10-29",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {
+          "Name: OFT2": 4.0
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 1.6,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 2": 1.6,
+          "Instructor: 10": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-10-30",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {},
+        "oft": {},
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC2": 3.3,
+          "Aircraft: AC3": 1.6
+        },
+        "classroom": {},
+        "instructor": {
+          "Instructor: 1": 3.3,
+          "Instructor: 10": 1.6
+        }
+      }
+    },
+    {
+      "date": "2026-11-02",
+      "students": {
+        "scheduled": [],
+        "waiting": [],
+        "completed": []
+      },
+      "resources": {
+        "utd": {
+          "Name: UTD1": 2.9000000000000004
+        },
+        "oft": {
+          "Name: OFT1": 10.4
+        },
+        "vtd": {},
+        "mr": {},
+        "aircraft": {
+          "Aircraft: AC1": 6.6,
+          "Aircraft: AC2": 3.2,
+          "Aircraft: AC7": 1.6
+        },
+        "classroom": {
+          "CL1": 3.4,
+          "CL2": 1.6
+        },
+        "instructor": {
+          "Instructor: 1": 8.2,
+          "Instructor: 3": 3.2
+        }
+      }
+    }
+  ]
+}
