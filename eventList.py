@@ -6,7 +6,6 @@ class Event:
         self.training_day = training_day
         self.activity_time = activity_time # in hours
         self.resource = resource
-        # need to add this:
         self.block = block 
         self.night_event = False
         self.can_be_night_event = True
