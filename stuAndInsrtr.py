@@ -12,6 +12,13 @@ class FlightStudent:
     syllabus3 = []
     syllabus4 = []
 
+    # can get rid of this later
+    s1 = ["sys grnd", "contacts", "instr grnd", "instr", "aero", "forms", "capstone"]
+    s2 = ["sys grnd", "contacts", "aero", "forms", "instr grnd", "instr", "capstone"]
+    s3 = ["sys grnd", "contacts", "instr grnd", "instr", "forms", "aero", "capstone"]
+    s4 = ["sys grnd", "contacts", "aero", "instr grnd", "instr", "forms", "capstone"]
+
+
     student_id = 0
 
     def __init__(self, student_id, class_id, start_date):
@@ -43,6 +50,19 @@ class FlightStudent:
     # returns the student's next event
     def next_event(self):
         return self.current_block, self.next_event_index
+
+    # returns what block a student is in
+    def get_block(self):
+        if self.current_block > 6:
+            return "complete"
+        elif self.syllabus_type == 1:
+            return FlightStudent.s1[self.current_block]
+        elif self.syllabus_type == 2:
+            return FlightStudent.s2[self.current_block]
+        elif self.syllabus_type == 3:
+            return FlightStudent.s3[self.current_block]
+        else:
+            return FlightStudent.s4[self.current_block]
     
 
     def event_complete(self, day):
