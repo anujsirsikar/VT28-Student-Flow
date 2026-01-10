@@ -33,7 +33,7 @@ SYLLABUS_BLOCKS = {
         4: ["Ground School", "Contacts", "Aero", "Instrument Ground", "Instruments", "Forms", "Capstone" ]
     }
 
-START_DATE = datetime.strptime("2025-11-25", "%Y-%m-%d").date()
+START_DATE = datetime.strptime("2025-11-23", "%Y-%m-%d").date()
 # START_DATE = date.today()
 
 # HELPER FUNCTIONS
@@ -259,6 +259,21 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     syllabus = syllabus3
                 elif s.syllabus_type == 4:
                     syllabus = syllabus4
+
+                print("DEBUG:")
+                print("syllabus type: ", s.syllabus_type)
+                print("block =", block, " len(syllabus) =", len(syllabus))
+                if 0 <= block < len(syllabus):
+                    print("event =", event, " len(syllabus[block]) =", len(syllabus[block]))
+                else:
+                    print("block is invalid index!")
+
+                # this doesn't do anything
+                #if event >= len(syllabus[block]):
+                #    s.current_block += 1
+                #    s.current_event = 0
+                #    continue
+                
                 nxt = syllabus[block][event]
             
 
