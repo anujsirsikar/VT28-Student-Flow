@@ -23,6 +23,7 @@ import tkinter as tk
 import numpy as np 
 import copy
 import json
+from matplotlib.patches import Patch
 
 # Note: You can have more than one event in a day (especially for sims and flights) [but for first iteration, do one per day]
 
@@ -1171,9 +1172,11 @@ def compute_average_waits(student_lists, remove_current_students=True, debug=Fal
         avg_wait = sum(total_waits) / len(total_waits) if total_waits else np.nan
         average_waits.append(avg_wait)
 
+
     return average_waits
 
-def compare_multiple_simulations(list_of_student_lists, class_up_size, remove_current_students=True, debug=False):
+
+def compare_multiple_simulations(list_of_student_lists, class_up_size, percentages, remove_current_students=True, debug=False):
     """
     Plots multiple simulations side by side or in a grid for comparison.
     
@@ -1206,7 +1209,7 @@ def compare_multiple_simulations(list_of_student_lists, class_up_size, remove_cu
         y = [val if val is not None else np.nan for val in avg_waits]
         
         axes[idx].plot(class_up_size, y, marker='o', linestyle='-', color=colors[idx % len(colors)])
-        axes[idx].set_title(f"Simulation {idx+1}")
+        axes[idx].set_title(f"Simulation {percentages[idx]}%")
         axes[idx].set_xlabel("Number of students per week")
         axes[idx].grid(True)
         
@@ -1224,7 +1227,7 @@ def compare_multiple_simulations(list_of_student_lists, class_up_size, remove_cu
 
 
 
-def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_size,
+def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_size, percentages,
                                              remove_current_students=True,
                                              debug=False):
     """
@@ -1238,11 +1241,19 @@ def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_siz
     - remove_current_students: bool, whether to exclude students with start_date < today
     - debug: bool, whether to print debug info
     """
-    block_names = ["Block 1", "Block 2", "Block 3", "Block 4", "Block 5", "Block 6", "Block 7"]
+    block_names = ["Ground School", "Contacts", "Instrument Ground", "Instruments", "Aero", "Forms", "Capstone" ]
     num_simulations = len(list_of_student_lists)
     colors = plt.cm.tab10.colors  # up to 10 distinct colors for simulations
     num_blocks = len(block_names)
-    block_colors = plt.cm.tab10.colors  # same colors used for blocks
+    block_colors = {
+    "Ground School": "#1f77b4",
+    "Contacts": "#ff7f0e",
+    "Instrument Ground": "#2ca02c",
+    "Instruments": "#d62728",
+    "Aero": "#9467bd",
+    "Forms": "#8c564b",
+    "Capstone": "#e377c2",
+}
     
     # Compute average waits for each simulation (total wait time)
     avg_waits_all = [compute_average_waits(sim, remove_current_students, debug) for sim in list_of_student_lists]
@@ -1251,7 +1262,7 @@ def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_siz
     fig, axes = plt.subplots(2, 1, figsize=(12,10))
     for idx, avg_waits in enumerate(avg_waits_all):
         axes[0].plot(class_up_size, avg_waits, marker='o', linestyle='-',
-                     color=colors[idx % len(colors)], label=f"Simulation {idx+1}")
+                     color=colors[idx % len(colors)], label=f"Simulation {percentages[idx]}%")
     
     axes[0].set_xlabel("Number of students per week")
     axes[0].set_ylabel("Average total wait time (weeks)")
@@ -1265,34 +1276,59 @@ def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_siz
 
     for sim_idx, sim in enumerate(list_of_student_lists):
         bottom = np.zeros(len(class_up_size))
-        for block_idx in range(num_blocks):
+        for block_name in block_names:
             waits = []
-            for run_idx, run in enumerate(sim):
+            for run in sim:
                 run_waits = []
                 for s in run:
                     if None in s.completed_dates:
                         continue
+
                     start = s.start_date.date() if isinstance(s.start_date, datetime) else s.start_date
                     completed_dates = [d.date() if isinstance(d, datetime) else d for d in s.completed_dates]
-                    if block_idx == 0:
-                        run_waits.append((completed_dates[0] - start).days / 7)
+
+                    block_to_date = dict(zip(SYLLABUS_BLOCKS[s.syllabus_type], completed_dates))
+
+                    if block_name not in block_to_date:
+                        continue
+
+                    if block_name == SYLLABUS_BLOCKS[s.syllabus_type][0]:
+                        wait = (block_to_date[block_name] - start).days / 7
                     else:
-                        run_waits.append((completed_dates[block_idx] - completed_dates[block_idx-1]).days / 7)
-                if run_waits:
-                    waits.append(sum(run_waits)/len(run_waits))
-                else:
-                    waits.append(0)
-            axes[1].bar(x + sim_idx*width, waits, width=width, bottom=bottom,
-                        label=f"{block_names[block_idx]}" if sim_idx == 0 else "",
-                        color=block_colors[block_idx % len(block_colors)])
+                        prev_block = SYLLABUS_BLOCKS[s.syllabus_type][
+                            SYLLABUS_BLOCKS[s.syllabus_type].index(block_name) - 1
+                        ]
+                        wait = (block_to_date[block_name] - block_to_date[prev_block]).days / 7
+
+                    run_waits.append(wait)
+
+                waits.append(sum(run_waits) / len(run_waits) if run_waits else 0)  
+
+            axes[1].bar(
+                x + sim_idx * width,
+                waits,
+                width=width,
+                bottom=bottom,
+                color=block_colors[block_name]
+            )
             bottom += waits
 
+    legend_handles = [
+    Patch(facecolor=block_colors[name], label=name)
+    for name in block_names
+]
+
+    axes[1].legend(
+        handles=legend_handles,
+        bbox_to_anchor=(1.05, 1),
+        loc="upper left",
+        title="Blocks",
+    )
     axes[1].set_xticks(x + width*(num_simulations-1)/2)
     axes[1].set_xticklabels(class_up_size)
     axes[1].set_xlabel("Class up size")
     axes[1].set_ylabel("Average wait time between blocks (weeks)")
-    axes[1].set_title("Per-Block Average Wait Times (including start → Block 1)")
-    axes[1].legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+    axes[1].set_title("Per-Block Average Wait Times. Each column represents syllabus percentage.")
     axes[1].grid(True)
 
     plt.tight_layout()
@@ -1418,8 +1454,8 @@ def main():
 
     x_labels = class_size + ["FY26"]
 
-    compare_multiple_simulations_with_blocks(simulation_data, x_labels, not user_input["include_in_analysis"])
-    compare_multiple_simulations(simulation_data, x_labels, not user_input["include_in_analysis"])
+    compare_multiple_simulations_with_blocks(simulation_data, x_labels,percentages, not user_input["include_in_analysis"])
+    compare_multiple_simulations(simulation_data, x_labels,percentages, not user_input["include_in_analysis"])
 
 
 
