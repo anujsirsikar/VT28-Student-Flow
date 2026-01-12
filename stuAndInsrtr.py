@@ -18,7 +18,6 @@ class FlightStudent:
     s3 = ["sys grnd", "contacts", "instr grnd", "instr", "forms", "aero", "capstone"]
     s4 = ["sys grnd", "contacts", "aero", "instr grnd", "instr", "forms", "capstone"]
 
-
     student_id = 0
 
     def __init__(self, student_id, class_id, start_date):
