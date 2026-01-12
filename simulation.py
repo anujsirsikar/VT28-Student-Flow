@@ -228,8 +228,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
         }
     }
 
-    print(" ")
-    print("-------------NEW DAY----------------", day)
+    # print(" ")
+    # print("-------------NEW DAY----------------", day)
     
     # events that will be attempted to schedule for each student
     events_to_attempt = []
@@ -485,7 +485,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 # need to check the forms_students list and see if anyone in there has to complete the same next event, if no then add student to list and keep moving (at the end of the day, check the forms_students list and any remaining students should be treated as not being scheduled)
                 # if so, then we need to check for two forms instructors, if no then add student to the list 
                 # if so, we schedule both students with those instructors (remove other student from forms_students list)
-                print("FORMS: ", s, ev)
+                # print("FORMS: ", s, ev)
                 if not forms_students:
                     forms_students[s] = ev
                 else:
@@ -497,7 +497,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                             break
                     
                     if stu != "":
-                        print("we got a match: ", stu, ev)
+                        # print("we got a match: ", stu, ev)
                         available_aircraft = []
                         available_instructors = []
                         for ac in aircraft_hours:
@@ -521,8 +521,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                             # Stop once we have both roles
                             if section_lead_found and formation_q_found:
                                 break
-                        print(available_aircraft)
-                        print(available_instructors)
+                        # print(available_aircraft)
+                        # print(available_instructors)
                         if len(available_aircraft) == 2 and len(available_instructors) == 2:
                             for ac in available_aircraft:
                                 aircraft_hours[ac][1] -= (needed_time + Aircraft.break_time)
@@ -535,9 +535,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                                 increment_key(instructors_used, inst)
                             
                             # testing
-                            print("scheduled: ") 
-                            print("1: ", s)
-                            print("2: ", stu)
+                            # print("scheduled: ") 
+                            # print("1: ", s)
+                            # print("2: ", stu)
 
 
                             log_usage(
@@ -578,7 +578,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                             stu.event_complete(day)
                             del forms_students[stu]
                             scheduled = 1
-                            print(forms_students)
+                            # print(forms_students)
                             break
                                 
                     if scheduled == 0:
@@ -674,7 +674,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     s.days_since_last_event += 1
                     s.total_wait_time += 1
 
-    print("at the end of the day: ", forms_students)
+    # print("at the end of the day: ", forms_students)
     for stu in forms_students.keys():
         stu.days_since_last_event += 1
         stu.total_wait_time += 1
@@ -1023,7 +1023,7 @@ def ask_user():
     )
     slider2_label.pack(pady=(10, 0))
 
-    slider2 = tk.Scale(root, from_=0, to=52, orient="horizontal")
+    slider2 = tk.Scale(root, from_=0, to=104, orient="horizontal")
     slider2.pack()
 
     def toggle_sliders(*args):
@@ -1038,7 +1038,7 @@ def ask_user():
     choice.trace_add("write", toggle_sliders)
     toggle_sliders()
 
-    # ---------------- Question 2 ----------------
+    # # ---------------- Question 2 ----------------
     tk.Label(
         root,
         text="Do you want to include current students in average completion time analysis?",
@@ -1148,22 +1148,21 @@ def compute_average_waits(student_lists, remove_current_students=True, debug=Fal
     Computes average wait times for a list of student lists.
     Returns a list of average waits corresponding to each run.
     """
-    today = START_DATE
     average_waits = []
 
     for run_idx, run in enumerate(student_lists):
         total_waits = []   # ✅ FIX: initialize early
 
         for s in run:
-            start = s.start_date.date() if isinstance(s.start_date, datetime) else s.start_date
+            start = s.start_date
+            if isinstance(start,datetime):
+                start=start.date()
 
             # Exclude current students if requested
-            if remove_current_students and start < today:
+            if remove_current_students and start < START_DATE:
                 continue
 
-            # 🚨 Penalize incomplete students instead of skipping
             if None in s.completed_dates:
-                # total_waits.append((today - start).days / 7)
                 continue
 
             completed_dates = [
@@ -1388,7 +1387,7 @@ def main():
     FlightStudent.syllabus4 = syllabus4
 
     user_input = ask_user()
-    print(user_input)
+    # print(user_input)
 
     
     instructors = load_instructors(os.path.join("instructors", "instructor_data.csv"))
