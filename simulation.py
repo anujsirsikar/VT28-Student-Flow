@@ -244,6 +244,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
     for s in students:
         # s.daily_events_done = 0  # unsure if I need this
+        # print(s.get_block())
         if s.completion_date is None:
             if s.days_since_last_event >= 15:
                 events_to_attempt.append((s,"warmup flight"))
@@ -477,6 +478,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 can_be_night = True
             
             # forms
+            
             if ev != "warmup flight" and ev.block == "forms":
                 # need to check the forms_students list and see if anyone in there has to complete the same next event, if no then add student to list and keep moving (at the end of the day, check the forms_students list and any remaining students should be treated as not being scheduled)
                 # if so, then we need to check for two forms instructors, if no then add student to the list 
