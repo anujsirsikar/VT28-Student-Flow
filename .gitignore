@@ -13,3 +13,7 @@ __pycache__/
 # VSCode / PyCharm / IDE metadata
 .vscode/
 .idea/
+
+# Outputs
+
+outputs/
