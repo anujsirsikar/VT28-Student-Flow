@@ -259,16 +259,18 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     syllabus = syllabus3
                 elif s.syllabus_type == 4:
                     syllabus = syllabus4
+                
+                #print("DEBUG:")
+                #print(s.completed_blocks)
+                #print(s.completed_dates)
+                #print("syllabus type: ", s.syllabus_type)
+                #print("block =", block, " len(syllabus) =", len(syllabus))
+                #if 0 <= block < len(syllabus):
+                #    print("event =", event, " len(syllabus[block]) =", len(syllabus[block]))
+                #else:
+                #    print(s.completion_date)
+                #    print("block is invalid index!")
 
-                print("DEBUG:")
-                print("syllabus type: ", s.syllabus_type)
-                print("block =", block, " len(syllabus) =", len(syllabus))
-                if 0 <= block < len(syllabus):
-                    print("event =", event, " len(syllabus[block]) =", len(syllabus[block]))
-                else:
-                    print("block is invalid index!")
-
-                # this doesn't do anything
                 #if event >= len(syllabus[block]):
                 #    s.current_block += 1
                 #    s.current_event = 0
@@ -746,6 +748,8 @@ def load_students(file_path):
             # gets tricky here because need to check if they have done aero
             sys1 = FlightStudent.syllabus1
             sys2 = FlightStudent.syllabus2
+            sys3 = FlightStudent.syllabus3
+            sys4 = FlightStudent.syllabus4
 
             # Mark completed students
             if status == "complete":
@@ -808,9 +812,12 @@ def load_students(file_path):
                 if student.current_block == 4:         # currently in aero
                     if not row["FAM4601"].strip():     # if not complete with instruments (could either make these people 2 or 4)
                         student.syllabus_type = 2      # or 4
-                        student.current_block -= 2 
-                    # else = aero and instruments complete   (could either be 1 or 4)
-                
+                        student.current_block -= 2
+                    else:                              # complete with instruments
+                        if row["F4290"].strip():
+                            student.syllabus_type = 3
+                            student.current_block += 1
+
                 if student.current_block == 5:         # currently in forms
                     if not row["FAM4703"].strip():     # not aero complete (have to be in syllabus 3)
                         student.syllabus_type = 3
@@ -844,7 +851,13 @@ def load_students(file_path):
                             date = row[almost_end_events1[i]]
                         #print(date)
                         student.completed_dates[i] = datetime.strptime(date, "%m/%d/%Y").date()
-                if student.syllabus_type == 2:
+
+                    if student.next_event_index >= len(sys1[student.current_block]):
+                        student.completed_blocks[student.current_block] = 1
+                        student.current_block += 1
+                        student.next_event_index = 0
+
+                elif student.syllabus_type == 2:
                     if block == 1:
                         #print(2)
                         #print(student.student_id)
@@ -854,7 +867,13 @@ def load_students(file_path):
                             date = row[almost_end_events2[i]]
                         #print(date)
                         student.completed_dates[i] = datetime.strptime(date, "%m/%d/%Y").date()
-                if student.syllabus_type == 3:
+
+                    if student.next_event_index >= len(sys2[student.current_block]):
+                        student.completed_blocks[student.current_block] = 1
+                        student.current_block += 1
+                        student.next_event_index = 0
+
+                elif student.syllabus_type == 3:
                     if block == 1:
                         #print(3)
                         #print(student.student_id)
@@ -864,7 +883,13 @@ def load_students(file_path):
                             date = row[almost_end_events3[i]]
                         #print(date)
                         student.completed_dates[i] = datetime.strptime(date, "%m/%d/%Y").date()
-                if student.syllabus_type == 4:
+
+                    if student.next_event_index >= len(sys3[student.current_block]):
+                        student.completed_blocks[student.current_block] = 1
+                        student.current_block += 1
+                        student.next_event_index = 0
+
+                elif student.syllabus_type == 4:
                     if block == 4:
                         #print(4)
                         #print(student.student_id)
@@ -874,7 +899,12 @@ def load_students(file_path):
                             date = row[almost_end_events4[i]]
                         #print(date)
                         student.completed_dates[i] = datetime.strptime(date, "%m/%d/%Y").date()
-
+                    
+                    if student.next_event_index >= len(sys4[student.current_block]):
+                        student.completed_blocks[student.current_block] = 1
+                        student.current_block += 1
+                        student.next_event_index = 0
+            
             student_list.append(student)
     FlightStudent.student_id = len(student_list)+5
     return student_list
