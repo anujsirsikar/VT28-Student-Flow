@@ -37,7 +37,7 @@ def open_calendar(label, date_number):
         except ValueError:
             pass
 
-    cal.tag_config("available", background="lightblue", foreground="lightblue")
+    cal.tag_config("available", background="white", foreground="lightblue")
 
     def confirm_date():
         # Calendar returns MM/DD/YY
