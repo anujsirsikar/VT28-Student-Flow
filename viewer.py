@@ -37,7 +37,7 @@ def open_calendar(label, date_number):
         except ValueError:
             pass
 
-    cal.tag_config("available", background="lightblue", foreground="lightblue")
+    cal.tag_config("available", background="white", foreground="lightblue")
 
     def confirm_date():
         # Calendar returns MM/DD/YY
@@ -132,7 +132,7 @@ def display_category(category):
                 for name, vals in resources.items():
                     grouped[pct][cls].append((
                         name,
-                        f"used={vals['hours_used']:.2f} avail={vals['hours_available']:.2f} uses={vals['uses']}"
+                        f"used (hours) ={vals['hours_used']:.2f} avail (hours) ={vals['hours_available']:.2f} uses={vals['uses']}"
                     ))
 
         for pct in sorted(grouped):
