@@ -5,6 +5,13 @@
 # randomly did SY0302 while in instr grnd:
 # 102,2511,Active,12/16/2024,12/16/2024,12/17/2024,12/17/2024,12/17/2024,12/18/2024,12/19/2024,12/20/2024,12/20/2024,1/7/2025,1/7/2025,1/8/2025,1/8/2025,1/8/2025,1/10/2025,1/10/2025,1/10/2025,1/13/2025,1/13/2025,1/13/2025,1/14/2025,1/15/2025,1/15/2025,1/16/2025,1/16/2025,1/16/2025,1/17/2025,1/17/2025,1/22/2025,1/23/2025,1/24/2025,1/27/2025,1/28/2025,1/30/2025,2/3/2025,2/7/2025,2/13/2025,2/18/2025,2/19/2025,2/20/2025,2/24/2025,2/25/2025,2/26/2025,2/27/2025,2/28/2025,3/3/2025,3/24/2025,3/25/2025,3/28/2025,3/31/2025,4/9/2025,3/7/2025,3/10/2025,3/11/2025,3/12/2025,3/20/2025,4/10/2025,4/11/2025,4/16/2025,4/14/2025,4/15/2025,4/28/2025,4/29/2025,5/2/2025,5/6/2025,5/13/2025,5/14/2025,,,,,5/28/2025,5/28/2025,5/29/2025,5/29/2025,5/30/2025,6/2/2025,6/3/2025,6/3/2025,6/4/2025,6/4/2025,6/5/2025,6/6/2025,6/6/2025,6/6/2025,,,,,,,,,,,,,,,,,,,,,,9/17/2025,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
+# we can double up on the 42 and 42 blocks in instruments as well as the sims between them 
+# forms can be 2 out and ins (so 2 doubles)
+# capstone can have one out and in (1 double) and the sims can be doubled
+# have an option to maximize doubling 
+
+
+
 import datetime
 from datetime import date, timedelta, datetime, date as date_type
 from collections import deque
@@ -245,6 +252,16 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     forms_students = {}
 
     for s in students:
+
+        # I know that this is repetitive 
+        current_block = s.get_block()
+        if current_block in daily_student_distribution:
+            daily_student_distribution[current_block] += 1
+        else:
+            raise ValueError(f"Unknown block: {current_block}")
+
+
+
         # s.daily_events_done = 0  # unsure if I need this
         # print(s.get_block())
         if s.completion_date is None:
@@ -472,6 +489,15 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 s.total_wait_time += 1
             
         else: ##aircraft
+
+            # we need to schedule students first looking at aircraft and then instructors, focusing on which block has the most students in it and
+            # and also which students have been waiting the longest since their last event 
+
+            # forms and capstone are done with partners. If going from forms straight to capstone, keep the same partners (these sims are also done with partners FYI)
+
+
+
+
             aircraft_found = 0
             can_be_night = False
 
@@ -683,6 +709,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     #print(sims_used)
     #print(aircraft_used)
     #print(instructors_used)
+
+
 
     return successfull_events, day_metrics
         
@@ -1082,11 +1110,24 @@ def ask_user():
     # ============================================================
     tk.Label(
         root,
-        text="Select all percentages of students in syllabus two you would like to simulate.",
+        text="Select all percentages of students in the alternate syllabus you would like to simulate.",
         font=("Arial", 12)
     ).pack(pady=(20, 5))
 
-    percentages = [0, 5, 10, 15, 20]
+    tk.Label(
+        root,
+        text="Current syllabus: contacts -> aero -> instruments -> forms -> capstone",
+        font=("Arial", 10)
+    ).pack(pady=(20, 5))
+
+    tk.Label(
+        root,
+        text="Alternate syllabus: contacts -> aero -> forms -> instruments -> capstone",
+        font=("Arial", 10)
+    ).pack(pady=(20, 5))
+
+    #percentages = [0, 5, 10, 15, 20]
+    percentages = [0, 10, 25, 33, 50, 67, 75, 90, 100]
     percent_vars = {}
 
     percent_frame = tk.Frame(root)
@@ -1418,7 +1459,7 @@ def main():
                     new_student = FlightStudent(FlightStudent.student_id, m//8, START_DATE)
                     if m % 10 == 1:
                         new_student.syllabus_type = 2
-                    students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
+                    students.append(new_student) 
             else:
                 students = load_students(os.path.join("students", "current_students.csv"))
 

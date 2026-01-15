@@ -14,9 +14,9 @@ class FlightStudent:
 
     # can get rid of this later
     s1 = ["sys grnd", "contacts", "instr grnd", "instr", "aero", "forms", "capstone"]
-    s2 = ["sys grnd", "contacts", "aero", "forms", "instr grnd", "instr", "capstone"]
+    s2 = ["sys grnd", "contacts", "aero", "forms", "instr grnd", "instr", "capstone"]     # second most common
     s3 = ["sys grnd", "contacts", "instr grnd", "instr", "forms", "aero", "capstone"]
-    s4 = ["sys grnd", "contacts", "aero", "instr grnd", "instr", "forms", "capstone"]
+    s4 = ["sys grnd", "contacts", "aero", "instr grnd", "instr", "forms", "capstone"]     # most common
 
     student_id = 0
 
@@ -36,7 +36,7 @@ class FlightStudent:
         self.aero_first = False
         self.night_hours = 0                       # need at least 5 hours of night flying
         # should we include a student failu/setre rate?
-        self.syllabus_type = 1 # 1 = normal, 2 = aero and forms and then instruments
+        self.syllabus_type = 4 # 4 = normal, 2 = aero and forms and then instruments
 
 
     # toString function
