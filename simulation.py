@@ -255,6 +255,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
         # I know that this is repetitive 
         current_block = s.get_block()
+        if current_block == "complete":
+            continue
+
         if current_block in daily_student_distribution:
             daily_student_distribution[current_block] += 1
         else:
@@ -1397,7 +1400,7 @@ def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_siz
     axes[1].set_xticks(x + width*(num_simulations-1)/2)
     axes[1].set_xticklabels(class_up_size)
     axes[1].set_xlabel("Class up size")
-    axes[1].set_ylabel("Average work days not schedule by block (days)")
+    axes[1].set_ylabel("Average work days not scheduled by block (days)")
     axes[1].set_title("Per-Block Average Wait Times. Each column represents syllabus percentage.")
     axes[1].grid(True)
 
