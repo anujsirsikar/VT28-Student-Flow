@@ -391,6 +391,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             if helper == 0:
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
+                s.block_wait_times[s.current_block] += 1
             
         elif needed_resource == "utd":
             helper = 0   # if stays zero, then not scheduled
@@ -415,6 +416,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 # not scheduled
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
+                s.block_wait_times[s.current_block] += 1
                 
         elif needed_resource == "oft":
             helper = 0   # if stays zero, then not scheduled
@@ -439,6 +441,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 # not scheduled
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
+                s.block_wait_times[s.current_block] += 1
                 
         elif needed_resource == "vtd":
             helper = 0   # if stays zero, then not scheduled
@@ -463,6 +466,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 # not scheduled
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
+                s.block_wait_times[s.current_block] += 1
                 
         elif needed_resource == "mr":
             helper = 0   # if stays zero, then not scheduled
@@ -487,6 +491,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 # not scheduled
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
+                s.block_wait_times[s.current_block] += 1
             
         else: ##aircraft
 
@@ -527,7 +532,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         available_aircraft = []
                         available_instructors = []
                         for ac in aircraft_hours:
-                            if needed_time <= aircraft_hours[ac][1] and aircraft_hours[ac][2] < Aircraft.uses_per_day:
+                            if needed_time <= aircraft_hours[ac][0] and aircraft_hours[ac][2] < Aircraft.uses_per_day:
                                 available_aircraft.append(ac)
                                 if len(available_aircraft) == 2:
                                     break
@@ -551,7 +556,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         # print(available_instructors)
                         if len(available_aircraft) == 2 and len(available_instructors) == 2:
                             for ac in available_aircraft:
-                                aircraft_hours[ac][1] -= (needed_time + Aircraft.break_time)
+                                aircraft_hours[ac][0] -= (needed_time + Aircraft.break_time)
                                 aircraft_hours[ac][2] += 1
                                 increment_key(aircraft_used, ac)
                             for inst in available_instructors:
@@ -658,6 +663,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 if ev == "FAM4601" or (aircraft_found == 0 and s.night_hours < 5 and running_out_of_events):
                     s.days_since_last_event += 1
                     s.total_wait_time += 1
+                    s.block_wait_times[s.current_block] += 1
                     break
 
 
@@ -699,11 +705,13 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     # not scheduled
                     s.days_since_last_event += 1
                     s.total_wait_time += 1
+                    s.block_wait_times[s.current_block] += 1
 
     # print("at the end of the day: ", forms_students)
     for stu in forms_students.keys():
         stu.days_since_last_event += 1
         stu.total_wait_time += 1
+        stu.block_wait_times[s.current_block] += 1
 
     # just print statements for now, don't know how you want to use these.
     #print(sims_used)
@@ -1042,7 +1050,7 @@ def ask_user():
     slider1_label.pack(pady=(15, 0))
 
     slider1 = tk.Scale(root, from_=0, to=150, orient="horizontal")
-    slider1.pack()
+    slider1.pack(fill="x", padx=100)
 
     slider2_label = tk.Label(
         root,
@@ -1052,7 +1060,7 @@ def ask_user():
     slider2_label.pack(pady=(10, 0))
 
     slider2 = tk.Scale(root, from_=0, to=104, orient="horizontal")
-    slider2.pack()
+    slider2.pack(fill="x", padx=100)
 
     def toggle_sliders(*args):
         if choice.get() == "yes":
@@ -1080,6 +1088,22 @@ def ask_user():
 
     tk.Radiobutton(radio_frame2, text="Yes", variable=choice2, value="yes").pack(side="left", padx=10)
     tk.Radiobutton(radio_frame2, text="No", variable=choice2, value="no").pack(side="left", padx=10)
+
+
+    # # ---------------- Toggle Question ----------------
+    tk.Label(
+        root,
+        text="Would you like to attempt double scheduling?",
+        font=("Arial", 12)
+    ).pack(pady=10)
+
+    choice_tog1 = tk.StringVar(value="yes")
+
+    radio_frame_tog = tk.Frame(root)
+    radio_frame_tog.pack()
+
+    tk.Radiobutton(radio_frame_tog, text="Yes", variable=choice_tog1, value="yes").pack(side="left", padx=10)
+    tk.Radiobutton(radio_frame_tog, text="No", variable=choice_tog1, value="no").pack(side="left", padx=10)
 
     # ============================================================
     # NEW QUESTION 3 — Class sizes (multi-select)
@@ -1149,6 +1173,7 @@ def ask_user():
         result["include_current_students"] = (choice.get() == "yes")
         result["initial_students"] = slider1.get()
         result["weeks"] = slider2.get()
+        result["double_schedule"] = (choice_tog1.get() == "yes")
         result["include_in_analysis"] = (choice2.get() == "yes")
 
         # collect multi-select results
@@ -1220,6 +1245,11 @@ def compute_average_waits(student_lists, remove_current_students=True, debug=Fal
 
 
     return average_waits
+
+
+# def get_average_waits(students):
+
+
 
 
 def compare_multiple_simulations(list_of_student_lists, class_up_size, percentages, remove_current_students=True, debug=False):
@@ -1300,9 +1330,11 @@ def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_siz
     "Forms": "#8c564b",
     "Capstone": "#e377c2",
 }
-    
+
+    ## THIS IS NOT THE BLOCK SPECIFIC ONE 
     # Compute average waits for each simulation (total wait time)
     avg_waits_all = [compute_average_waits(sim, remove_current_students, debug) for sim in list_of_student_lists]
+
 
     # --- Top: Plot average total wait times ---
     fig, axes = plt.subplots(2, 1, figsize=(12,10))
@@ -1326,25 +1358,17 @@ def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_siz
             waits = []
             for run in sim:
                 run_waits = []
+
                 for s in run:
-                    if None in s.completed_dates:
+
+                    block_to_wait = dict(zip(SYLLABUS_BLOCKS[s.syllabus_type], s.block_wait_times))
+                    block_complete = dict(zip(SYLLABUS_BLOCKS[s.syllabus_type], s.completed_blocks))
+ 
+                    if block_name not in block_to_wait:
                         continue
 
-                    start = s.start_date.date() if isinstance(s.start_date, datetime) else s.start_date
-                    completed_dates = [d.date() if isinstance(d, datetime) else d for d in s.completed_dates]
-
-                    block_to_date = dict(zip(SYLLABUS_BLOCKS[s.syllabus_type], completed_dates))
-
-                    if block_name not in block_to_date:
-                        continue
-
-                    if block_name == SYLLABUS_BLOCKS[s.syllabus_type][0]:
-                        wait = (block_to_date[block_name] - start).days / 7
-                    else:
-                        prev_block = SYLLABUS_BLOCKS[s.syllabus_type][
-                            SYLLABUS_BLOCKS[s.syllabus_type].index(block_name) - 1
-                        ]
-                        wait = (block_to_date[block_name] - block_to_date[prev_block]).days / 7
+                    if block_complete[block_name] or block_to_wait[block_name] > 0:
+                        wait = (block_to_wait[block_name])
 
                     run_waits.append(wait)
 
@@ -1373,7 +1397,7 @@ def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_siz
     axes[1].set_xticks(x + width*(num_simulations-1)/2)
     axes[1].set_xticklabels(class_up_size)
     axes[1].set_xlabel("Class up size")
-    axes[1].set_ylabel("Average wait time between blocks (weeks)")
+    axes[1].set_ylabel("Average work days not schedule by block (days)")
     axes[1].set_title("Per-Block Average Wait Times. Each column represents syllabus percentage.")
     axes[1].grid(True)
 

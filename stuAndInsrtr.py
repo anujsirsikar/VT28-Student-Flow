@@ -31,6 +31,7 @@ class FlightStudent:
         self.completion_date = None
         self.completed_blocks = [0,0,0,0,0,0,0]    # 0 = uncompleted, 1 = completed
         self.completed_dates = [None, None, None, None, None, None, None]  
+        self.block_wait_times = [0,0,0,0,0,0,0]
         self.current_block = 0                     # Block one starts at zero for indexing
         self.next_event_index = 0                  # index into flattened syllabus events
         self.aero_first = False
