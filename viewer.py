@@ -132,7 +132,11 @@ def display_category(category):
                 for name, vals in resources.items():
                     grouped[pct][cls].append((
                         name,
+<<<<<<< HEAD
                         f"used (hours) ={vals['hours_used']:.2f} avail (hours) ={vals['hours_available']:.2f} uses={vals['uses']}"
+=======
+                        f"used(hours)={vals['hours_used']:.2f} avail(hours)={vals['hours_available']:.2f} uses={vals['uses']}"
+>>>>>>> f7f7b680abf71982a60a4da9060dd6b4fad8321e
                     ))
 
         for pct in sorted(grouped):
