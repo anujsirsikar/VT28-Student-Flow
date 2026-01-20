@@ -90,7 +90,7 @@ def is_valid_day(day):
         # Long weekends and federal holidays
         (date(2025,11, 27), date(2025,11, 30)),  # Thanksgiving
         (date(2025,12, 25), date(2025,12, 28)),  # Christmas
-        (date(2025,1, 1),  date(2025,1, 4)),     # New Years
+        (date(2026,1, 1),  date(2026,1, 4)),     # New Years
         (date(2025,7, 3),  date(2025,7, 6)),     # July 4th
         (date(2025,10, 11), date(2025,10, 13)),  # Columbus Day
         (date(2025,1, 17), date(2025,1, 19)),    # MLK Day
@@ -100,9 +100,9 @@ def is_valid_day(day):
         (date(2025,9, 5),  date(2025,9, 7)),     # Labor Day
         (date(2025,11, 11), date(2025,11, 11)),  # Veterans Day (single day)
         # Holiday leave periods (every year)
-        (date(2025,12, 15), date(2025,12, 28)),  # Holiday leave 1
+        # (date(2025,12, 15), date(2025,12, 28)),  # Holiday leave 1
         # Holiday leave 2 spans across years → handle separately below
-        (date(2025,12,29), date(2026,1,11)), # holiday leave 2
+        # (date(2025,12,29), date(2026,1,11)), # holiday leave 2
     ]
 
     for start_date, end_date in holiday_ranges:
@@ -133,14 +133,17 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
     # sim_start_date = date(2025, 11, 24)   # year, month, day
     current_day = sim_start_date
     result = []
-
+    print("This is days", days)
     daily_metrics = []
+    schedule_one_day_counter = 0
+    valid_day_counter = 0
 
     # run the loop for the amount of days
     while days > 0:  
         if students is None:
             break 
         if is_valid_day(current_day):
+            valid_day_counter += 1
             # print("it is a valid day")
             # if it is a monday
             if current_day.weekday() == 0:
@@ -160,11 +163,15 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
                         stu.syllabus_type = 2
                 students.extend(new_students)
             schedule, day_metrics = schedule_one_day(current_day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4)
+            schedule_one_day_counter+=1
             # keep track of resource use and students here (print it out or something)
             result.append(schedule)
             daily_metrics.append(day_metrics)
+        # else:
+        #     print(current_day)
         days -= 1
         current_day += timedelta(days=1)
+    print("valid days", valid_day_counter)
 
 
     ## format is list: schedule, list: students    
@@ -212,8 +219,15 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     aircraft_used = {}
     instructors_used = {}
 
-    daily_student_distribution = {"sys grnd": 0, "contacts": 0, "instr grnd": 0, "instr": 0, "aero": 0, "forms": 0, "capstone": 0}
-
+    daily_student_distribution = {
+            "Ground School": 0, 
+            "Contacts": 0, 
+            "Aero": 0, 
+            "Instrument Ground": 0, 
+            "Instruments": 0, 
+            "Forms": 0, 
+            "Capstone" : 0
+        }
     day_metrics = {
         "date":str(day),
 
@@ -266,7 +280,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
 
         # s.daily_events_done = 0  # unsure if I need this
-        # print(s.get_block())
+        # print(s.s.get_block())
         if s.completion_date is None:
             if s.days_since_last_event >= 15:
                 events_to_attempt.append((s,"warmup flight"))
@@ -394,7 +408,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             if helper == 0:
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
-                s.block_wait_times[s.current_block] += 1
+                s.block_wait_times[s.get_block()] += 1
+                s.unscheduled_per_resource["classroom"] += 1
             
         elif needed_resource == "utd":
             helper = 0   # if stays zero, then not scheduled
@@ -419,7 +434,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 # not scheduled
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
-                s.block_wait_times[s.current_block] += 1
+                s.block_wait_times[s.get_block()] += 1
+                s.unscheduled_per_resource["utd"] += 1
                 
         elif needed_resource == "oft":
             helper = 0   # if stays zero, then not scheduled
@@ -444,7 +460,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 # not scheduled
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
-                s.block_wait_times[s.current_block] += 1
+                s.block_wait_times[s.get_block()] += 1
+                s.unscheduled_per_resource["oft"] += 1
                 
         elif needed_resource == "vtd":
             helper = 0   # if stays zero, then not scheduled
@@ -469,7 +486,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 # not scheduled
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
-                s.block_wait_times[s.current_block] += 1
+                s.block_wait_times[s.get_block()] += 1
+                s.unscheduled_per_resource["vtd"] += 1
                 
         elif needed_resource == "mr":
             helper = 0   # if stays zero, then not scheduled
@@ -494,7 +512,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 # not scheduled
                 s.days_since_last_event += 1
                 s.total_wait_time += 1
-                s.block_wait_times[s.current_block] += 1
+                s.block_wait_times[s.get_block()] += 1
+                s.unscheduled_per_resource["mr"] += 1
             
         else: ##aircraft
 
@@ -685,8 +704,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 if ev == "FAM4601" or (aircraft_found == 0 and s.night_hours < 5 and running_out_of_events):
                     s.days_since_last_event += 1
                     s.total_wait_time += 1
-                    s.block_wait_times[s.current_block] += 1
-                    break
+                    s.block_wait_times[s.get_block()] += 1
+                    s.unscheduled_per_resource["aircraft"] += 1
+                    continue
 
 
                 for ac in aircraft_hours:
@@ -727,13 +747,17 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     # not scheduled
                     s.days_since_last_event += 1
                     s.total_wait_time += 1
-                    s.block_wait_times[s.current_block] += 1
+                    s.block_wait_times[s.get_block()] += 1
+                    s.unscheduled_per_resource["aircraft"] += 1
 
     # print("at the end of the day: ", forms_students)
+    ####seems like there are some complete students in here
     for stu in forms_students.keys():
-        stu.days_since_last_event += 1
-        stu.total_wait_time += 1
-        stu.block_wait_times[s.current_block] += 1
+        if s.get_block() != "complete":
+            stu.days_since_last_event += 1
+            stu.total_wait_time += 1
+            stu.block_wait_times[s.get_block()] += 1
+            # stu.unscheduled_per_resource["aircraft"] += 1
 
     # just print statements for now, don't know how you want to use these.
     #print(sims_used)
@@ -1340,6 +1364,7 @@ def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_siz
     - debug: bool, whether to print debug info
     """
     block_names = ["Ground School", "Contacts", "Instrument Ground", "Instruments", "Aero", "Forms", "Capstone" ]
+    resource_names = {"classroom", "utd", "oft", "vtd", "mr", "aircraft"}
     num_simulations = len(list_of_student_lists)
     colors = plt.cm.tab10.colors  # up to 10 distinct colors for simulations
     num_blocks = len(block_names)
@@ -1376,6 +1401,7 @@ def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_siz
 
     for sim_idx, sim in enumerate(list_of_student_lists):
         bottom = np.zeros(len(class_up_size))
+
         for block_name in block_names:
             waits = []
             for run in sim:
@@ -1383,14 +1409,14 @@ def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_siz
 
                 for s in run:
 
-                    block_to_wait = dict(zip(SYLLABUS_BLOCKS[s.syllabus_type], s.block_wait_times))
+                    # block_to_wait = dict(zip(SYLLABUS_BLOCKS[s.syllabus_type], s.block_wait_times))
                     block_complete = dict(zip(SYLLABUS_BLOCKS[s.syllabus_type], s.completed_blocks))
- 
-                    if block_name not in block_to_wait:
+
+                    if block_name not in s.block_wait_times:
                         continue
 
-                    if block_complete[block_name] or block_to_wait[block_name] > 0:
-                        wait = (block_to_wait[block_name])
+                    if block_complete[block_name] or s.block_wait_times[block_name] > 0:
+                        wait = s.block_wait_times[block_name]
 
                     run_waits.append(wait)
 
@@ -1541,6 +1567,28 @@ def main():
         student_lists.append(copy.deepcopy(computed_students))
 
         simulation_data.append(student_lists)
+
+        simulation_resource_waits = []
+        for y in simulation_data:
+            class_size_resource_waits = []
+            for x in y:
+                res_waits = {
+                    "classroom": 0,
+                    "utd": 0,
+                    "oft": 0,
+                    "vtd":0,
+                    "mr":0,
+                    "aircraft": 0
+                }
+                for stu in x:
+                    # print(stu.unscheduled_per_resource)
+                    for key in res_waits:
+                        res_waits[key] += stu.unscheduled_per_resource[key]
+
+                class_size_resource_waits.append(res_waits)
+            simulation_resource_waits.append(class_size_resource_waits)
+
+        print(simulation_resource_waits)
 
 
 

@@ -12,11 +12,20 @@ class FlightStudent:
     syllabus3 = []
     syllabus4 = []
 
+    unscheduled_per_resource = {
+        "classroom": 0,
+        "utd": 0,
+        "oft": 0,
+        "vtd":0,
+        "mr":0,
+        "aircraft": 0
+    }
+
     # can get rid of this later
-    s1 = ["sys grnd", "contacts", "instr grnd", "instr", "aero", "forms", "capstone"]
-    s2 = ["sys grnd", "contacts", "aero", "forms", "instr grnd", "instr", "capstone"]     # second most common
-    s3 = ["sys grnd", "contacts", "instr grnd", "instr", "forms", "aero", "capstone"]
-    s4 = ["sys grnd", "contacts", "aero", "instr grnd", "instr", "forms", "capstone"]     # most common
+    s1 = ["Ground School", "Contacts", "Instrument Ground", "Instruments", "Aero", "Forms", "Capstone"]
+    s2 = ["Ground School", "Contacts", "Aero", "Forms", "Instrument Ground", "Instruments", "Capstone"]     # second most common
+    s3 = ["Ground School", "Contacts", "Instrument Ground", "Instruments", "Forms", "Aero", "Capstone"]
+    s4 = ["Ground School", "Contacts", "Aero", "Instrument Ground", "Instruments", "Forms", "Capstone"]     # most common
 
     student_id = 0
 
@@ -31,13 +40,22 @@ class FlightStudent:
         self.completion_date = None
         self.completed_blocks = [0,0,0,0,0,0,0]    # 0 = uncompleted, 1 = completed
         self.completed_dates = [None, None, None, None, None, None, None]  
-        self.block_wait_times = [0,0,0,0,0,0,0]
+        self.block_wait_times = {
+            "Ground School": 0, 
+            "Contacts": 0, 
+            "Aero": 0, 
+            "Instrument Ground": 0, 
+            "Instruments": 0, 
+            "Forms": 0, 
+            "Capstone" : 0
+
+        }
         self.current_block = 0                     # Block one starts at zero for indexing
         self.next_event_index = 0                  # index into flattened syllabus events
-        self.aero_first = False
+        self.Aero_first = False
         self.night_hours = 0                       # need at least 5 hours of night flying
         # should we include a student failu/setre rate?
-        self.syllabus_type = 4 # 4 = normal, 2 = aero and forms and then instruments
+        self.syllabus_type = 4 # 4 = normal, 2 = Aero and Forms and then instruments
 
 
     # toString function
