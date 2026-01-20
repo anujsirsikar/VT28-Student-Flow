@@ -12,14 +12,7 @@ class FlightStudent:
     syllabus3 = []
     syllabus4 = []
 
-    unscheduled_per_resource = {
-        "classroom": 0,
-        "utd": 0,
-        "oft": 0,
-        "vtd":0,
-        "mr":0,
-        "aircraft": 0
-    }
+    
 
     # can get rid of this later
     s1 = ["Ground School", "Contacts", "Instrument Ground", "Instruments", "Aero", "Forms", "Capstone"]
@@ -49,6 +42,14 @@ class FlightStudent:
             "Forms": 0, 
             "Capstone" : 0
 
+        }
+        self.unscheduled_per_resource = {
+            "classroom": 0,
+            "utd": 0,
+            "oft": 0,
+            "vtd":0,
+            "mr":0,
+            "aircraft": 0
         }
         self.current_block = 0                     # Block one starts at zero for indexing
         self.next_event_index = 0                  # index into flattened syllabus events
