@@ -501,6 +501,25 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             # we need to schedule students first looking at aircraft and then instructors, focusing on which block has the most students in it and
             # and also which students have been waiting the longest since their last event 
 
+            # 1) assign a priority number (1-7) based on which block has the most students currently in it. So a '1' would be given to the block with the most students 
+            # 2) then assign a priority number (1-7) based on which block has the largest avaerage wait time between events 
+            # 3) then maybe reorder the students in the list 
+            # possible solutions:
+            # wait times only for breaking ties (lexographic sort): blocks.sort(key=lambda b: (b.student_count, b.avg_wait), reverse=True)
+            # weighted score: block.priority = 0.7 * block.student_count + 0.3 * block.avg_wait  ->  blocks.sort(key=lambda b: b.priority, reverse=True)
+            # deal with "starving blocks":
+            # -> priority = block.student_count + 0.1 * block.avg_wait
+            # -> if block.avg_wait > 10:
+            #        size_weight = 0.6
+            #        wait_weight = 0.4
+            #    else:
+            #        size_weight = 0.8
+            #        wait_weight = 0.2
+
+
+
+
+
             # forms and capstone are done with partners. If going from forms straight to capstone, keep the same partners (these sims are also done with partners FYI)
 
 
