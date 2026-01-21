@@ -53,7 +53,7 @@ class FlightStudent:
         }
         self.current_block = 0                     # Block one starts at zero for indexing
         self.next_event_index = 0                  # index into flattened syllabus events
-        self.Aero_first = False
+        self.Aero_first = True                     # do we need this????
         self.night_hours = 0                       # need at least 5 hours of night flying
         # should we include a student failu/setre rate?
         self.syllabus_type = 4 # 4 = normal, 2 = Aero and Forms and then instruments

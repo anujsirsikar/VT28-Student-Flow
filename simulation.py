@@ -351,6 +351,21 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     instructors_available = [instructor for instructor in instructors if random.random() > Instructor.failure_rate]
     instructor_hours = {instructor: [Instructor.daily_hours,0] for instructor in instructors_available}
 
+    # re-sort the students based on which block has the most students
+    # blocks are sorted by most amount of students to least 
+    ordered_blocks = sorted(daily_student_distribution, key=daily_student_distribution.get, reverse=True)
+    
+    # Build a quick lookup for block priority
+    block_priority = {block: i for i, block in enumerate(ordered_blocks)}
+
+    # Sort events_to_attempt in-place
+    events_to_attempt.sort(key=lambda item: block_priority.get(item[0].get_block(), float("inf")))
+
+    # try this to also use wait time (although they should already be in order by wait time)
+    # events_to_attempt.sort(key=lambda item: (block_priority.get(item[0].get_block(), float("inf")), -item[0].days_since_last_event))
+
+
+
     # looking at student and the event they are scheduled for
     for s, ev in events_to_attempt:
         #getting how long the event it. 
