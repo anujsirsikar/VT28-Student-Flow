@@ -57,7 +57,7 @@ class FlightStudent:
         self.night_hours = 0                       # need at least 5 hours of night flying
         # should we include a student failu/setre rate?
         self.syllabus_type = 4 # 4 = normal, 2 = Aero and Forms and then instruments
-
+        self.partner = None 
 
     # toString function
     def __str__(self):
@@ -103,6 +103,19 @@ class FlightStudent:
             self.next_event_index += 1
         if sum(self.completed_blocks) == 7:
             self.completion_date = day
+    
+    def has_partner(self):
+        if self.partner == None:
+            return False
+        else:
+            return True
+    
+    def assign_partner(self, other_student):
+        self.partner = other_student
+        other_student.partner = self
+
+    def get_partner(self):
+        return self.partner
   
 
 class Instructor:

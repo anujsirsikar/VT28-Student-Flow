@@ -207,6 +207,55 @@ def log_usage(bucket, resource, hours, hours_available=None, uses=1):
     bucket[key]["hours_used"] += hours
     bucket[key]["uses"] += uses
 
+def schedule_forms_oft(day, s, ev, forms_students, oft_hours, needed_time, successfull_events, day_metrics, sims_used):
+    have_partner_pair = 0
+    if not s.has_partner() and len(forms_students) > 0:   # doesn't have a partner but could get one
+        for key, value in forms_students.items():
+            if value == ev and not key.has_partner():
+                s.assign_partner(key)     # we have a pair of partners
+                have_partner_pair = 1
+                break
+    elif s.has_partner() and s.get_partner() in forms_students:    # has a partner and partner is ready to go
+        have_partner_pair = 1
+    
+    if have_partner_pair == 0:   # didn't get a partner or partner not available
+        forms_students[s] = ev
+    else: 
+        available_sims = []
+        for o in oft_hours:
+            if needed_time <= oft_hours[o]:
+                available_sims.append(o)
+                if len(available_sims) == 2:
+                    break
+        if len(available_sims) == 2:
+            for o in available_sims:
+                oft_hours[o] -= (needed_time + Sim.break_time)
+            log_usage(
+                day_metrics["resources"]["oft"],
+                available_sims[0],
+                needed_time,
+                hours_available=Sim.daily_hours,
+                uses=1
+            )
+            log_usage(
+                day_metrics["resources"]["oft"],
+                available_sims[1],
+                needed_time,
+                hours_available=Sim.daily_hours,
+                uses=1
+            )
+            successfull_events.append([s,ev, str(day), available_sims[0]])
+            successfull_events.append([s.get_partner(),ev, str(day), available_sims[1]])
+            s.event_complete(day)
+            s.get_partner().event_complete(day)
+            del forms_students[s.get_partner()]
+            increment_key(sims_used, available_sims[0])
+            increment_key(sims_used, available_sims[1])
+        else:
+            forms_students[s] = ev
+
+
+
 
 def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4):# grndSchool, contacts, aero, inst, forms, capstone):
     # dictionaries for each resource (including instructors)
@@ -362,13 +411,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
         )
     )
 
-    # Sort events_to_attempt in-place
-    #events_to_attempt.sort(key=lambda item: block_priority.get(item[0].get_block(), float("inf")))
-
-    # try this to also use wait time (although they should already be in order by wait time)
-    # events_to_attempt.sort(key=lambda item: (block_priority.get(item[0].get_block(), float("inf")), -item[0].days_since_last_event))
-
-
 
     # looking at student and the event they are scheduled for
     for s, ev in events_to_attempt:
@@ -457,31 +499,35 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 s.unscheduled_per_resource["utd"] += 1
                 
         elif needed_resource == "oft":
-            helper = 0   # if stays zero, then not scheduled
-            for o in oft_hours:
-                if needed_time <= oft_hours[o]:
-                    oft_hours[o] -= (needed_time + Sim.break_time)
-                    # schedule the student
-                    log_usage(
-                        day_metrics["resources"]["oft"],
-                        o,
-                        needed_time,
-                        hours_available=Sim.daily_hours,
-                        uses=1
-                    )
-                    # log_usage_old(day_metrics["resources"]["oft"],o,needed_time)
-                    successfull_events.append([s,ev, str(day), o])
-                    s.event_complete(day)
-                    helper = 1
-                    increment_key(sims_used, o)
-                    break
-            if helper == 0:
-                # not scheduled
-                s.days_since_last_event += 1
-                s.total_wait_time += 1
-                s.block_wait_times[s.get_block()] += 1
-                s.unscheduled_per_resource["oft"] += 1
-                
+            if ev.block == 'forms':
+                schedule_forms_oft(day, s, ev, forms_students, oft_hours, needed_time, successfull_events, day_metrics, sims_used)
+
+
+            else:
+                helper = 0   # if stays zero, then not scheduled
+                for o in oft_hours:
+                    if needed_time <= oft_hours[o]:
+                        oft_hours[o] -= (needed_time + Sim.break_time)
+                        # schedule the student
+                        log_usage(
+                            day_metrics["resources"]["oft"],
+                            o,
+                            needed_time,
+                            hours_available=Sim.daily_hours,
+                            uses=1
+                        )
+                        # log_usage_old(day_metrics["resources"]["oft"],o,needed_time)
+                        successfull_events.append([s,ev, str(day), o])
+                        s.event_complete(day)
+                        helper = 1
+                        increment_key(sims_used, o)
+                        break
+                if helper == 0:
+                    # not scheduled
+                    s.days_since_last_event += 1
+                    s.total_wait_time += 1
+                    s.block_wait_times[s.get_block()] += 1
+                    s.unscheduled_per_resource["oft"] += 1
         elif needed_resource == "vtd":
             helper = 0   # if stays zero, then not scheduled
             for v in vtd_hours:
