@@ -31,6 +31,7 @@ import numpy as np
 import copy
 import json
 from matplotlib.patches import Patch
+from holiday_loader import load_holiday_ranges
 
 # Note: You can have more than one event in a day (especially for sims and flights) [but for first iteration, do one per day]
 
@@ -83,30 +84,31 @@ def is_valid_day(day):
     # Month/day helper
     m, d = day.month, day.day
     # --- Holiday ranges (month/day, month/day) ---
-    holiday_ranges = [
-        # """
-        # These change every fiscal year. Maybe this can also be info that gets read in from a file
-        # """
-        # Long weekends and federal holidays
-        (date(2025,11, 27), date(2025,11, 30)),  # Thanksgiving
-        (date(2025,12, 25), date(2025,12, 28)),  # Christmas
-        (date(2026,1, 1),  date(2026,1, 4)),     # New Years
-        (date(2025,7, 3),  date(2025,7, 6)),     # July 4th
-        (date(2025,10, 11), date(2025,10, 13)),  # Columbus Day
-        (date(2025,1, 17), date(2025,1, 19)),    # MLK Day
-        (date(2025,2, 14),  date(2025,2, 16)),   # President's Day
-        (date(2025,5, 23),  date(2025,5, 25)),   # Memorial Day
-        (date(2025,6, 19),  date(2025,6, 21)),   # Juneteenth
-        (date(2025,9, 5),  date(2025,9, 7)),     # Labor Day
-        (date(2025,11, 11), date(2025,11, 11)),  # Veterans Day (single day)
-        # Holiday leave periods (every year)
-        # (date(2025,12, 15), date(2025,12, 28)),  # Holiday leave 1
-        # Holiday leave 2 spans across years → handle separately below
-        # (date(2025,12,29), date(2026,1,11)), # holiday leave 2
-    ]
+    holiday_ranges = load_holiday_ranges("holidays.csv")
+    # [
+    #     # """
+    #     # These change every fiscal year. Maybe this can also be info that gets read in from a file
+    #     # """
+    #     # Long weekends and federal holidays
+    #     (date(2025,11, 27), date(2025,11, 30)),  # Thanksgiving
+    #     (date(2025,12, 25), date(2025,12, 28)),  # Christmas
+    #     (date(2026,1, 1),  date(2026,1, 4)),     # New Years
+    #     (date(2025,7, 3),  date(2025,7, 6)),     # July 4th
+    #     (date(2025,10, 11), date(2025,10, 13)),  # Columbus Day
+    #     (date(2025,1, 17), date(2025,1, 19)),    # MLK Day
+    #     (date(2025,2, 14),  date(2025,2, 16)),   # President's Day
+    #     (date(2025,5, 23),  date(2025,5, 25)),   # Memorial Day
+    #     (date(2025,6, 19),  date(2025,6, 21)),   # Juneteenth
+    #     (date(2025,9, 5),  date(2025,9, 7)),     # Labor Day
+    #     (date(2025,11, 11), date(2025,11, 11)),  # Veterans Day (single day)
+    #     # Holiday leave periods (every year)
+    #     # (date(2025,12, 15), date(2025,12, 28)),  # Holiday leave 1
+    #     # Holiday leave 2 spans across years → handle separately below
+    #     # (date(2025,12,29), date(2026,1,11)), # holiday leave 2
+    # ]
 
-    for start_date, end_date in holiday_ranges:
-        if (start_date<= day <= end_date):
+    for dates in holiday_ranges:
+        if (dates["start"]<= day <= dates["end"]):
             return False
     return True
 
@@ -133,17 +135,13 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
     # sim_start_date = date(2025, 11, 24)   # year, month, day
     current_day = sim_start_date
     result = []
-    print("This is days", days)
     daily_metrics = []
-    schedule_one_day_counter = 0
-    valid_day_counter = 0
 
     # run the loop for the amount of days
     while days > 0:  
         if students is None:
             break 
         if is_valid_day(current_day):
-            valid_day_counter += 1
             # print("it is a valid day")
             # if it is a monday
             if current_day.weekday() == 0:
@@ -163,7 +161,6 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
                         stu.syllabus_type = 2
                 students.extend(new_students)
             schedule, day_metrics = schedule_one_day(current_day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4)
-            schedule_one_day_counter+=1
             # keep track of resource use and students here (print it out or something)
             result.append(schedule)
             daily_metrics.append(day_metrics)
@@ -171,7 +168,6 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
         #     print(current_day)
         days -= 1
         current_day += timedelta(days=1)
-    print("valid days", valid_day_counter)
 
 
     ## format is list: schedule, list: students    
@@ -256,7 +252,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     events_to_attempt = []
     successfull_events = []
 
-    students = students = sorted(
+    students = sorted(
     students,
     key=lambda s: s.days_since_last_event or -1,  # None-safe
     reverse=True

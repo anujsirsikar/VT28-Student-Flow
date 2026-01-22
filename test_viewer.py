@@ -472,10 +472,6 @@ def main():
     row2 = ttk.Frame(top_frame)
     row2.pack(fill="x")               # second row
 
-    row3 = ttk.Frame(top_frame)
-    row3.pack(fill="x")                # Resource selector
-
-
     # ---------------- Row 1: Monthly averages controls ----------------
     pct_class_frame = ttk.Frame(row1)
     pct_class_frame.pack(side="left", padx=(0, 10))
@@ -516,7 +512,7 @@ def main():
     
 
     ttk.Button(date1_frame, text="Select Date 1",
-            command=lambda: open_calendar(selected_label1, 1)).pack(side="left", padx=(40, 4))
+            command=lambda: open_calendar(selected_label1, 1)).pack(side="left", padx=(4, 4))
 
     ttk.Button(date1_frame, text="<", width=1,
             command=lambda: step_date(1, -1, selected_label1)).pack(side="left")
@@ -546,10 +542,10 @@ def main():
 
 
     category_var = tk.StringVar()
-    category_dropdown = ttk.Combobox(row3, textvariable=category_var, state="readonly", width=20)
+    category_dropdown = ttk.Combobox(row2, textvariable=category_var, state="readonly", width=20)
     category_dropdown["values"] = ["students", "utd", "oft", "vtd", "mr", "aircraft", "instructor"]
     category_dropdown.set("Select category")
-    category_dropdown.pack(side="left", padx=(37,0))
+    category_dropdown.pack(side="left")
 
     category_dropdown.bind("<<ComboboxSelected>>",
                         lambda e: display_category(category_var.get()))
