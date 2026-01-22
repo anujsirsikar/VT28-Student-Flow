@@ -354,8 +354,16 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     # Build a quick lookup for block priority
     block_priority = {block: i for i, block in enumerate(ordered_blocks)}
 
+    events_to_attempt.sort(
+        key=lambda item: (
+            item[0].days_since_last_event < 10,
+            -item[0].days_since_last_event,
+            block_priority.get(item[0].get_block(), float("inf"))
+        )
+    )
+
     # Sort events_to_attempt in-place
-    events_to_attempt.sort(key=lambda item: block_priority.get(item[0].get_block(), float("inf")))
+    #events_to_attempt.sort(key=lambda item: block_priority.get(item[0].get_block(), float("inf")))
 
     # try this to also use wait time (although they should already be in order by wait time)
     # events_to_attempt.sort(key=lambda item: (block_priority.get(item[0].get_block(), float("inf")), -item[0].days_since_last_event))
