@@ -57,6 +57,7 @@ class FlightStudent:
         self.night_hours = 0                       # need at least 5 hours of night flying
         # should we include a student failu/setre rate?
         self.syllabus_type = 4 # 4 = normal, 2 = Aero and Forms and then instruments
+        self.imported = True
 
 
     # toString function
@@ -64,7 +65,7 @@ class FlightStudent:
         return f"Student: {self.student_id}"
     
     def __repr__(self):
-        return str(self)
+        return str(self.completed_dates)
 
     # returns the student's next event
     def next_event(self):
