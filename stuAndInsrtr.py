@@ -84,7 +84,6 @@ class FlightStudent:
             return FlightStudent.s3[self.current_block]
         else:
             return FlightStudent.s4[self.current_block]
-    
 
     def event_complete(self, day):
         syl = FlightStudent.syllabus1
@@ -118,6 +117,9 @@ class FlightStudent:
 
     def get_partner(self):
         return self.partner
+    
+    def remove_partner(self):
+        self.partner = None
   
 
 class Instructor:

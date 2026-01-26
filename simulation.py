@@ -193,6 +193,8 @@ def log_usage(bucket, resource, hours, hours_available=None, uses=1):
 
 def schedule_partner_sim(day, s, ev, students, hours, needed_time, successfull_events, day_metrics, sims_used, sim_type):
     have_partner_pair = 0
+    if (s.syllabus_type == 2 or s.syllabus_type == 3) and ev == "CS2101":  # if they are not going straight from forms to capstone
+        s.remove_partner()
     if not s.has_partner() and len(students) > 0:   # doesn't have a partner but could get one
         for key, value in students.items():
             if value == ev and not key.has_partner():
@@ -354,6 +356,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
     # make this a dictionary where the key is a student and the value is their next event 
     forms_students = {}
+    capstone_students = {}
 
     for s in students:
 
@@ -529,6 +532,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
         elif needed_resource == "oft":
             if ev.block == 'forms':
                 schedule_partner_sim(day, s, ev, forms_students, oft_hours, needed_time, successfull_events, day_metrics, sims_used, "oft")
+            elif ev.block == 'capstone':
+                schedule_partner_sim(day, s, ev, capstone_students, oft_hours, needed_time, successfull_events, day_metrics, sims_used, "oft")
             else:
                 schedule_sim(day, s, ev, oft_hours, needed_time, successfull_events, day_metrics, sims_used, "oft")
 
@@ -538,6 +543,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
         elif needed_resource == "mr":
             if ev.block == 'forms':
                 schedule_partner_sim(day, s, ev, forms_students, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
+            elif ev.block == 'capstone':
+                schedule_partner_sim(day, s, ev, capstone_students, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
             else:
                 schedule_sim(day, s, ev, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
             
@@ -667,6 +674,87 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         del forms_students[s.get_partner()]
                         # print(forms_students)
                         break
+            elif ev != "warmup flight" and ev.block == "capstone":
+                have_partner_pair = 0
+                if not s.has_partner() and len(capstone_students) > 0:   # doesn't have a partner but could get one
+                    for key, value in capstone_students.items():
+                        if value == ev and not key.has_partner():
+                            s.assign_partner(key)     # we have a pair of partners
+                            have_partner_pair = 1
+                            break
+                elif s.has_partner() and s.get_partner() in capstone_students:    # has a partner and partner is ready to go
+                    have_partner_pair = 1
+                
+                if have_partner_pair == 0:   # didn't get a partner or partner not available
+                    capstone_students[s] = ev
+                else: 
+                    available_aircraft = []
+                    available_instructors = []
+                    for ac in aircraft_data:
+                        if needed_time <= aircraft_data[ac]["day_hours"] and aircraft_data[ac]["uses"] < Aircraft.uses_per_day:
+                            available_aircraft.append(ac)
+                            if len(available_aircraft) == 2:
+                                break
+                
+                    for inst in instructor_hours:
+                        if needed_time <= instructor_hours[inst][0] and instructor_hours[inst][1] < 4:
+                            available_instructors.append(inst)
+                            if len(available_instructors) == 2:
+                                    break
+                         
+                    # print(available_aircraft)
+                    # print(available_instructors)
+                    if len(available_aircraft) == 2 and len(available_instructors) == 2:
+                        for ac in available_aircraft:
+                            aircraft_data[ac]["day_hours"] -= (needed_time + Aircraft.break_time)
+                            aircraft_data[ac]["uses"] += 1
+                            increment_key(aircraft_used, ac)
+                        for inst in available_instructors:
+                            #print(inst)
+                            instructor_hours[inst][0] -= (needed_time + Instructor.break_time)
+                            instructor_hours[inst][1] += 1
+                            increment_key(instructors_used, inst)
+    
+
+                        log_usage(
+                            day_metrics["resources"]["aircraft"],
+                            available_aircraft[0],
+                            needed_time,
+                            hours_available=Aircraft.daily_hours,
+                            uses=1
+                        )
+                        log_usage(
+                            day_metrics["resources"]["instructor"],
+                            available_instructors[0],
+                            needed_time,
+                            hours_available=Instructor.daily_hours,
+                            uses=1
+                        )
+                        log_usage(
+                            day_metrics["resources"]["aircraft"],
+                            available_aircraft[1],
+                            needed_time,
+                            hours_available=Aircraft.daily_hours,
+                            uses=1
+                        )
+                        log_usage(
+                            day_metrics["resources"]["instructor"],
+                            available_instructors[1],
+                            needed_time,
+                            hours_available=Instructor.daily_hours,
+                            uses=1
+                        )
+                        # log_usage_old(day_metrics["resources"]["aircraft"],available_aircraft[0],needed_time)
+                        # log_usage_old(day_metrics["resources"]["instructor"],available_instructors[0],needed_time)
+                        # log_usage_old(day_metrics["resources"]["aircraft"],available_aircraft[1],needed_time)
+                        # log_usage_old(day_metrics["resources"]["instructor"],available_instructors[1],needed_time)
+                        successfull_events.append([s, ev, str(day), "day", available_aircraft[0], available_instructors[0]])
+                        successfull_events.append([s.get_partner(), ev, str(day), "day", available_aircraft[1], available_instructors[1]])
+                        s.event_complete(day)
+                        s.get_partner().event_complete(day)
+                        del capstone_students[s.get_partner()]
+                        # print(forms_students)
+                        break
             
             else:
                 if can_be_night and s.night_hours < 3.3:
@@ -770,6 +858,12 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             stu.total_wait_time += 1
             stu.block_wait_times[s.get_block()] += 1
             # stu.unscheduled_per_resource["aircraft"] += 1      # how to do this here because it could also be an oft or mr???
+
+    for stu in capstone_students.keys():
+        if s.get_block() != "complete":
+            stu.days_since_last_event += 1
+            stu.total_wait_time += 1
+            stu.block_wait_times[s.get_block()] += 1
 
     # just print statements for now, don't know how you want to use these.
     #print(sims_used)
