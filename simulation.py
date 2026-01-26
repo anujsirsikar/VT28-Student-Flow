@@ -84,28 +84,7 @@ def is_valid_day(day):
     # Month/day helper
     m, d = day.month, day.day
     # --- Holiday ranges (month/day, month/day) ---
-    holiday_ranges = load_holiday_ranges("holidays.csv")
-    # [
-    #     # """
-    #     # These change every fiscal year. Maybe this can also be info that gets read in from a file
-    #     # """
-    #     # Long weekends and federal holidays
-    #     (date(2025,11, 27), date(2025,11, 30)),  # Thanksgiving
-    #     (date(2025,12, 25), date(2025,12, 28)),  # Christmas
-    #     (date(2026,1, 1),  date(2026,1, 4)),     # New Years
-    #     (date(2025,7, 3),  date(2025,7, 6)),     # July 4th
-    #     (date(2025,10, 11), date(2025,10, 13)),  # Columbus Day
-    #     (date(2025,1, 17), date(2025,1, 19)),    # MLK Day
-    #     (date(2025,2, 14),  date(2025,2, 16)),   # President's Day
-    #     (date(2025,5, 23),  date(2025,5, 25)),   # Memorial Day
-    #     (date(2025,6, 19),  date(2025,6, 21)),   # Juneteenth
-    #     (date(2025,9, 5),  date(2025,9, 7)),     # Labor Day
-    #     (date(2025,11, 11), date(2025,11, 11)),  # Veterans Day (single day)
-    #     # Holiday leave periods (every year)
-    #     # (date(2025,12, 15), date(2025,12, 28)),  # Holiday leave 1
-    #     # Holiday leave 2 spans across years → handle separately below
-    #     # (date(2025,12,29), date(2026,1,11)), # holiday leave 2
-    # ]
+    # holiday_ranges = load_holiday_ranges("holidays.csv")
 
     for dates in holiday_ranges:
         if (dates["start"]<= day <= dates["end"]):
@@ -191,16 +170,13 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
 instructor_rate = 0.9
 instructor_daily_hours = 12
 
-# helper function
+# # helper function
 def increment_key(d, key):
     if key in d:
         d[key] += 1
     else:
         d[key] = 1
 
-def log_usage_old(bucket, resource, hours):
-    bucket.setdefault(str(resource), 0)
-    bucket[str(resource)] += hours
 
 def log_usage(bucket, resource, hours, hours_available=None, uses=1):
     key = str(resource)
@@ -454,17 +430,18 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     vtd_hours = {sim: Sim.daily_hours for sim in working_vtds}
     mr_hours  = {sim: Sim.daily_hours for sim in working_mrs}
     # format is Aircraft Object: [Daily Hours Availible, Night Hours Availible, Total uses that day]
-    aircraft_hours = {ac: [Aircraft.daytime_hours, Aircraft.nighttime_hours, 0] for ac in working_aircraft}
+    # aircraft_hours = {ac: [Aircraft.daytime_hours, Aircraft.nighttime_hours, 0] for ac in working_aircraft}
 
-    # format object: [hours, event, current capacity check, [capacity_event_one, capacity_event_two, etc...]]
-    classroom_hours_events = {c: [Classroom.daily_hours, None, -1, [0, 0, 0, 0,0,0,0,0,0]] for c in classroom}
+    aircraft_data = { 
+        ac: {
 
-    classroom_hours_events = {c: {
-        "hours": Classroom.daily_hours,
-        "event": None,
-        "current_capacity_index": -1,
-        "capacity_events": [0,0,0,0,0,0,0,0,0]
-    } for c in classroom}
+            "day_hours": Aircraft.daytime_hours,
+            "night_hours": Aircraft.nighttime_hours,
+            "uses": 0
+        }
+        for ac in working_aircraft
+    }
+
 
     classroom_data = {
         c: {
@@ -616,8 +593,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 else: 
                     available_aircraft = []
                     available_instructors = []
-                    for ac in aircraft_hours:
-                        if needed_time <= aircraft_hours[ac][0] and aircraft_hours[ac][2] < Aircraft.uses_per_day:
+                    for ac in aircraft_data:
+                        if needed_time <= aircraft_data[ac]["day_hours"] and aircraft_data[ac]["uses"] < Aircraft.uses_per_day:
                             available_aircraft.append(ac)
                             if len(available_aircraft) == 2:
                                 break
@@ -641,8 +618,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     # print(available_instructors)
                     if len(available_aircraft) == 2 and len(available_instructors) == 2:
                         for ac in available_aircraft:
-                            aircraft_hours[ac][0] -= (needed_time + Aircraft.break_time)
-                            aircraft_hours[ac][2] += 1
+                            aircraft_data[ac]["day_hours"] -= (needed_time + Aircraft.break_time)
+                            aircraft_data[ac]["uses"] += 1
                             increment_key(aircraft_used, ac)
                         for inst in available_instructors:
                             #print(inst)
@@ -693,12 +670,12 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             
             else:
                 if can_be_night and s.night_hours < 3.3:
-                    for ac in aircraft_hours:
+                    for ac in aircraft_data:
                         instructor_found = 0
-                        if needed_time <= aircraft_hours[ac][1] and aircraft_hours[ac][2] < Aircraft.uses_per_day:
+                        if needed_time <= aircraft_data[ac]["night_hours"] and aircraft_data[ac]["uses"] < Aircraft.uses_per_day:
                             for inst in instructor_hours:
                                 if needed_time > instructor_hours[inst][0] and instructor_hours[inst][1] < 4:
-                                    aircraft_hours[ac][1] -= (needed_time + Aircraft.break_time)
+                                    aircraft_data[ac]["night_hours"] -= (needed_time + Aircraft.break_time)
                                     instructor_hours[inst][0] -= (needed_time + Instructor.break_time)
                                     instructor_hours[inst][1] += 1
 
@@ -720,7 +697,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                                     # log_usage_old(day_metrics["resources"]["instructor"],inst,needed_time)
                                     successfull_events.append([s,ev, str(day), "night",ac,inst])
                                     s.event_complete(day)
-                                    aircraft_hours[ac][2] += 1
+                                    aircraft_data[ac]["uses"] += 1
                                     aircraft_found = 1
                                     instructor_found = 1
                                     s.night_hours += needed_time
@@ -744,12 +721,12 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     continue
 
 
-                for ac in aircraft_hours:
+                for ac in aircraft_data:
                     instructor_found = 0
-                    if needed_time <= aircraft_hours[ac][0] and aircraft_hours[ac][2] < Aircraft.uses_per_day:
+                    if needed_time <= aircraft_data[ac]["day_hours"] and aircraft_data[ac]["uses"] < Aircraft.uses_per_day:
                         for inst in instructor_hours:
                             if needed_time <= instructor_hours[inst][0] and instructor_hours[inst][1] < 4:
-                                aircraft_hours[ac][1] -= (needed_time + Aircraft.break_time)
+                                aircraft_data[ac]["day_hours"] -= (needed_time + Aircraft.break_time)
                                 instructor_hours[inst][0] -= (needed_time + Instructor.break_time)
                                 instructor_hours[inst][1] += 1
                                 log_usage(
@@ -768,9 +745,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                                 )
                                 # log_usage_old(day_metrics["resources"]["aircraft"],ac,needed_time)
                                 # log_usage_old(day_metrics["resources"]["instructor"],inst,needed_time)
-                                successfull_events.append([s,ev, str(day), "night",ac,inst])
+                                successfull_events.append([s,ev, str(day), "day",ac,inst])
                                 s.event_complete(day)
-                                aircraft_hours[ac][2] += 1
+                                aircraft_data[ac]["uses"] += 1
                                 aircraft_found = 1
                                 instructor_found = 1
                                 increment_key(aircraft_used, ac)
@@ -1505,6 +1482,10 @@ def main():
     vtd_sims = "vtd"
     mr_sims = "mr"
     aircrafts = "aircraft"
+
+    global holiday_ranges
+
+    holiday_ranges = load_holiday_ranges("holidays.csv")
 
     # going to running run_simulation function multiple times based on different class sizes
 
