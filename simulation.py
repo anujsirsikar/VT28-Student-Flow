@@ -100,9 +100,6 @@ def current_active_students(students):
 
     return count
 
-# maybe 
-def forms():
-    pass
 
 # IMPORTANT: how to keep track of how many students in each training block? Should we make them classes? Because we 
 #            need to look at all the counts to decide where to place students after they complete contacts, and then 
@@ -176,24 +173,36 @@ def increment_key(d, key):
     else:
         d[key] = 1
 
+# pair up students
+def pair_students(queue: dict):
+    pairs = []
+    used = set()
+
+    for s, ev in queue.items():
+        if s.has_partner() and s.get_partner() in queue.items():
+            used.add(s)
+            used.add(s.get_partner())
+            pairs.append((s, s.get_partner, ev))
+        elif not s.has_partner():
+            if s in used:
+                continue
+
+            for t, tev in queue.items():
+                if t in used or t is s:
+                    continue
+
+                if tev == ev:
+                    used.add(s)
+                    used.add(t)
+                    s.assign_partner(t)
+                    pairs.append((s, t, ev))
+                    break
+    return pairs
 
 
-def schedule_partner_sim(day, s, ev, students, hours, needed_time, successfull_events, day_metrics, sims_used, sim_type):
-    have_partner_pair = 0
-    if (s.syllabus_type == 2 or s.syllabus_type == 3) and ev == "CS2101":  # if they are not going straight from forms to capstone
-        s.remove_partner()
-    if not s.has_partner() and len(students) > 0:   # doesn't have a partner but could get one
-        for key, value in students.items():
-            if value == ev and not key.has_partner():
-                s.assign_partner(key)     # we have a pair of partners
-                have_partner_pair = 1
-                break
-    elif s.has_partner() and s.get_partner() in students:    # has a partner and partner is ready to go
-        have_partner_pair = 1
-    
-    if have_partner_pair == 0:   # didn't get a partner or partner not available
-        students[s] = ev
-    else: 
+
+def schedule_partner_sim(day, s, ev, students, used_set, hours, needed_time, successfull_events, day_metrics, sims_used, sim_type):
+    if s.has_partner():
         available_sims = []
         for o in hours:
             if needed_time <= hours[o]:
@@ -221,14 +230,15 @@ def schedule_partner_sim(day, s, ev, students, hours, needed_time, successfull_e
             successfull_events.append([s.get_partner(),ev, str(day), available_sims[1]])
             s.event_complete(day)
             s.get_partner().event_complete(day)
-            del students[s.get_partner()]
+            s.failed_today = False
+            s.get_partner().failed_today = False
+            used_set.add(s)
+            used_set.add(s.get_partner())
             increment_key(sims_used, available_sims[0])
             increment_key(sims_used, available_sims[1])
-        else:
-            students[s] = ev
+        
 
 def schedule_sim(day, s, ev, hours, needed_time, successfull_events, day_metrics, sims_used, sim_type):
-    scheduled = 0   # if stays zero, then not scheduled
     for o in hours:
         if needed_time <= hours[o]:
             hours[o] -= (needed_time + Sim.break_time)
@@ -243,15 +253,9 @@ def schedule_sim(day, s, ev, hours, needed_time, successfull_events, day_metrics
             # log_usage_old(day_metrics["resources"]["oft"],o,needed_time)
             successfull_events.append([s,ev, str(day), o])
             s.event_complete(day)
-            scheduled = 1
+            s.failed_today = False
             increment_key(sims_used, o)
             break
-    if scheduled == 0:
-        # not scheduled
-        s.days_since_last_event += 1
-        s.total_wait_time += 1
-        s.block_wait_times[s.get_block()] += 1
-        s.unscheduled_per_resource[sim_type] += 1
 
 
 
@@ -355,16 +359,24 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     successfull_events = []
 
     students = sorted(
-    students,
-    key=lambda s: s.days_since_last_event or -1,  # None-safe
-    reverse=True
+        students,
+        #key=lambda s: s.days_since_last_event or -1,  # None-safe
+        key=lambda s: s.days_since_last_event if s.days_since_last_event is not None else 0,
+        reverse=True
     )
 
     # make this a dictionary where the key is a student and the value is their next event 
-    forms_students = {}
-    capstone_students = {}
+    forms_partner_queue = {}
+    capstone_partner_queue = {}
+
+    # I don't think we actually need these
+    forms_pairs = []
+    capstone_pairs = []
 
     for s in students:
+
+        # just assume that each kid starts out with the assumption that they will not be scheduled 
+        s.failed_today = True    
 
         # I know that this is repetitive 
         current_block = s.get_block()
@@ -462,6 +474,17 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
         for c in classroom
     }
 
+
+    # Make the partner pairs for the day
+    for s, ev in events_to_attempt:
+        if ev.block == "forms":
+            forms_partner_queue[s] = ev
+        elif ev.block == "capstone":
+            forms_partner_queue[s] = ev
+    forms_pairs = pair_students(forms_partner_queue)        # we don't actaully care about the pairs, as long as they exist
+    capstone_pairs = pair_students(capstone_partner_queue)
+
+
     # instructors now
     # want to leave these as objects because we will need to check their quals later on and check onwings 
     ## these are objects where the mapping is Object: hours ex. UTD object: 17.5
@@ -475,6 +498,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     # Build a quick lookup for block priority
     block_priority = {block: i for i, block in enumerate(ordered_blocks)}
 
+
+    # Not sure which one is better
+
     events_to_attempt.sort(
         key=lambda item: (
             item[0].days_since_last_event < 10,
@@ -483,9 +509,21 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
         )
     )
 
+    #events_to_attempt.sort(
+    #    key=lambda item: (
+    #        -item[0].days_since_last_event,
+    #        block_priority.get(item[0].get_block(), float("inf"))
+    #    )
+    #)
+
+    already_used = set()
 
     # looking at student and the event they are scheduled for
     for s, ev in events_to_attempt:
+
+        if s in already_used:
+            continue
+
         #getting how long the event it. 
         if ev == "warmup flight":
             needed_time = 2
@@ -523,23 +561,19 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 )
                 s.event_complete(day)
                 successfull_events.append([s,ev,str(day), str(c)])
-            
-            #no availible classroom
-            else:
-                ## increase the days since last event, the time theyve been waiting overall, the time per block waiting, and increment how many resources werent being scheduled
-                s.days_since_last_event += 1
-                s.total_wait_time += 1
-                s.block_wait_times[s.get_block()] += 1
-                s.unscheduled_per_resource["classroom"] += 1
+                s.failed_today = False
+                already_used.add(s)
+
+                
             
         elif needed_resource == "utd":
             schedule_sim(day, s, ev, utd_hours, needed_time, successfull_events, day_metrics, sims_used, "utd")
 
         elif needed_resource == "oft":
             if ev.block == 'forms':
-                schedule_partner_sim(day, s, ev, forms_students, oft_hours, needed_time, successfull_events, day_metrics, sims_used, "oft")
+                schedule_partner_sim(day, s, ev, events_to_attempt, already_used, oft_hours, needed_time, successfull_events, day_metrics, sims_used, "oft")
             elif ev.block == 'capstone':
-                schedule_partner_sim(day, s, ev, capstone_students, oft_hours, needed_time, successfull_events, day_metrics, sims_used, "oft")
+                schedule_partner_sim(day, s, ev, events_to_attempt, already_used, oft_hours, needed_time, successfull_events, day_metrics, sims_used, "oft")
             else:
                 schedule_sim(day, s, ev, oft_hours, needed_time, successfull_events, day_metrics, sims_used, "oft")
 
@@ -548,9 +582,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 
         elif needed_resource == "mr":
             if ev.block == 'forms':
-                schedule_partner_sim(day, s, ev, forms_students, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
+                schedule_partner_sim(day, s, ev, events_to_attempt, already_used, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
             elif ev.block == 'capstone':
-                schedule_partner_sim(day, s, ev, capstone_students, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
+                schedule_partner_sim(day, s, ev, events_to_attempt, already_used, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
             else:
                 schedule_sim(day, s, ev, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
             
@@ -591,19 +625,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 # if so, then we need to check for two forms instructors, if no then add student to the list 
                 # if so, we schedule both students with those instructors (remove other student from forms_students list)
                 # print("FORMS: ", s, ev)
-                have_partner_pair = 0
-                if not s.has_partner() and len(forms_students) > 0:   # doesn't have a partner but could get one
-                    for key, value in forms_students.items():
-                        if value == ev and not key.has_partner():
-                            s.assign_partner(key)     # we have a pair of partners
-                            have_partner_pair = 1
-                            break
-                elif s.has_partner() and s.get_partner() in forms_students:    # has a partner and partner is ready to go
-                    have_partner_pair = 1
-                
-                if have_partner_pair == 0:   # didn't get a partner or partner not available
-                    forms_students[s] = ev
-                else: 
+                if s.has_partner():
                     available_aircraft = []
                     available_instructors = []
                     for ac in aircraft_data:
@@ -677,23 +699,14 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         successfull_events.append([s.get_partner(), ev, str(day), "day", available_aircraft[1], available_instructors[1]])
                         s.event_complete(day)
                         s.get_partner().event_complete(day)
-                        del forms_students[s.get_partner()]
+                        s.failed_today = False
+                        s.get_partner().failed_today = False
+                        already_used.add(s)
+                        already_used.add(s.get_partner())
                         # print(forms_students)
                         break
             elif ev != "warmup flight" and ev.block == "capstone":
-                have_partner_pair = 0
-                if not s.has_partner() and len(capstone_students) > 0:   # doesn't have a partner but could get one
-                    for key, value in capstone_students.items():
-                        if value == ev and not key.has_partner():
-                            s.assign_partner(key)     # we have a pair of partners
-                            have_partner_pair = 1
-                            break
-                elif s.has_partner() and s.get_partner() in capstone_students:    # has a partner and partner is ready to go
-                    have_partner_pair = 1
-                
-                if have_partner_pair == 0:   # didn't get a partner or partner not available
-                    capstone_students[s] = ev
-                else: 
+                if s.has_partner():
                     available_aircraft = []
                     available_instructors = []
                     for ac in aircraft_data:
@@ -758,7 +771,10 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         successfull_events.append([s.get_partner(), ev, str(day), "day", available_aircraft[1], available_instructors[1]])
                         s.event_complete(day)
                         s.get_partner().event_complete(day)
-                        del capstone_students[s.get_partner()]
+                        s.failed_today = False
+                        s.get_partner().failed_today = False
+                        already_used.add(s)
+                        already_used.add(s.get_partner())
                         # print(forms_students)
                         break
             
@@ -768,7 +784,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         instructor_found = 0
                         if needed_time <= aircraft_data[ac]["night_hours"] and aircraft_data[ac]["uses"] < Aircraft.uses_per_day:
                             for inst in instructor_hours:
-                                if needed_time > instructor_hours[inst][0] and instructor_hours[inst][1] < 4:
+                                if needed_time <= instructor_hours[inst][0] and instructor_hours[inst][1] < 4:
                                     aircraft_data[ac]["night_hours"] -= (needed_time + Aircraft.break_time)
                                     instructor_hours[inst][0] -= (needed_time + Instructor.break_time)
                                     instructor_hours[inst][1] += 1
@@ -791,6 +807,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                                     # log_usage_old(day_metrics["resources"]["instructor"],inst,needed_time)
                                     successfull_events.append([s,ev, str(day), "night",ac,inst])
                                     s.event_complete(day)
+                                    s.failed_today = False
+                                    already_used.add(s)
                                     aircraft_data[ac]["uses"] += 1
                                     aircraft_found = 1
                                     instructor_found = 1
@@ -811,10 +829,12 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     print("aircraftor instructor not found night event")
                     print(aircraft_data)
                     print(instructor_hours)
-                    s.days_since_last_event += 1
-                    s.total_wait_time += 1
-                    s.block_wait_times[s.get_block()] += 1
-                    s.unscheduled_per_resource["aircraft"] += 1
+                    #s.days_since_last_event += 1
+                    #.total_wait_time += 1
+                    #s.block_wait_times[s.get_block()] += 1
+                    #s.unscheduled_per_resource["aircraft"] += 1
+
+                    # s.failed_tday just remains true
                     continue
 
 
@@ -844,6 +864,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                                 # log_usage_old(day_metrics["resources"]["instructor"],inst,needed_time)
                                 successfull_events.append([s,ev, str(day), "day",ac,inst])
                                 s.event_complete(day)
+                                s.failed_today = False
+                                already_used.add(s)
                                 aircraft_data[ac]["uses"] += 1
                                 aircraft_found = 1
                                 instructor_found = 1
@@ -857,31 +879,40 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     print(aircraft_data)
                     print(instructor_hours)
                     # not scheduled
-                    s.days_since_last_event += 1
-                    s.total_wait_time += 1
-                    s.block_wait_times[s.get_block()] += 1
-                    s.unscheduled_per_resource["aircraft"] += 1
+                    #s.days_since_last_event += 1
+                    #.total_wait_time += 1
+                    #s.block_wait_times[s.get_block()] += 1
+                    #s.unscheduled_per_resource["aircraft"] += 1
 
     # print("at the end of the day: ", forms_students)
     ####seems like there are some complete students in here
-    for stu in forms_students.keys():
-        print("aircraftor instructor not found forms event")
-        print(aircraft_data)
-        print(instructor_hours)
-        if stu.get_block() != "complete":
-            stu.days_since_last_event += 1
-            stu.total_wait_time += 1
-            stu.block_wait_times[stu.get_block()] += 1
+    #for stu in forms_students.keys():
+    #    print("aircraftor instructor not found forms event")
+    #    print(aircraft_data)
+    #    print(instructor_hours)
+    #    if stu.get_block() != "complete":
+    #        stu.days_since_last_event += 1
+    #        stu.total_wait_time += 1
+    #        stu.block_wait_times[stu.get_block()] += 1
             # stu.unscheduled_per_resource["aircraft"] += 1      # how to do this here because it could also be an oft or mr???
 
-    for stu in capstone_students.keys():
-        print("aircraftor instructor not found capstone event")
-        print(aircraft_data)
-        print(instructor_hours)
-        if stu.get_block() != "complete":
-            stu.days_since_last_event += 1
-            stu.total_wait_time += 1
-            stu.block_wait_times[stu.get_block()] += 1
+    #for stu in capstone_students.keys():
+    #    print("aircraftor instructor not found capstone event")
+    #    print(aircraft_data)
+    #    print(instructor_hours)
+    #    if stu.get_block() != "complete":
+    #        stu.days_since_last_event += 1
+    #        stu.total_wait_time += 1
+    #        stu.block_wait_times[stu.get_block()] += 1
+
+
+    # now deal with students that failed today 
+    for s in students:
+        if s.failed_today and s.get_block() != "complete":
+            s.days_since_last_event += 1
+            s.total_wait_time += 1
+            s.block_wait_times[s.get_block()] += 1
+            #s.unscheduled_per_resource[sim_type] += 1    # need a way to figure out the resource type 
 
     # just print statements for now, don't know how you want to use these.
     #print(sims_used)

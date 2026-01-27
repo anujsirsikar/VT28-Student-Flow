@@ -58,8 +58,8 @@ class FlightStudent:
         # should we include a student failu/setre rate?
         self.syllabus_type = 4 # 4 = normal, 2 = Aero and Forms and then instruments
         self.imported = True
-
         self.partner = None 
+        self.failed_today = False 
 
     # toString function
     def __str__(self):
