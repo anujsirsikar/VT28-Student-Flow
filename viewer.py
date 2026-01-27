@@ -178,64 +178,198 @@ def monthly_avg_students_by_block_for_run(run_days_by_date):
 
 # ---------------- Display category ----------------
 def display_category(category):
-    for tree in [tree1, tree2]:
+    # Clear both trees
+    for tree in (tree1, tree2):
         for item in tree.get_children():
             tree.delete(item)
 
-    # Helper to populate a treeview for a given date
     def populate_tree(tree, date):
         if not date:
             return
+
         runs = data_by_date.get(date, [])
         if not runs:
             return
+
         grouped = {}
+
+        # -------- build grouped structure --------
         for run in runs:
             pct = run["pct"]
             cls = run["class"]
             day = run["day"]
-            grouped.setdefault(pct, {}).setdefault(cls, [])
 
             if category == "students":
                 blocks = day.get("students", {}).get("by_block", {})
+                summary = day.get("students", {}).get("summary", {})  # expects {'started':..,'completed':..,'remaining':..}
+
+                grouped.setdefault(pct, {})
+                if cls not in grouped[pct] or not isinstance(grouped[pct][cls], dict):
+                    grouped[pct][cls] = {"blocks": [], "summary": {}}
+
                 for k, v in blocks.items():
-                    grouped[pct][cls].append((k, v))
+                    grouped[pct][cls]["blocks"].append((k, v))
+
+                grouped[pct][cls]["summary"] = summary
+
             else:
                 resources = day.get("resources", {}).get(category, {})
+
+                grouped.setdefault(pct, {}).setdefault(cls, [])
                 for name, vals in resources.items():
                     grouped[pct][cls].append((
                         name,
-                        f"used (hours) ={vals['hours_used']:.2f} avail (hours) ={vals['hours_available']:.2f} uses={vals['uses']}"
+                        f"used (hours) ={vals['hours_used']:.2f} "
+                        f"avail (hours) ={vals['hours_available']:.2f} "
+                        f"uses={vals['uses']}"
                     ))
 
+        # -------- render grouped structure --------
         for pct in sorted(grouped):
             try:
-                pct_num = int(pct.replace("pct",""))
+                pct_num = int(pct.replace("pct", ""))
                 pct_label = f"Percentage {pct_num}%"
-            except:
+            except Exception:
                 pct_label = pct
+
             pct_id = tree.insert("", "end", text=pct_label, open=True)
+
             for cls in sorted(grouped[pct]):
                 try:
-                    cls_num = int(cls.replace("class",""))
+                    cls_num = int(cls.replace("class", ""))
                     cls_label = f"Class up size: {cls_num}"
-                except:
+                except Exception:
                     cls_label = cls
 
                 if category == "students":
-                    total = sum([v for _, v in grouped[pct][cls]])
+                    blocks = grouped[pct][cls].get("blocks", [])
+                    summary = grouped[pct][cls].get("summary", {})
+
+                    # SIT total (sum of by_block)
+                    total = sum(v for _, v in blocks)
                     cls_id = tree.insert(pct_id, "end", text=f"{cls_label}: SIT: {total}", open=True)
-                    for block, val in grouped[pct][cls]:
+
+                    # Block totals
+                    for block, val in blocks:
                         tree.insert(cls_id, "end", text=f"{block}: {val}")
+
+                    # Summary at bottom
+                    if summary:
+                        tree.insert(cls_id, "end", text="---")
+                        tree.insert(cls_id, "end", text=f"Started: {summary.get('started', 0)}")
+                        tree.insert(cls_id, "end", text=f"Completed: {summary.get('completed', 0)}")
+                        tree.insert(cls_id, "end", text=f"Remaining: {summary.get('remaining', 0)}")
+
                 else:
-                    if not grouped[pct][cls]:
+                    lines = grouped[pct][cls]
+                    if not lines:
                         continue
-                    cls_id = tree.insert(pct_id, "end", text=f"{cls_label}: {grouped[pct][cls][0][0]} | {grouped[pct][cls][0][1]}", open=True)
-                    for name, info in grouped[pct][cls][1:]:
+
+                    cls_id = tree.insert(
+                        pct_id, "end",
+                        text=f"{cls_label}: {lines[0][0]} | {lines[0][1]}",
+                        open=True
+                    )
+                    for name, info in lines[1:]:
                         tree.insert(cls_id, "end", text=f"{name} | {info}")
 
     populate_tree(tree1, selected_date1)
     populate_tree(tree2, selected_date2)
+
+
+
+
+# # ---------------- Display category ----------------
+# def display_category(category):
+#     for tree in [tree1, tree2]:
+#         for item in tree.get_children():
+#             tree.delete(item)
+
+#     # Helper to populate a treeview for a given date
+#     def populate_tree(tree, date):
+#         if not date:
+#             return
+#         runs = data_by_date.get(date, [])
+#         if not runs:
+#             return
+#         grouped = {}
+#         for run in runs:
+#             pct = run["pct"]
+#             cls = run["class"]
+#             day = run["day"]
+#             grouped.setdefault(pct, {}).setdefault(cls, [])
+
+#             if category == "students":
+#                 blocks = day.get("students", {}).get("by_block", {})
+#                 summary = day.get("students", {}).get("summary", {})  # NEW
+#                 for k, v in blocks.items():
+#                     grouped[pct][cls].append((k, v))
+                
+#                 grouped[pct][cls]["summary"] = summary  # NEW
+                
+#             else:
+#                 resources = day.get("resources", {}).get(category, {})
+#                 for name, vals in resources.items():
+#                     grouped[pct][cls].append((
+#                         name,
+#                         f"used (hours) ={vals['hours_used']:.2f} avail (hours) ={vals['hours_available']:.2f} uses={vals['uses']}"
+#                     ))
+
+#         for pct in sorted(grouped):
+#             try:
+#                 pct_num = int(pct.replace("pct",""))
+#                 pct_label = f"Percentage {pct_num}%"
+#             except:
+#                 pct_label = pct
+#             pct_id = tree.insert("", "end", text=pct_label, open=True)
+#             for cls in sorted(grouped[pct]):
+#                 try:
+#                     cls_num = int(cls.replace("class",""))
+#                     cls_label = f"Class up size: {cls_num}"
+#                 except:
+#                     cls_label = cls
+
+#                 # if category == "students":
+#                 #     blocks = grouped[pct][cls]["blocks"]
+#                 #     summary = grouped[pct][cls]["summary"]
+
+#                 #     total = sum(v for _, v in blocks)
+#                 #     cls_id = tree.insert(pct_id, "end", text=f"{cls_label}: SIT: {total}", open=True)
+#                 #     for block, val in grouped[pct][cls]:
+#                 #         tree.insert(cls_id, "end", text=f"{block}: {val}")
+
+
+#                 #     # NEW: summary at bottom
+#                 #     if summary:
+#                 #         tree.insert(cls_id, "end", text="---")  # optional separator
+#                 #         tree.insert(cls_id, "end", text=f"Started: {summary.get('started', 0)}")
+#                 #         tree.insert(cls_id, "end", text=f"Completed: {summary.get('completed', 0)}")
+#                 #         tree.insert(cls_id, "end", text=f"Remaining: {summary.get('remaining', 0)}")
+#                 if category == "students":
+#                     blocks = day.get("students", {}).get("by_block", {})
+#                     summary = day.get("students", {}).get("summary", {})
+
+#                     grouped.setdefault(pct, {})
+#                     # Force correct shape (dict), even if something old put a list here
+#                     if cls not in grouped[pct] or not isinstance(grouped[pct][cls], dict):
+#                         grouped[pct][cls] = {"blocks": [], "summary": {}}
+
+#                     for k, v in blocks.items():
+#                         grouped[pct][cls]["blocks"].append((k, v))
+
+#                     grouped[pct][cls]["summary"] = summary
+
+
+                    
+#                 else:
+#                     if not grouped[pct][cls]:
+#                         continue
+#                     cls_id = tree.insert(pct_id, "end", text=f"{cls_label}: {grouped[pct][cls][0][0]} | {grouped[pct][cls][0][1]}", open=True)
+#                     for name, info in grouped[pct][cls][1:]:
+#                         tree.insert(cls_id, "end", text=f"{name} | {info}")
+
+#     populate_tree(tree1, selected_date1)
+#     populate_tree(tree2, selected_date2)
 
 
 def fmt_pct(pct):

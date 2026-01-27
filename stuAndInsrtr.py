@@ -66,7 +66,7 @@ class FlightStudent:
         return f"Student: {self.student_id}"
     
     def __repr__(self):
-        return str(self.completed_dates)
+        return str(self)
 
     # returns the student's next event
     def next_event(self):

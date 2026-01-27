@@ -353,6 +353,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     # events that will be attempted to schedule for each student
     events_to_attempt = []
     successfull_events = []
+    forms_students = {}
+    forms_have_partner = {}
 
     students = sorted(
     students,
@@ -361,7 +363,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     )
 
     # make this a dictionary where the key is a student and the value is their next event 
-    forms_students = {}
+    # forms_students = {}
     capstone_students = {}
 
     for s in students:
@@ -417,6 +419,16 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             
 
                 events_to_attempt.append((s,nxt))
+
+                if nxt == "F1102":
+                    forms_students[s] = {
+                        "scheduled": False
+                    }
+                elif nxt.block == "forms":
+                    print("forms")
+                    forms_have_partner[s] = {
+                        "scheduled":False
+                    }
 
                 block_name = SYLLABUS_BLOCKS[s.syllabus_type][block]
                 
@@ -587,99 +599,132 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             # forms
             
             if ev != "warmup flight" and ev.block == "forms":
-                # need to check the forms_students list and see if anyone in there has to complete the same next event, if no then add student to list and keep moving (at the end of the day, check the forms_students list and any remaining students should be treated as not being scheduled)
-                # if so, then we need to check for two forms instructors, if no then add student to the list 
-                # if so, we schedule both students with those instructors (remove other student from forms_students list)
-                # print("FORMS: ", s, ev)
-                have_partner_pair = 0
-                if not s.has_partner() and len(forms_students) > 0:   # doesn't have a partner but could get one
-                    for key, value in forms_students.items():
-                        if value == ev and not key.has_partner():
-                            s.assign_partner(key)     # we have a pair of partners
-                            have_partner_pair = 1
-                            break
-                elif s.has_partner() and s.get_partner() in forms_students:    # has a partner and partner is ready to go
-                    have_partner_pair = 1
-                
-                if have_partner_pair == 0:   # didn't get a partner or partner not available
-                    forms_students[s] = ev
-                else: 
-                    available_aircraft = []
-                    available_instructors = []
-                    for ac in aircraft_data:
-                        if needed_time <= aircraft_data[ac]["day_hours"] and aircraft_data[ac]["uses"] < Aircraft.uses_per_day:
-                            available_aircraft.append(ac)
-                            if len(available_aircraft) == 2:
-                                break
-                    section_lead_found = False
-                    formation_q_found = False
-                    for inst in instructor_hours:
-                        if needed_time > instructor_hours[inst][0] or instructor_hours[inst][1] > 4:
-                            continue  # not enough hours, skip
-                        # If we still need a section lead and this instructor is one, take them
-                        if inst.section_lead and not section_lead_found:
-                            available_instructors.append(inst)
-                            section_lead_found = True
-                        # Else if we still need a formation-qualified instructor and this instructor is one, take them
-                        elif inst.formation_q and not formation_q_found:
-                            available_instructors.append(inst)
-                            formation_q_found = True
-                        # Stop once we have both roles
-                        if section_lead_found and formation_q_found:
-                            break
-                    # print(available_aircraft)
-                    # print(available_instructors)
-                    if len(available_aircraft) == 2 and len(available_instructors) == 2:
-                        for ac in available_aircraft:
-                            aircraft_data[ac]["day_hours"] -= (needed_time + Aircraft.break_time)
-                            aircraft_data[ac]["uses"] += 1
-                            increment_key(aircraft_used, ac)
-                        for inst in available_instructors:
-                            #print(inst)
-                            instructor_hours[inst][0] -= (needed_time + Instructor.break_time)
-                            instructor_hours[inst][1] += 1
-                            increment_key(instructors_used, inst)
-    
 
-                        log_usage(
-                            day_metrics["resources"]["aircraft"],
-                            available_aircraft[0],
-                            needed_time,
-                            hours_available=Aircraft.daily_hours,
-                            uses=1
-                        )
-                        log_usage(
-                            day_metrics["resources"]["instructor"],
-                            available_instructors[0],
-                            needed_time,
-                            hours_available=Instructor.daily_hours,
-                            uses=1
-                        )
-                        log_usage(
-                            day_metrics["resources"]["aircraft"],
-                            available_aircraft[1],
-                            needed_time,
-                            hours_available=Aircraft.daily_hours,
-                            uses=1
-                        )
-                        log_usage(
-                            day_metrics["resources"]["instructor"],
-                            available_instructors[1],
-                            needed_time,
-                            hours_available=Instructor.daily_hours,
-                            uses=1
-                        )
-                        # log_usage_old(day_metrics["resources"]["aircraft"],available_aircraft[0],needed_time)
-                        # log_usage_old(day_metrics["resources"]["instructor"],available_instructors[0],needed_time)
-                        # log_usage_old(day_metrics["resources"]["aircraft"],available_aircraft[1],needed_time)
-                        # log_usage_old(day_metrics["resources"]["instructor"],available_instructors[1],needed_time)
-                        successfull_events.append([s, ev, str(day), "day", available_aircraft[0], available_instructors[0]])
-                        successfull_events.append([s.get_partner(), ev, str(day), "day", available_aircraft[1], available_instructors[1]])
-                        s.event_complete(day)
-                        s.get_partner().event_complete(day)
-                        del forms_students[s.get_partner()]
-                        # print(forms_students)
-                        break
+                student1 = s
+                student2 = None
+                ## first check to see if it is the first event. 
+                if ev == "F1102":
+                    ## if the student has already been scheduled, continue
+                    if forms_students[s]["scheduled"]:
+                        continue
+                    else:
+                        for second_s in forms_students:
+                            if second_s is not s and not forms_students[second_s]["scheduled"]:
+                                student2 = second_s
+
+                else:
+                    #if the student has already been scheduled, continue
+                    if forms_have_partner[s]["scheduled"]:
+                        continue
+                    else:
+                        for second_s in forms_have_partner:
+                            if second_s is not s and not forms_have_partner[second_s]["scheduled"]:
+                                student2 = second_s
+
+                ## if no partner was availible, continue to next student
+                if student2 == None:
+                    continue
+
+                aircraft1, aircraft2 = None, None
+                inst1, inst2 = None, None
+
+                for ac in aircraft_data:
+                    if needed_time <= aircraft_data[ac]["day_hours"] and aircraft_data[ac]["uses"] < 4:
+                        ## find an aircraft. once both are full, break
+                        if aircraft1 == None:
+                            aircraft1 = ac
+                        elif aircraft2 == None:
+                            aircraft2 = ac
+                            break
+
+                ## way too cpmplicated way to do this but all well
+                need_section_lead = True
+                need_form_q = True
+                for inst in instructor_hours:
+                    if needed_time <= instructor_hours[inst][0] and instructor_hours[inst][1] < 4:
+                        if need_section_lead and inst.section_lead:
+                            if inst in [inst1, inst2]:
+                                continue
+                            if inst1 is None:
+                                inst1 = inst
+                                need_section_lead = False
+                            elif inst2 is None:
+                                inst2 = inst
+                                need_section_lead = False
+                        if need_form_q and inst.formation_q:
+                            if inst in [inst1, inst2]:
+                                continue
+                            if inst1 is None:
+                                inst1 = inst
+                                need_form_q = False
+                            elif inst2 is None:
+                                inst2 = inst
+                                need_form_q = False
+                        
+                        if inst1 and inst2:
+                            continue
+
+
+                if aircraft1 and aircraft2 and inst1 and inst2:
+                    aircraft_data[aircraft1]["day_hours"] -= (needed_time + Aircraft.break_time)
+                    aircraft_data[aircraft2]["day_hours"] -= (needed_time + Aircraft.break_time)
+                    aircraft_data[aircraft1]["uses"] += 1
+                    aircraft_data[aircraft2]["uses"] += 1
+                    instructor_hours[inst1][0] -= (needed_time + Instructor.break_time)
+                    instructor_hours[inst2][0] -= (needed_time + Instructor.break_time)
+                    instructor_hours[inst1][1] += 1
+                    instructor_hours[inst2][1] += 1
+
+                log_usage(
+                    day_metrics["resources"]["aircraft"],
+                    aircraft1,
+                    needed_time,
+                    hours_available=Aircraft.daily_hours,
+                    uses=1
+                )
+                log_usage(
+                    day_metrics["resources"]["instructor"],
+                    inst1,
+                    needed_time,
+                    hours_available=Instructor.daily_hours,
+                    uses=1
+                )
+                log_usage(
+                    day_metrics["resources"]["aircraft"],
+                    aircraft2,
+                    needed_time,
+                    hours_available=Aircraft.daily_hours,
+                    uses=1
+                )
+                log_usage(
+                    day_metrics["resources"]["instructor"],
+                    inst2,
+                    needed_time,
+                    hours_available=Instructor.daily_hours,
+                    uses=1
+                )
+
+                successfull_events.append([s, ev, str(day), "day", aircraft1, inst1])
+                successfull_events.append([s.get_partner(), ev, str(day), "day", aircraft1, inst1])
+
+                student1.event_complete(day)
+                student2.event_complete(day)
+
+                if ev == "F1102":
+
+                    forms_students[student1]["scheduled"] = True
+                    forms_students[student2]["scheduled"] = True
+
+                    student1.assign_partner(student2)
+
+                else:
+
+                    forms_have_partner[student1]["scheduled"] = True
+                    forms_have_partner[student2]["scheduled"] = True
+
+                break
+
+               
             elif ev != "warmup flight" and ev.block == "capstone":
                 have_partner_pair = 0
                 if not s.has_partner() and len(capstone_students) > 0:   # doesn't have a partner but could get one
@@ -1717,7 +1762,7 @@ def main():
                     new_student.imported = False
                     students.append(new_student) 
             else:
-                students = load_students(os.path.join("students", "test_students.csv"))
+                students = load_students(os.path.join("students", "current_students.csv"))
 
             schedule, simulation_json, computed_students = run_simulation(START_DATE, (user_input["weeks"]*7), percentages[i] , students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, True, class_size[j])
             result.append(schedule)
@@ -1745,7 +1790,7 @@ def main():
                     new_student.imported = False
                     students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
         else:
-            students = load_students(os.path.join("students", "test_students.csv"))
+            students = load_students(os.path.join("students", "current_students.csv"))
 
         schedule, simulation_json, computed_students = run_simulation(START_DATE, (user_input["weeks"]*7), percentages[i], students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, False, 0)
         result.append(schedule)
