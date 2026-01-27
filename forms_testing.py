@@ -853,9 +853,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 running_out_of_events = ev == "I4490" or ev == "N4101" or ev == "FAM4601" 
 
                 if ev == "FAM4601" or (aircraft_found == 0 and s.night_hours < 5 and running_out_of_events):
-                    print("aircraftor instructor not found night event")
-                    print(aircraft_data)
-                    print(instructor_hours)
+                    # print("aircraftor instructor not found night event")
+                    # print(aircraft_data)
+                    # print(instructor_hours)
                     s.days_since_last_event += 1
                     s.total_wait_time += 1
                     s.block_wait_times[s.get_block()] += 1
@@ -898,9 +898,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         if instructor_found == 1:
                             break
                 if aircraft_found == 0:
-                    print("aircraftor instructor not found day event")
-                    print(aircraft_data)
-                    print(instructor_hours)
+                    # print("aircraftor instructor not found day event")
+                    # print(aircraft_data)
+                    # print(instructor_hours)
                     # not scheduled
                     s.days_since_last_event += 1
                     s.total_wait_time += 1
@@ -909,15 +909,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
     # print("at the end of the day: ", forms_students)
     ####seems like there are some complete students in here
-    for stu in forms_students.keys():
-        print("aircraftor instructor not found forms event")
-        print(aircraft_data)
-        print(instructor_hours)
-        if stu.get_block() != "complete":
-            stu.days_since_last_event += 1
-            stu.total_wait_time += 1
-            stu.block_wait_times[stu.get_block()] += 1
-            # stu.unscheduled_per_resource["aircraft"] += 1      # how to do this here because it could also be an oft or mr???
 
     for stu in capstone_students.keys():
         print("aircraftor instructor not found capstone event")
