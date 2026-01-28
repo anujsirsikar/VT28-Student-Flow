@@ -192,6 +192,8 @@ def pair_students(queue: dict):
             used.add(s)
             used.add(s.get_partner())
             pairs.append((s, s.get_partner, ev))
+        elif s.has_partner():
+            continue
         elif not s.has_partner():
             if s in used:
                 continue
@@ -241,6 +243,7 @@ def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, successfull_e
             successfull_events.append([s,ev, str(day), available_sims[0]])
             successfull_events.append([partner,ev, str(day), available_sims[1]])
             s.event_complete(day)
+            print("2")
             partner.event_complete(day)
             s.schedule_failed = False
             partner.schedule_failed = False
@@ -323,6 +326,8 @@ def log_usage(bucket, resource, hours, hours_available=None, uses=1):
 
 
 def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4):# grndSchool, contacts, aero, inst, forms, capstone):
+    print("------------ NEW DAY --------------", day)
+    
     # dictionaries for each resource (including instructors)
     # the keys will be names of the resource while the value will be how many times they were used.
     sims_used = {}
@@ -388,11 +393,13 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     
     for s in students:
 
+
         # just assume that each kid starts out with the assumption that they will not be scheduled 
         s.schedule_failed = True    
 
         # I know that this is repetitive 
         current_block = s.get_block()
+
         if current_block == "complete":
             continue
 
@@ -477,6 +484,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             forms_partner_queue[s] = ev
         elif ev.block == "capstone":
             capstone_partner_queue[s] = ev
+
     forms_pairs = pair_students(forms_partner_queue)        # we don't actaully care about the pairs, as long as they exist
     capstone_pairs = pair_students(capstone_partner_queue)
 
@@ -701,7 +709,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         successfull_events.append([s.get_partner(), ev, str(day), "day", available_aircraft[1], available_instructors[1]])
 
                         partner = s.get_partner()
-
                         s.event_complete(day)
                         partner.event_complete(day)
                         s.schedule_failed = False
@@ -774,6 +781,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         successfull_events.append([s, ev, str(day), "day", available_aircraft[0], available_instructors[0]])
                         successfull_events.append([partner, ev, str(day), "day", available_aircraft[1], available_instructors[1]])
                         s.event_complete(day)
+                        print("8")
                         partner.event_complete(day)
                         s.schedule_failed = False
                         partner.schedule_failed = False
@@ -905,6 +913,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
     # now deal with students that failed today 
     for s in students:
+
         if s.schedule_failed and s.get_block() != "complete":
             s.days_since_last_event += 1
             s.total_wait_time += 1
