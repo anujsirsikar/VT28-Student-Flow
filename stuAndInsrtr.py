@@ -59,7 +59,7 @@ class FlightStudent:
         self.syllabus_type = 4 # 4 = normal, 2 = Aero and Forms and then instruments
         self.imported = True
         self.partner = None 
-        self.failed_today = False 
+        self.schedule_failed = False 
 
     # toString function
     def __str__(self):
@@ -76,14 +76,9 @@ class FlightStudent:
     def get_block(self):
         if self.current_block > 6:
             return "complete"
-        elif self.syllabus_type == 1:
-            return FlightStudent.s1[self.current_block]
-        elif self.syllabus_type == 2:
-            return FlightStudent.s2[self.current_block]
-        elif self.syllabus_type == 3:
-            return FlightStudent.s3[self.current_block]
         else:
-            return FlightStudent.s4[self.current_block]
+            return [FlightStudent.s1, FlightStudent.s2, FlightStudent.s3, FlightStudent.s4][self.syllabus_type-1][self.current_block]
+
 
     def event_complete(self, day):
         syl = FlightStudent.syllabus1
@@ -94,6 +89,10 @@ class FlightStudent:
             syl = FlightStudent.syllabus3
         elif self.syllabus_type == 4:
             syl = FlightStudent.syllabus4
+
+        if self.current_block == 7:
+            print("continueing to avoid error. need to fix this")
+            return
 
         if len(syl[self.current_block])-1 <= self.next_event_index:
             self.completed_blocks[self.current_block] = 1

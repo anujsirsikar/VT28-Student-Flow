@@ -21,6 +21,3 @@ def load_holiday_ranges(csv_path):
     return holiday_ranges
 
 
-ranges = load_holiday_ranges("holidays.csv")
-
-print(ranges)

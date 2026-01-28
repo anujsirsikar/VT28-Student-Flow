@@ -152,6 +152,9 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
         days -= 1
         current_day += timedelta(days=1)
 
+        # for s in students:
+        #     print(s.block_wait_times)
+
 
     ## format is list: schedule, list: students    
     return result, {
@@ -178,8 +181,14 @@ def pair_students(queue: dict):
     pairs = []
     used = set()
 
+    # print(queue.items())
     for s, ev in queue.items():
-        if s.has_partner() and s.get_partner() in queue.items():
+
+        ## Right now it looks like if someone has a partner but 
+        ## their partner is not present, they will get scheduled with someone else
+        ## idk if this is intentional or not
+        
+        if s.has_partner() and s.get_partner() in queue:
             used.add(s)
             used.add(s.get_partner())
             pairs.append((s, s.get_partner, ev))
@@ -192,6 +201,7 @@ def pair_students(queue: dict):
                     continue
 
                 if tev == ev:
+                    print(ev)
                     used.add(s)
                     used.add(t)
                     s.assign_partner(t)
@@ -201,7 +211,7 @@ def pair_students(queue: dict):
 
 
 
-def schedule_partner_sim(day, s, ev, students, used_set, hours, needed_time, successfull_events, day_metrics, sims_used, sim_type):
+def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, successfull_events, day_metrics, sims_used, sim_type):
     if s.has_partner():
         available_sims = []
         for o in hours:
@@ -210,50 +220,53 @@ def schedule_partner_sim(day, s, ev, students, used_set, hours, needed_time, suc
                 if len(available_sims) == 2:
                     break
         if len(available_sims) == 2:
-            for o in available_sims:
-                hours[o] -= (needed_time + Sim.break_time)
+            
             log_usage(
                 day_metrics["resources"][sim_type],
                 available_sims[0],
-                needed_time,
+                needed_time + Sim.break_time,
                 hours_available=Sim.daily_hours,
                 uses=1
             )
             log_usage(
                 day_metrics["resources"][sim_type],
                 available_sims[1],
-                needed_time,
+                needed_time+Sim.break_time,
                 hours_available=Sim.daily_hours,
                 uses=1
             )
+            for o in available_sims:
+                hours[o] -= (needed_time + Sim.break_time)
+            partner = s.get_partner()
             successfull_events.append([s,ev, str(day), available_sims[0]])
-            successfull_events.append([s.get_partner(),ev, str(day), available_sims[1]])
+            successfull_events.append([partner,ev, str(day), available_sims[1]])
             s.event_complete(day)
-            s.get_partner().event_complete(day)
-            s.failed_today = False
-            s.get_partner().failed_today = False
-            used_set.add(s)
-            used_set.add(s.get_partner())
+            partner.event_complete(day)
+            s.schedule_failed = False
+            partner.schedule_failed = False
+            # used_set.add(s)
+            # used_set.add(partner)
+            used_set[s] = True
+            used_set[partner] = True
             increment_key(sims_used, available_sims[0])
             increment_key(sims_used, available_sims[1])
         
 
-def schedule_sim(day, s, ev, hours, needed_time, successfull_events, day_metrics, sims_used, sim_type):
-    for o in hours:
-        if needed_time <= hours[o]:
-            hours[o] -= (needed_time + Sim.break_time)
+def schedule_sim(day, s, ev, sim_hours, needed_time, successfull_events, day_metrics, sims_used, sim_type):
+    for o in sim_hours:
+        if needed_time <= sim_hours[o]:
+            sim_hours[o] -= (needed_time + Sim.break_time)
             # schedule the student
             log_usage(
                 day_metrics["resources"][sim_type],
                 o,
-                needed_time,
+                needed_time + Sim.break_time,
                 hours_available=Sim.daily_hours,
                 uses=1
             )
-            # log_usage_old(day_metrics["resources"]["oft"],o,needed_time)
             successfull_events.append([s,ev, str(day), o])
             s.event_complete(day)
-            s.failed_today = False
+            s.schedule_failed = False
             increment_key(sims_used, o)
             break
 
@@ -360,7 +373,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
     students = sorted(
         students,
-        #key=lambda s: s.days_since_last_event or -1,  # None-safe
         key=lambda s: s.days_since_last_event if s.days_since_last_event is not None else 0,
         reverse=True
     )
@@ -373,10 +385,11 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     forms_pairs = []
     capstone_pairs = []
 
+    
     for s in students:
 
         # just assume that each kid starts out with the assumption that they will not be scheduled 
-        s.failed_today = True    
+        s.schedule_failed = True    
 
         # I know that this is repetitive 
         current_block = s.get_block()
@@ -389,9 +402,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             raise ValueError(f"Unknown block: {current_block}")
 
 
-
-        # s.daily_events_done = 0  # unsure if I need this
-        # print(s.s.get_block())
+        #if they are not done then check if they need a warmup event. then assign the student and their event to the list.
         if s.completion_date is None:
             if s.days_since_last_event >= 15:
                 events_to_attempt.append((s,"warmup flight"))
@@ -401,36 +412,14 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 block, event = s.next_event()
                 
                 # get the event from the sylllabus
-                syllabus = syllabus1
-                if s.syllabus_type == 2:
-                    syllabus = syllabus2
-                elif s.syllabus_type == 3:
-                    syllabus = syllabus3
-                elif s.syllabus_type == 4:
-                    syllabus = syllabus4
-                
-                #print("DEBUG:")
-                #print(s.completed_blocks)
-                #print(s.completed_dates)
-                #print("syllabus type: ", s.syllabus_type)
-                #print("block =", block, " len(syllabus) =", len(syllabus))
-                #if 0 <= block < len(syllabus):
-                #    print("event =", event, " len(syllabus[block]) =", len(syllabus[block]))
-                #else:
-                #    print(s.completion_date)
-                #    print("block is invalid index!")
+                syllabus = [syllabus1, syllabus2, syllabus3, syllabus4][s.syllabus_type-1]
 
-                #if event >= len(syllabus[block]):
-                #    s.current_block += 1
-                #    s.current_event = 0
-                #    continue
-                
                 nxt = syllabus[block][event]
             
 
                 events_to_attempt.append((s,nxt))
 
-                block_name = SYLLABUS_BLOCKS[s.syllabus_type][block]
+                block_name = s.get_block()
                 
                 day_metrics["students"]["by_block"].setdefault(block_name, 0)
                 day_metrics["students"]["by_block"][block_name] += 1
@@ -474,13 +463,20 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
         for c in classroom
     }
 
+    # used to track students that have already been scheduled
+    already_used = {}
 
     # Make the partner pairs for the day
     for s, ev in events_to_attempt:
+
+        already_used[s] = False
+
+        if ev == "warmup flight":
+            continue
         if ev.block == "forms":
             forms_partner_queue[s] = ev
         elif ev.block == "capstone":
-            forms_partner_queue[s] = ev
+            capstone_partner_queue[s] = ev
     forms_pairs = pair_students(forms_partner_queue)        # we don't actaully care about the pairs, as long as they exist
     capstone_pairs = pair_students(capstone_partner_queue)
 
@@ -489,7 +485,15 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     # want to leave these as objects because we will need to check their quals later on and check onwings 
     ## these are objects where the mapping is Object: hours ex. UTD object: 17.5
     instructors_available = [instructor for instructor in instructors if random.random() > Instructor.failure_rate]
-    instructor_hours = {instructor: [Instructor.daily_hours,0] for instructor in instructors_available}
+    # instructor_hours = {instructor: [Instructor.daily_hours,0] for instructor in instructors_available}
+
+    instructor_data = { instructor:
+                       {
+                           "hours": Instructor.daily_hours,
+                           "uses": 0
+                       }
+                       for instructor in instructors_available}
+
 
     # re-sort the students based on which block has the most students
     # blocks are sorted by most amount of students to least 
@@ -501,6 +505,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
     # Not sure which one is better
 
+    # this one does over ten sorted by block and under ten sorted by block 
     events_to_attempt.sort(
         key=lambda item: (
             item[0].days_since_last_event < 10,
@@ -509,6 +514,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
         )
     )
 
+    # this one does sorted by longest to shortest and then sorted by blck within that queue
     #events_to_attempt.sort(
     #    key=lambda item: (
     #        -item[0].days_since_last_event,
@@ -516,12 +522,12 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     #    )
     #)
 
-    already_used = set()
 
     # looking at student and the event they are scheduled for
     for s, ev in events_to_attempt:
 
-        if s in already_used:
+        # if they have already been scheduled. For instance a partner for forms or capstone
+        if already_used[s]:
             continue
 
         #getting how long the event it. 
@@ -561,8 +567,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 )
                 s.event_complete(day)
                 successfull_events.append([s,ev,str(day), str(c)])
-                s.failed_today = False
-                already_used.add(s)
+                s.schedule_failed= False
+                already_used[s] = True
 
                 
             
@@ -571,9 +577,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
         elif needed_resource == "oft":
             if ev.block == 'forms':
-                schedule_partner_sim(day, s, ev, events_to_attempt, already_used, oft_hours, needed_time, successfull_events, day_metrics, sims_used, "oft")
+                schedule_partner_sim(day, s, ev, already_used, oft_hours, needed_time, successfull_events, day_metrics, sims_used, "oft")
             elif ev.block == 'capstone':
-                schedule_partner_sim(day, s, ev, events_to_attempt, already_used, oft_hours, needed_time, successfull_events, day_metrics, sims_used, "oft")
+                schedule_partner_sim(day, s, ev,  already_used, oft_hours, needed_time, successfull_events, day_metrics, sims_used, "oft")
             else:
                 schedule_sim(day, s, ev, oft_hours, needed_time, successfull_events, day_metrics, sims_used, "oft")
 
@@ -582,9 +588,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 
         elif needed_resource == "mr":
             if ev.block == 'forms':
-                schedule_partner_sim(day, s, ev, events_to_attempt, already_used, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
+                schedule_partner_sim(day, s, ev,  already_used, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
             elif ev.block == 'capstone':
-                schedule_partner_sim(day, s, ev, events_to_attempt, already_used, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
+                schedule_partner_sim(day, s, ev,  already_used, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
             else:
                 schedule_sim(day, s, ev, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
             
@@ -635,8 +641,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                                 break
                     section_lead_found = False
                     formation_q_found = False
-                    for inst in instructor_hours:
-                        if needed_time > instructor_hours[inst][0] or instructor_hours[inst][1] > 4:
+                    for inst in instructor_data:
+                        if needed_time > instructor_data[inst]["hours"] or instructor_data[inst]["uses"] >= 4:
                             continue  # not enough hours, skip
                         # If we still need a section lead and this instructor is one, take them
                         if inst.section_lead and not section_lead_found:
@@ -658,53 +664,52 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                             increment_key(aircraft_used, ac)
                         for inst in available_instructors:
                             #print(inst)
-                            instructor_hours[inst][0] -= (needed_time + Instructor.break_time)
-                            instructor_hours[inst][1] += 1
+                            instructor_data[inst]["hours"] -= (needed_time + Instructor.break_time)
+                            instructor_data[inst]["uses"] += 1
                             increment_key(instructors_used, inst)
     
 
                         log_usage(
                             day_metrics["resources"]["aircraft"],
                             available_aircraft[0],
-                            needed_time,
+                            needed_time + Aircraft.break_time,
                             hours_available=Aircraft.daily_hours,
                             uses=1
                         )
                         log_usage(
                             day_metrics["resources"]["instructor"],
                             available_instructors[0],
-                            needed_time,
+                            needed_time + Instructor.break_time,
                             hours_available=Instructor.daily_hours,
                             uses=1
                         )
                         log_usage(
                             day_metrics["resources"]["aircraft"],
                             available_aircraft[1],
-                            needed_time,
+                            needed_time + Aircraft.break_time,
                             hours_available=Aircraft.daily_hours,
                             uses=1
                         )
                         log_usage(
                             day_metrics["resources"]["instructor"],
                             available_instructors[1],
-                            needed_time,
+                            needed_time + Instructor.break_time,
                             hours_available=Instructor.daily_hours,
                             uses=1
                         )
-                        # log_usage_old(day_metrics["resources"]["aircraft"],available_aircraft[0],needed_time)
-                        # log_usage_old(day_metrics["resources"]["instructor"],available_instructors[0],needed_time)
-                        # log_usage_old(day_metrics["resources"]["aircraft"],available_aircraft[1],needed_time)
-                        # log_usage_old(day_metrics["resources"]["instructor"],available_instructors[1],needed_time)
                         successfull_events.append([s, ev, str(day), "day", available_aircraft[0], available_instructors[0]])
                         successfull_events.append([s.get_partner(), ev, str(day), "day", available_aircraft[1], available_instructors[1]])
+
+                        partner = s.get_partner()
+
                         s.event_complete(day)
-                        s.get_partner().event_complete(day)
-                        s.failed_today = False
-                        s.get_partner().failed_today = False
-                        already_used.add(s)
-                        already_used.add(s.get_partner())
+                        partner.event_complete(day)
+                        s.schedule_failed = False
+                        partner.schedule_failed = False
+                        already_used[s] = True
+                        already_used[partner] = True
                         # print(forms_students)
-                        break
+                        continue
             elif ev != "warmup flight" and ev.block == "capstone":
                 if s.has_partner():
                     available_aircraft = []
@@ -715,8 +720,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                             if len(available_aircraft) == 2:
                                 break
                 
-                    for inst in instructor_hours:
-                        if needed_time <= instructor_hours[inst][0] and instructor_hours[inst][1] < 4:
+                    for inst in instructor_data:
+                        if needed_time <= instructor_data[inst]["hours"] and instructor_data[inst]["uses"] < 4:
                             available_instructors.append(inst)
                             if len(available_instructors) == 2:
                                     break
@@ -730,161 +735,153 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                             increment_key(aircraft_used, ac)
                         for inst in available_instructors:
                             #print(inst)
-                            instructor_hours[inst][0] -= (needed_time + Instructor.break_time)
-                            instructor_hours[inst][1] += 1
+                            instructor_data[inst]["hours"] -= (needed_time + Instructor.break_time)
+                            instructor_data[inst]["uses"] += 1
                             increment_key(instructors_used, inst)
     
 
                         log_usage(
                             day_metrics["resources"]["aircraft"],
                             available_aircraft[0],
-                            needed_time,
+                            needed_time + Aircraft.break_time,
                             hours_available=Aircraft.daily_hours,
                             uses=1
                         )
                         log_usage(
                             day_metrics["resources"]["instructor"],
                             available_instructors[0],
-                            needed_time,
+                            needed_time + Instructor.break_time,
                             hours_available=Instructor.daily_hours,
                             uses=1
                         )
                         log_usage(
                             day_metrics["resources"]["aircraft"],
                             available_aircraft[1],
-                            needed_time,
+                            needed_time+Aircraft.break_time,
                             hours_available=Aircraft.daily_hours,
                             uses=1
                         )
                         log_usage(
                             day_metrics["resources"]["instructor"],
                             available_instructors[1],
-                            needed_time,
+                            needed_time + Instructor.break_time,
                             hours_available=Instructor.daily_hours,
                             uses=1
                         )
-                        # log_usage_old(day_metrics["resources"]["aircraft"],available_aircraft[0],needed_time)
-                        # log_usage_old(day_metrics["resources"]["instructor"],available_instructors[0],needed_time)
-                        # log_usage_old(day_metrics["resources"]["aircraft"],available_aircraft[1],needed_time)
-                        # log_usage_old(day_metrics["resources"]["instructor"],available_instructors[1],needed_time)
+
+                        partner = s.get_partner()
+
                         successfull_events.append([s, ev, str(day), "day", available_aircraft[0], available_instructors[0]])
-                        successfull_events.append([s.get_partner(), ev, str(day), "day", available_aircraft[1], available_instructors[1]])
+                        successfull_events.append([partner, ev, str(day), "day", available_aircraft[1], available_instructors[1]])
                         s.event_complete(day)
-                        s.get_partner().event_complete(day)
-                        s.failed_today = False
-                        s.get_partner().failed_today = False
-                        already_used.add(s)
-                        already_used.add(s.get_partner())
+                        partner.event_complete(day)
+                        s.schedule_failed = False
+                        partner.schedule_failed = False
+                        already_used[s] = True
+                        already_used[partner] = True
                         # print(forms_students)
-                        break
+                        continue
             
             else:
-                if can_be_night and s.night_hours < 3.3:
-                    for ac in aircraft_data:
-                        instructor_found = 0
-                        if needed_time <= aircraft_data[ac]["night_hours"] and aircraft_data[ac]["uses"] < Aircraft.uses_per_day:
-                            for inst in instructor_hours:
-                                if needed_time <= instructor_hours[inst][0] and instructor_hours[inst][1] < 4:
-                                    aircraft_data[ac]["night_hours"] -= (needed_time + Aircraft.break_time)
-                                    instructor_hours[inst][0] -= (needed_time + Instructor.break_time)
-                                    instructor_hours[inst][1] += 1
+                if can_be_night and s.night_hours < 3.4:
 
-                                    log_usage(
-                                        day_metrics["resources"]["aircraft"],
-                                        ac,
-                                        needed_time,
-                                        hours_available=Aircraft.daily_hours,
-                                        uses=1
-                                    )
-                                    log_usage(
-                                        day_metrics["resources"]["instructor"],
-                                        inst,
-                                        needed_time,
-                                        hours_available=Instructor.daily_hours,
-                                        uses=1
-                                    )
-                                    # log_usage_old(day_metrics["resources"]["aircraft"],ac,needed_time)
-                                    # log_usage_old(day_metrics["resources"]["instructor"],inst,needed_time)
-                                    successfull_events.append([s,ev, str(day), "night",ac,inst])
-                                    s.event_complete(day)
-                                    s.failed_today = False
-                                    already_used.add(s)
-                                    aircraft_data[ac]["uses"] += 1
-                                    aircraft_found = 1
-                                    instructor_found = 1
-                                    s.night_hours += needed_time
-                                    increment_key(aircraft_used, ac)
-                                    increment_key(instructors_used, inst)
-                                    break
-                            if instructor_found == 1:
-                                break
-                
-                if aircraft_found == 1:
-                    continue
+                    aircraft_found = None
+                    inst_found = None
+                    for ac in aircraft_data:
+                        if needed_time <= aircraft_data[ac]["night_hours"] and aircraft_data[ac]["uses"] < Aircraft.uses_per_day:
+                            aircraft_found = ac
+                            break
+                    
+                    for inst in instructor_data:
+                        if needed_time <= instructor_data[inst]["hours"] and instructor_data[inst]["uses"] < 4:
+                            inst_found = inst
+                            break
+
+
+                    if aircraft_found and inst_found:
+                        aircraft_data[aircraft_found]["night_hours"] -= (needed_time + Aircraft.break_time)
+                        instructor_data[inst_found]["hours"] -= (needed_time + Instructor.break_time)
+                        instructor_data[inst_found]["uses"] += 1
+
+                        log_usage(
+                            day_metrics["resources"]["aircraft"],
+                            aircraft_found,
+                            needed_time + Aircraft.break_time,
+                            hours_available=Aircraft.daily_hours,
+                            uses=1
+                        )
+                        log_usage(
+                            day_metrics["resources"]["instructor"],
+                            inst_found,
+                            needed_time + Instructor.break_time,
+                            hours_available=Instructor.daily_hours,
+                            uses=1
+                        )
+                        successfull_events.append([s,ev, str(day), "night",aircraft_found,inst_found])
+                        s.event_complete(day)
+                        s.schedule_failed = False
+                        already_used[s] = True
+                        aircraft_data[aircraft_found]["uses"] += 1
+                        s.night_hours += needed_time
+                        increment_key(aircraft_used, aircraft_found)
+                        increment_key(instructors_used, inst_found)
+                        continue
+    
 
                 # was getting an error so changed ev.names to ev
-                running_out_of_events = ev == "I4490" or ev == "N4101" or ev == "FAM4601" 
+                running_out_of_events = (ev == "I4490" or ev == "N4101" or ev == "FAM4601")
 
-                if ev == "FAM4601" or (aircraft_found == 0 and s.night_hours < 5 and running_out_of_events):
-                    print("aircraftor instructor not found night event")
-                    print(aircraft_data)
-                    print(instructor_hours)
-                    #s.days_since_last_event += 1
-                    #.total_wait_time += 1
-                    #s.block_wait_times[s.get_block()] += 1
-                    #s.unscheduled_per_resource["aircraft"] += 1
-
-                    # s.failed_tday just remains true
+                # if the mandatory flight is the event and they were not scheduled
+                # if they do not have enough night hours
+                # if they are running out of events to get night hours
+                if ev == "FAM4601" or (s.night_hours < 5 and running_out_of_events):
                     continue
 
+                
+                
+                ## the student has moved on to day
+
+                ac_found = None
+                inst_found = None
 
                 for ac in aircraft_data:
-                    instructor_found = 0
                     if needed_time <= aircraft_data[ac]["day_hours"] and aircraft_data[ac]["uses"] < Aircraft.uses_per_day:
-                        for inst in instructor_hours:
-                            if needed_time <= instructor_hours[inst][0] and instructor_hours[inst][1] < 4:
-                                aircraft_data[ac]["day_hours"] -= (needed_time + Aircraft.break_time)
-                                instructor_hours[inst][0] -= (needed_time + Instructor.break_time)
-                                instructor_hours[inst][1] += 1
-                                log_usage(
-                                    day_metrics["resources"]["aircraft"],
-                                    ac,
-                                    needed_time,
-                                    hours_available=Aircraft.daily_hours,
-                                    uses=1
-                                )
-                                log_usage(
-                                    day_metrics["resources"]["instructor"],
-                                    inst,
-                                    needed_time,
-                                    hours_available=Instructor.daily_hours,
-                                    uses=1
-                                )
-                                # log_usage_old(day_metrics["resources"]["aircraft"],ac,needed_time)
-                                # log_usage_old(day_metrics["resources"]["instructor"],inst,needed_time)
-                                successfull_events.append([s,ev, str(day), "day",ac,inst])
-                                s.event_complete(day)
-                                s.failed_today = False
-                                already_used.add(s)
-                                aircraft_data[ac]["uses"] += 1
-                                aircraft_found = 1
-                                instructor_found = 1
-                                increment_key(aircraft_used, ac)
-                                increment_key(instructors_used, inst)
-                                break
-                        if instructor_found == 1:
-                            break
-                if aircraft_found == 0:
-                    print("aircraftor instructor not found day event")
-                    print(aircraft_data)
-                    print(instructor_hours)
-                    # not scheduled
-                    #s.days_since_last_event += 1
-                    #.total_wait_time += 1
-                    #s.block_wait_times[s.get_block()] += 1
-                    #s.unscheduled_per_resource["aircraft"] += 1
+                        ac_found = ac
+                        break
+                
+                for inst in instructor_data:
+                    if needed_time <= instructor_data[inst]["hours"] and instructor_data[inst]["uses"] < 4:
+                        inst_found = inst
+                        break
 
-    # print("at the end of the day: ", forms_students)
+                if ac_found and inst_found:
+                    aircraft_data[ac_found]["day_hours"] -= (needed_time + Aircraft.break_time)
+                    instructor_data[inst_found]["hours"] -= (needed_time + Instructor.break_time)
+                    instructor_data[inst_found]["uses"] += 1
+                    log_usage(
+                        day_metrics["resources"]["aircraft"],
+                        ac_found,
+                        needed_time+ Aircraft.break_time,
+                        hours_available=Aircraft.daily_hours,
+                        uses=1
+                    )
+                    log_usage(
+                        day_metrics["resources"]["instructor"],
+                        inst_found,
+                        needed_time+Aircraft.break_time,
+                        hours_available=Instructor.daily_hours,
+                        uses=1
+                    )
+                    successfull_events.append([s,ev, str(day), "day",ac_found,inst_found])
+                    s.event_complete(day)
+                    s.schedule_failed = False
+                    already_used[s] = True
+                    aircraft_data[ac_found]["uses"] += 1
+                    increment_key(aircraft_used, ac_found)
+                    increment_key(instructors_used, inst_found)
+                    continue
+                    
+                    
     ####seems like there are some complete students in here
     #for stu in forms_students.keys():
     #    print("aircraftor instructor not found forms event")
@@ -908,11 +905,31 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
     # now deal with students that failed today 
     for s in students:
-        if s.failed_today and s.get_block() != "complete":
+        if s.schedule_failed and s.get_block() != "complete":
             s.days_since_last_event += 1
             s.total_wait_time += 1
             s.block_wait_times[s.get_block()] += 1
-            #s.unscheduled_per_resource[sim_type] += 1    # need a way to figure out the resource type 
+
+            block,event = s.next_event()
+            # get the event from the sylllabus
+            syllabus = [syllabus1, syllabus2, syllabus3, syllabus4][s.syllabus_type-1]
+
+            nxt = syllabus[block][event]
+
+            # print(nxt.resource)
+            # print(nxt, nxt.activity_time)
+
+            resource = nxt.resource
+
+            # if resource == "classroom":
+            #     print(classroom_data)
+
+            # elif resource == "aircraft": 
+            #     print(aircraft_data)
+            #     print(instructor_data)
+
+
+            s.unscheduled_per_resource[resource] += 1    # need a way to figure out the resource type 
 
     # just print statements for now, don't know how you want to use these.
     #print(sims_used)
@@ -1614,17 +1631,24 @@ def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_siz
 
                     # block_to_wait = dict(zip(SYLLABUS_BLOCKS[s.syllabus_type], s.block_wait_times))
                     block_complete = dict(zip(SYLLABUS_BLOCKS[s.syllabus_type], s.completed_blocks))
+                    # print("block complete", block_complete)
 
                     if block_name not in s.block_wait_times:
                         continue
-
+                    
+                    # print("block wait times", s.block_wait_times)
                     block_to_date = dict(zip(SYLLABUS_BLOCKS[s.syllabus_type], s.completed_dates))
+
                     pre_sim = block_to_date[block_name] is not None and block_to_date[block_name] < START_DATE
 
                     if not pre_sim and (block_complete[block_name] or s.block_wait_times[block_name] > 0):
                         wait = s.block_wait_times[block_name]
 
-                    run_waits.append(wait)
+                        run_waits.append(wait)
+
+                # print(block_name)
+                # print(run_waits)
+                # print(sum(run_waits))
 
                 waits.append(sum(run_waits) / len(run_waits) if run_waits else 0)  
 
@@ -1804,11 +1828,10 @@ def main():
                 class_size_resource_waits.append(res_waits)
             simulation_resource_waits.append(class_size_resource_waits)
 
-        print(simulation_resource_waits)
+        print("simulation resource waits", simulation_resource_waits)
 
 
     print(fiscal_year_stats(2026, simulation_data[0][0], "year"))
-    print(fiscal_year_stats(2026, simulation_data[0][1], "year"))
 
     x_labels = class_size + ["FY26"]
 
