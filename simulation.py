@@ -189,9 +189,10 @@ def pair_students(queue: dict):
         ## idk if this is intentional or not
         
         if s.has_partner() and s.get_partner() in queue:
+            # print("already has partner")
             used.add(s)
             used.add(s.get_partner())
-            pairs.append((s, s.get_partner, ev))
+            pairs.append((s, s.get_partner(), ev, queue[s.get_partner()]))
         elif s.has_partner():
             continue
         elif not s.has_partner():
@@ -203,11 +204,12 @@ def pair_students(queue: dict):
                     continue
 
                 if tev == ev:
+                    # print("assigning new partner")
                     print(ev)
                     used.add(s)
                     used.add(t)
                     s.assign_partner(t)
-                    pairs.append((s, t, ev))
+                    pairs.append((s, t, ev, queue[s.get_partner()]))
                     break
     return pairs
 
@@ -240,11 +242,23 @@ def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, successfull_e
             for o in available_sims:
                 hours[o] -= (needed_time + Sim.break_time)
             partner = s.get_partner()
+
+            # print(used_set)
+            if partner in used_set and used_set[partner]:
+                print("partner true in already used. already_used[s] = ", used_set[s]) ### why has one been used and the other hasnt ?!?!
+                print("cancelling scheudling")
+                return
+            elif partner not in used_set: # why is their partner not even a key in used_set. where did they come from?
+                print(partner in used_set, "this is partner in used_set")
+                print("Cancel schedule partner not in used_set at all")
+                return
+
+
             successfull_events.append([s,ev, str(day), available_sims[0]])
             successfull_events.append([partner,ev, str(day), available_sims[1]])
             s.event_complete(day)
-            print("2")
-            partner.event_complete(day)
+            print("2", ev)
+            partner.event_complete(day) ## here is where the error is occuring. why is this person complete if they are scheduling a sim??
             s.schedule_failed = False
             partner.schedule_failed = False
             # used_set.add(s)
@@ -390,7 +404,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     forms_pairs = []
     capstone_pairs = []
 
-    
+    # used to track students that have already been scheduled
+    already_used = {}
+
     for s in students:
 
 
@@ -413,6 +429,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
         if s.completion_date is None:
             if s.days_since_last_event >= 15:
                 events_to_attempt.append((s,"warmup flight"))
+                already_used[s] = False
             else:
 
                 #get the index of the block and event
@@ -430,6 +447,12 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 
                 day_metrics["students"]["by_block"].setdefault(block_name, 0)
                 day_metrics["students"]["by_block"][block_name] += 1
+
+                already_used[s] = False
+
+
+        else:
+            print("s is complete here is s.get_partner", s.get_partner())
 
     # print(events_to_attempt)
 
@@ -470,13 +493,12 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
         for c in classroom
     }
 
-    # used to track students that have already been scheduled
-    already_used = {}
+    
 
     # Make the partner pairs for the day
     for s, ev in events_to_attempt:
 
-        already_used[s] = False
+        
 
         if ev == "warmup flight":
             continue
@@ -487,6 +509,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
     forms_pairs = pair_students(forms_partner_queue)        # we don't actaully care about the pairs, as long as they exist
     capstone_pairs = pair_students(capstone_partner_queue)
+    # print(forms_pairs)
 
 
     # instructors now
@@ -939,6 +962,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
 
             s.unscheduled_per_resource[resource] += 1    # need a way to figure out the resource type 
+
 
     # just print statements for now, don't know how you want to use these.
     #print(sims_used)
