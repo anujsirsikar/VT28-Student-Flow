@@ -188,7 +188,9 @@ def pair_students(queue: dict):
         ## their partner is not present, they will get scheduled with someone else
         ## idk if this is intentional or not
         
-        if s.has_partner() and s.get_partner() in queue:
+        if s.has_partner() and s.get_partner() in queue and s.get_partner() not in used:
+            if queue[s] != queue[s.get_partner()]:
+                print("not scheduled for the same event!!")
             # print("already has partner")
             used.add(s)
             used.add(s.get_partner())
@@ -209,13 +211,15 @@ def pair_students(queue: dict):
                     used.add(s)
                     used.add(t)
                     s.assign_partner(t)
-                    pairs.append((s, t, ev, queue[s.get_partner()]))
+                    #pairs.append((s, t, ev, queue[s.get_partner()]))
+                    pairs.append((s, t, ev, tev))
                     break
     return pairs
 
 
 
 def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, successfull_events, day_metrics, sims_used, sim_type):
+    # print("used_set: ", used_set)
     if s.has_partner():
         available_sims = []
         for o in hours:
@@ -239,6 +243,7 @@ def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, successfull_e
                 hours_available=Sim.daily_hours,
                 uses=1
             )
+
             for o in available_sims:
                 hours[o] -= (needed_time + Sim.break_time)
             partner = s.get_partner()
@@ -267,7 +272,7 @@ def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, successfull_e
             used_set[partner] = True
             increment_key(sims_used, available_sims[0])
             increment_key(sims_used, available_sims[1])
-        
+            
 
 def schedule_sim(day, s, ev, sim_hours, needed_time, successfull_events, day_metrics, sims_used, sim_type):
     for o in sim_hours:
