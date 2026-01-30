@@ -177,7 +177,7 @@ def increment_key(d, key):
         d[key] = 1
 
 # pair up students
-def pair_students(queue: dict):
+def pair_students(queue: dict, already_used):
     pairs = []
     used = set()
 
@@ -187,6 +187,11 @@ def pair_students(queue: dict):
         ## Right now it looks like if someone has a partner but 
         ## their partner is not present, they will get scheduled with someone else
         ## idk if this is intentional or not
+
+        if ev == "CS2101":
+            partner = s.get_partner()
+            s.remove_partner()
+            partner.remove_partner()
         
         if s.has_partner() and s.get_partner() in queue and s.get_partner() not in used:
             if queue[s] != queue[s.get_partner()]:
@@ -195,9 +200,11 @@ def pair_students(queue: dict):
             used.add(s)
             used.add(s.get_partner())
             pairs.append((s, s.get_partner(), ev, queue[s.get_partner()]))
-        elif s.has_partner():
-            continue
-        elif not s.has_partner():
+        # elif s.has_partner():
+        #     already_used[s] = True
+        #     continue
+        # elif not s.has_partner():
+        else:
             if s in used:
                 continue
 
@@ -214,6 +221,10 @@ def pair_students(queue: dict):
                     #pairs.append((s, t, ev, queue[s.get_partner()]))
                     pairs.append((s, t, ev, tev))
                     break
+
+            if not s.has_partner():
+                already_used[s]
+
     return pairs
 
 
@@ -248,6 +259,26 @@ def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, successfull_e
                 hours[o] -= (needed_time + Sim.break_time)
             partner = s.get_partner()
 
+            block,event = partner.next_event()
+
+            # get the event from the sylllabus
+            syllabus = [FlightStudent.syllabus1, FlightStudent.syllabus2, FlightStudent.syllabus3,FlightStudent.syllabus4][partner.syllabus_type-1]
+            # s_syllabus = [FlightStudent.s1, FlightStudent.s2, FlightStudent.s3,FlightStudent.s4][s.syllabus_type-1]
+            # print(syllabus)
+
+            partner_ev = syllabus[block][event]
+
+            # s_block, s_event = s.next_event()
+
+            # s_ev = s_syllabus[s_block][s_event]
+        
+            # block_name = s.get_block()
+            print("s is ", s, "partner is ", partner)
+            print("partner is ", partner, "partners partner is ", partner.get_partner())
+            print("partners partners partner is ", partner.get_partner().get_partner())
+            print("in schedule partner sim. s event =", ev, "partner event = ", partner_ev)
+            print("partner ->", partner)
+
             # print(used_set)
             if partner in used_set and used_set[partner]:
                 print("partner true in already used. already_used[s] = ", used_set[s]) ### why has one been used and the other hasnt ?!?!
@@ -258,11 +289,12 @@ def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, successfull_e
                 print("Cancel schedule partner not in used_set at all")
                 return
 
+            
+
 
             successfull_events.append([s,ev, str(day), available_sims[0]])
             successfull_events.append([partner,ev, str(day), available_sims[1]])
             s.event_complete(day)
-            print("2", ev)
             partner.event_complete(day) ## here is where the error is occuring. why is this person complete if they are scheduling a sim??
             s.schedule_failed = False
             partner.schedule_failed = False
@@ -409,8 +441,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     forms_pairs = []
     capstone_pairs = []
 
-    # used to track students that have already been scheduled
-    already_used = {}
+    
 
     for s in students:
 
@@ -434,7 +465,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
         if s.completion_date is None:
             if s.days_since_last_event >= 15:
                 events_to_attempt.append((s,"warmup flight"))
-                already_used[s] = False
+                # already_used[s] = False
             else:
 
                 #get the index of the block and event
@@ -452,12 +483,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 
                 day_metrics["students"]["by_block"].setdefault(block_name, 0)
                 day_metrics["students"]["by_block"][block_name] += 1
+                
 
-                already_used[s] = False
-
-
-        else:
-            print("s is complete here is s.get_partner", s.get_partner())
 
     # print(events_to_attempt)
 
@@ -498,12 +525,13 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
         for c in classroom
     }
 
-    
+    # used to track students that have already been scheduled
+    already_used = {}
 
     # Make the partner pairs for the day
     for s, ev in events_to_attempt:
 
-        
+        already_used[s] = False
 
         if ev == "warmup flight":
             continue
@@ -512,9 +540,10 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
         elif ev.block == "capstone":
             capstone_partner_queue[s] = ev
 
-    forms_pairs = pair_students(forms_partner_queue)        # we don't actaully care about the pairs, as long as they exist
-    capstone_pairs = pair_students(capstone_partner_queue)
-    # print(forms_pairs)
+    forms_pairs = pair_students(forms_partner_queue, already_used)        # we don't actaully care about the pairs, as long as they exist
+    capstone_pairs = pair_students(capstone_partner_queue, already_used)
+    print(capstone_partner_queue)
+    print(capstone_pairs)
 
 
     # instructors now
@@ -557,6 +586,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     #        block_priority.get(item[0].get_block(), float("inf"))
     #    )
     #)
+
 
 
     # looking at student and the event they are scheduled for
@@ -809,7 +839,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         successfull_events.append([s, ev, str(day), "day", available_aircraft[0], available_instructors[0]])
                         successfull_events.append([partner, ev, str(day), "day", available_aircraft[1], available_instructors[1]])
                         s.event_complete(day)
-                        print("8")
                         partner.event_complete(day)
                         s.schedule_failed = False
                         partner.schedule_failed = False

@@ -66,7 +66,7 @@ class FlightStudent:
         return f"Student: {self.student_id}"
     
     def __repr__(self):
-        return str(self)
+        return  str(self)
 
     # returns the student's next event
     def next_event(self):
@@ -107,7 +107,7 @@ class FlightStudent:
             print("all completion dates: ", self.completed_dates)
             print("partner's completion dates: ", self.partner.completed_dates)
             print(" ")
-            return
+            # return
 
         if len(syl[self.current_block])-1 <= self.next_event_index:
             self.completed_blocks[self.current_block] = 1
