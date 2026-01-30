@@ -1,16 +1,6 @@
 # @author Anuj Sirsikar and Timothy Kedrowski and Lauren Leckelt
 # simulates a student going through the primary syllabus in flight school
 
-# RANDOM ONE OFF CASES:
-# randomly did SY0302 while in instr grnd:
-# 102,2511,Active,12/16/2024,12/16/2024,12/17/2024,12/17/2024,12/17/2024,12/18/2024,12/19/2024,12/20/2024,12/20/2024,1/7/2025,1/7/2025,1/8/2025,1/8/2025,1/8/2025,1/10/2025,1/10/2025,1/10/2025,1/13/2025,1/13/2025,1/13/2025,1/14/2025,1/15/2025,1/15/2025,1/16/2025,1/16/2025,1/16/2025,1/17/2025,1/17/2025,1/22/2025,1/23/2025,1/24/2025,1/27/2025,1/28/2025,1/30/2025,2/3/2025,2/7/2025,2/13/2025,2/18/2025,2/19/2025,2/20/2025,2/24/2025,2/25/2025,2/26/2025,2/27/2025,2/28/2025,3/3/2025,3/24/2025,3/25/2025,3/28/2025,3/31/2025,4/9/2025,3/7/2025,3/10/2025,3/11/2025,3/12/2025,3/20/2025,4/10/2025,4/11/2025,4/16/2025,4/14/2025,4/15/2025,4/28/2025,4/29/2025,5/2/2025,5/6/2025,5/13/2025,5/14/2025,,,,,5/28/2025,5/28/2025,5/29/2025,5/29/2025,5/30/2025,6/2/2025,6/3/2025,6/3/2025,6/4/2025,6/4/2025,6/5/2025,6/6/2025,6/6/2025,6/6/2025,,,,,,,,,,,,,,,,,,,,,,9/17/2025,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-
-# we can double up on the 42 and 42 blocks in instruments as well as the sims between them 
-# forms can be 2 out and ins (so 2 doubles)
-# capstone can have one out and in (1 double) and the sims can be doubled
-# have an option to maximize doubling 
-
-
 
 import datetime
 from datetime import date, timedelta, datetime, date as date_type
@@ -33,7 +23,6 @@ import json
 from matplotlib.patches import Patch
 from holiday_loader import load_holiday_ranges
 
-# Note: You can have more than one event in a day (especially for sims and flights) [but for first iteration, do one per day]
 
 SYLLABUS_BLOCKS = {
         1: ["Ground School", "Contacts", "Instrument Ground", "Instruments", "Aero", "Forms", "Capstone" ],
@@ -100,11 +89,6 @@ def current_active_students(students):
 
     return count
 
-
-# IMPORTANT: how to keep track of how many students in each training block? Should we make them classes? Because we 
-#            need to look at all the counts to decide where to place students after they complete contacts, and then 
-#            also for scheduling for forms (need two students and two instructors)
-# fixed_class_size is a boolean for using fy26 numbers or not
 # SIMULATION LOGIC 
 def run_simulation(sim_start_date, days, percent_aero, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4, fixed_class_size, class_size):
     # sim_start_date = date(2025, 11, 24)   # year, month, day
@@ -163,9 +147,6 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
     
     # return result, students
 
-# daytime_hours = 11 ## 7 to 6
-# nighttime_hours = 5
-# instructors = 40
 instructor_rate = 0.9
 instructor_daily_hours = 12
 
@@ -184,9 +165,12 @@ def pair_students(queue: dict):
     # print(queue.items())
     for s, ev in queue.items():
 
-        ## Right now it looks like if someone has a partner but 
-        ## their partner is not present, they will get scheduled with someone else
-        ## idk if this is intentional or not
+
+        # CHECK IF THIS IS EVEN HAPPENING!!!!
+        if ev == "CS2101":
+            partner = s.get_partner()
+            s.remove_partner()
+            partner.remove_partner()
         
         if s.has_partner() and s.get_partner() in queue and s.get_partner() not in used:
             if queue[s] != queue[s.get_partner()]:
@@ -632,27 +616,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             
         else: ##aircraft
 
-            # we need to schedule students first looking at aircraft and then instructors, focusing on which block has the most students in it and
-            # and also which students have been waiting the longest since their last event 
-
-            # 1) assign a priority number (1-7) based on which block has the most students currently in it. So a '1' would be given to the block with the most students 
-            # 2) then assign a priority number (1-7) based on which block has the largest avaerage wait time between events 
-            # 3) then maybe reorder the students in the list 
-            # possible solutions:
-            # wait times only for breaking ties (lexographic sort): blocks.sort(key=lambda b: (b.student_count, b.avg_wait), reverse=True)
-            # weighted score: block.priority = 0.7 * block.student_count + 0.3 * block.avg_wait  ->  blocks.sort(key=lambda b: b.priority, reverse=True)
-            # deal with "starving blocks":
-            # -> priority = block.student_count + 0.1 * block.avg_wait
-            # -> if block.avg_wait > 10:
-            #        size_weight = 0.6
-            #        wait_weight = 0.4
-            #    else:
-            #        size_weight = 0.8
-            #        wait_weight = 0.2
-
-
-            # forms and capstone are done with partners. If going from forms straight to capstone, keep the same partners (these sims are also done with partners FYI)
-
             aircraft_found = 0
             can_be_night = False
 
@@ -663,10 +626,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             # forms
             
             if ev != "warmup flight" and ev.block == "forms":
-                # need to check the forms_students list and see if anyone in there has to complete the same next event, if no then add student to list and keep moving (at the end of the day, check the forms_students list and any remaining students should be treated as not being scheduled)
-                # if so, then we need to check for two forms instructors, if no then add student to the list 
-                # if so, we schedule both students with those instructors (remove other student from forms_students list)
-                # print("FORMS: ", s, ev)
                 if s.has_partner():
                     available_aircraft = []
                     available_instructors = []
@@ -917,26 +876,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     increment_key(instructors_used, inst_found)
                     continue
                     
-                    
-    ####seems like there are some complete students in here
-    #for stu in forms_students.keys():
-    #    print("aircraftor instructor not found forms event")
-    #    print(aircraft_data)
-    #    print(instructor_hours)
-    #    if stu.get_block() != "complete":
-    #        stu.days_since_last_event += 1
-    #        stu.total_wait_time += 1
-    #        stu.block_wait_times[stu.get_block()] += 1
-            # stu.unscheduled_per_resource["aircraft"] += 1      # how to do this here because it could also be an oft or mr???
-
-    #for stu in capstone_students.keys():
-    #    print("aircraftor instructor not found capstone event")
-    #    print(aircraft_data)
-    #    print(instructor_hours)
-    #    if stu.get_block() != "complete":
-    #        stu.days_since_last_event += 1
-    #        stu.total_wait_time += 1
-    #        stu.block_wait_times[stu.get_block()] += 1
 
 
     # now deal with students that failed today 
@@ -953,26 +892,11 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
             nxt = syllabus[block][event]
 
-            # print(nxt.resource)
-            # print(nxt, nxt.activity_time)
-
             resource = nxt.resource
-
-            # if resource == "classroom":
-            #     print(classroom_data)
-
-            # elif resource == "aircraft": 
-            #     print(aircraft_data)
-            #     print(instructor_data)
 
 
             s.unscheduled_per_resource[resource] += 1    # need a way to figure out the resource type 
 
-
-    # just print statements for now, don't know how you want to use these.
-    #print(sims_used)
-    #print(aircraft_used)
-    #print(instructors_used)
     year_stats = day.year
     if day.month in [11,12]:
         year_stats += 1
@@ -1183,13 +1107,9 @@ def load_students(file_path):
             for i, block in enumerate(student.completed_blocks):
                 if student.syllabus_type == 1:
                     if block == 1:
-                        #print(1)
-                        #print(student.student_id)
-                        #print(student.completed_blocks)
                         date = row[end_events1[i]]
                         if date == '':
                             date = row[almost_end_events1[i]]
-                        #print(date)
                         student.completed_dates[i] = datetime.strptime(date, "%m/%d/%Y").date()
 
                     if student.next_event_index >= len(sys1[student.current_block]):
@@ -1199,13 +1119,9 @@ def load_students(file_path):
 
                 elif student.syllabus_type == 2:
                     if block == 1:
-                        #print(2)
-                        #print(student.student_id)
-                        #print(student.completed_blocks)
                         date = row[end_events2[i]]
                         if date == '':
                             date = row[almost_end_events2[i]]
-                        #print(date)
                         student.completed_dates[i] = datetime.strptime(date, "%m/%d/%Y").date()
 
                     if student.next_event_index >= len(sys2[student.current_block]):
@@ -1215,13 +1131,9 @@ def load_students(file_path):
 
                 elif student.syllabus_type == 3:
                     if block == 1:
-                        #print(3)
-                        #print(student.student_id)
-                        #print(student.completed_blocks)
                         date = row[end_events3[i]]
                         if date == '':
                             date = row[almost_end_events3[i]]
-                        #print(date)
                         student.completed_dates[i] = datetime.strptime(date, "%m/%d/%Y").date()
 
                     if student.next_event_index >= len(sys3[student.current_block]):
@@ -1231,13 +1143,9 @@ def load_students(file_path):
 
                 elif student.syllabus_type == 4:
                     if block == 4:
-                        #print(4)
-                        #print(student.student_id)
-                        #print(student.completed_blocks)
                         date = row[end_events4[i]]
                         if date == '':
                             date = row[almost_end_events4[i]]
-                        #print(date)
                         student.completed_dates[i] = datetime.strptime(date, "%m/%d/%Y").date()
                     
                     if student.next_event_index >= len(sys4[student.current_block]):
@@ -1875,10 +1783,6 @@ def main():
 
     compare_multiple_simulations_with_blocks(simulation_data, x_labels,percentages, not user_input["include_in_analysis"])
     compare_multiple_simulations(simulation_data, x_labels,percentages, not user_input["include_in_analysis"])
-
-
-
-
 
 
 

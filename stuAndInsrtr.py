@@ -14,7 +14,7 @@ class FlightStudent:
 
     
 
-    # can get rid of this later
+    # can get rid of this late r
     s1 = ["Ground School", "Contacts", "Instrument Ground", "Instruments", "Aero", "Forms", "Capstone"]
     s2 = ["Ground School", "Contacts", "Aero", "Forms", "Instrument Ground", "Instruments", "Capstone"]     # second most common
     s3 = ["Ground School", "Contacts", "Instrument Ground", "Instruments", "Forms", "Aero", "Capstone"]
@@ -107,7 +107,7 @@ class FlightStudent:
             print("all completion dates: ", self.completed_dates)
             print("partner's completion dates: ", self.partner.completed_dates)
             print(" ")
-            return
+            # return
 
         if len(syl[self.current_block])-1 <= self.next_event_index:
             self.completed_blocks[self.current_block] = 1
