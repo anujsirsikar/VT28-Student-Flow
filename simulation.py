@@ -184,7 +184,7 @@ def pair_students(queue: dict):
 
                 if tev == ev:
                     # print("assigning new partner")
-                    print(ev)
+                    # print(ev)
                     used.add(s)
                     used.add(t)
                     s.assign_partner(t)
@@ -225,21 +225,10 @@ def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, successfull_e
                 hours[o] -= (needed_time + Sim.break_time)
             partner = s.get_partner()
 
-            # print(used_set)
-            if partner in used_set and used_set[partner]:
-                print("partner true in already used. already_used[s] = ", used_set[s]) ### why has one been used and the other hasnt ?!?!
-                print("cancelling scheudling")
-                return
-            elif partner not in used_set: # why is their partner not even a key in used_set. where did they come from?
-                print(partner in used_set, "this is partner in used_set")
-                print("Cancel schedule partner not in used_set at all")
-                return
-
 
             successfull_events.append([s,ev, str(day), available_sims[0]])
             successfull_events.append([partner,ev, str(day), available_sims[1]])
             s.event_complete(day)
-            print("2", ev)
             partner.event_complete(day) ## here is where the error is occuring. why is this person complete if they are scheduling a sim??
             s.schedule_failed = False
             partner.schedule_failed = False
@@ -322,7 +311,7 @@ def log_usage(bucket, resource, hours, hours_available=None, uses=1):
 
 
 def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4):# grndSchool, contacts, aero, inst, forms, capstone):
-    print("------------ NEW DAY --------------", day)
+    # print("------------ NEW DAY --------------", day)
     
     # dictionaries for each resource (including instructors)
     # the keys will be names of the resource while the value will be how many times they were used.
@@ -433,9 +422,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 already_used[s] = False
 
 
-        else:
-            print("s is complete here is s.get_partner", s.get_partner())
-
     # print(events_to_attempt)
 
     # Filter out failed devices. Note this changes every day
@@ -492,6 +478,10 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     forms_pairs = pair_students(forms_partner_queue)        # we don't actaully care about the pairs, as long as they exist
     capstone_pairs = pair_students(capstone_partner_queue)
     # print(forms_pairs)
+
+    print("capstone pairs",day)
+    for s in capstone_partner_queue:
+        print("s:", s, "partner: ", s.get_partner(), capstone_partner_queue[s])
 
 
     # instructors now
@@ -860,7 +850,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         uses=1
                     )
                     successfull_events.append([s,ev, str(day), "day",ac_found,inst_found])
-                    s.event_complete(day)
+                    if ev != "warmup flight":
+                        s.event_complete(day)
                     s.schedule_failed = False
                     already_used[s] = True
                     aircraft_data[ac_found]["uses"] += 1
@@ -1316,7 +1307,7 @@ def ask_user():
         font=("Arial", 12)
     ).pack(pady=(20, 5))
 
-    class_sizes = [0,2, 5,8,10,13,15,17,20]
+    class_sizes = [0,2, 4, 5,6,7,8,10,13,15]
     class_size_vars = {}
 
     class_size_frame = tk.Frame(root)
@@ -1710,7 +1701,7 @@ def main():
                     new_student.imported = False
                     students.append(new_student) 
             else:
-                students = load_students(os.path.join("students", "test_students.csv"))
+                students = load_students(os.path.join("students", "current_students.csv"))
 
             schedule, simulation_json, computed_students = run_simulation(START_DATE, (user_input["weeks"]*7), percentages[i] , students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, True, class_size[j])
             result.append(schedule)
@@ -1738,7 +1729,7 @@ def main():
                     new_student.imported = False
                     students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
         else:
-            students = load_students(os.path.join("students", "test_students.csv"))
+            students = load_students(os.path.join("students", "current_students.csv"))
 
         schedule, simulation_json, computed_students = run_simulation(START_DATE, (user_input["weeks"]*7), percentages[i], students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, False, 0)
         result.append(schedule)

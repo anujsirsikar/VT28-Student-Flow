@@ -90,25 +90,6 @@ class FlightStudent:
         elif self.syllabus_type == 4:
             syl = FlightStudent.syllabus4
 
-        if self.current_block == 7:
-            print("continueing to avoid error. need to fix this")
-            print(self)
-            print("syallbus type: ", self.syllabus_type)
-            print("partner: ", self.partner)
-            print("partner's syllabus type: ", self.partner.syllabus_type)
-            print("current block: ", self.current_block, self.get_block())
-            print("my next event", self.next_event())
-            print("partner next event", self.get_partner().next_event())
-            print("partner's current block: ", self.partner.current_block, self.partner.get_block())
-            print("completed blocks: ", self.completed_blocks)
-            print("partner's completed blocks", self.partner.completed_blocks)
-            print("completion date: ", self.completion_date)
-            print("partner completion date: ", self.partner.completion_date)
-            print("all completion dates: ", self.completed_dates)
-            print("partner's completion dates: ", self.partner.completed_dates)
-            print(" ")
-            # return
-
         if len(syl[self.current_block])-1 <= self.next_event_index:
             self.completed_blocks[self.current_block] = 1
             self.completed_dates[self.current_block] = day
@@ -126,6 +107,7 @@ class FlightStudent:
                 print("student: ", self)
                 self.remove_partner()
                 partner.remove_partner()
+                print(self.get_partner())
         if sum(self.completed_blocks) == 7:
             self.completion_date = day
     
