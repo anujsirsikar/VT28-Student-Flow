@@ -164,13 +164,6 @@ def pair_students(queue: dict):
 
     # print(queue.items())
     for s, ev in queue.items():
-
-
-        # CHECK IF THIS IS EVEN HAPPENING!!!!
-        if ev == "CS2101":
-            partner = s.get_partner()
-            s.remove_partner()
-            partner.remove_partner()
         
         if s.has_partner() and s.get_partner() in queue and s.get_partner() not in used:
             if queue[s] != queue[s.get_partner()]:
@@ -186,7 +179,7 @@ def pair_students(queue: dict):
                 continue
 
             for t, tev in queue.items():
-                if t in used or t is s:
+                if t in used or t is s or t.has_partner():
                     continue
 
                 if tev == ev:
@@ -768,7 +761,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         successfull_events.append([s, ev, str(day), "day", available_aircraft[0], available_instructors[0]])
                         successfull_events.append([partner, ev, str(day), "day", available_aircraft[1], available_instructors[1]])
                         s.event_complete(day)
-                        print("8")
                         partner.event_complete(day)
                         s.schedule_failed = False
                         partner.schedule_failed = False
