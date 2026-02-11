@@ -60,6 +60,7 @@ class FlightStudent:
         self.imported = True
         self.partner = None 
         self.schedule_failed = False 
+        self.on_wing = None
 
     # toString function
     def __str__(self):
@@ -137,11 +138,8 @@ class Instructor:
         self.name = name
         self.section_lead = section_lead                   # boolean value  (12)
         self.formation_q = formation_q                     # boolean value (I'm guessing this means formation qualified) (13)
-        
-        # Add this later:
-        # self.onwing = (studentID)  <- add this to the constructor's parameters
-        # should instructors have a status too?
-
+        self.on_wings = []
+    
     def __str__(self):
         '''
         if self.section_lead and self.formation_q:
@@ -157,3 +155,8 @@ class Instructor:
     
     def __repr__(self):
         return str(self)
+    
+    # an instructor can have at most 4 on wings
+    def add_on_wing(self, student):
+        self.on_wings.append(student)
+        student.on_wing = self
