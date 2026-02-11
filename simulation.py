@@ -166,8 +166,8 @@ def pair_students(queue: dict):
     for s, ev in queue.items():
         
         if s.has_partner() and s.get_partner() in queue and s.get_partner() not in used:
-            if queue[s] != queue[s.get_partner()]:
-                print("not scheduled for the same event!!")
+            # if queue[s] != queue[s.get_partner()]:
+                # print("not scheduled for the same event!!")
             # print("already has partner")
             used.add(s)
             used.add(s.get_partner())
@@ -479,9 +479,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     capstone_pairs = pair_students(capstone_partner_queue)
     # print(forms_pairs)
 
-    print("capstone pairs",day)
-    for s in capstone_partner_queue:
-        print("s:", s, "partner: ", s.get_partner(), capstone_partner_queue[s])
+    # print("capstone pairs",day)
+    # for s in capstone_partner_queue:
+        # print("s:", s, "partner: ", s.get_partner(), capstone_partner_queue[s])
 
 
     # instructors now
@@ -1624,7 +1624,7 @@ def main():
 
     global holiday_ranges
 
-    holiday_ranges = load_holiday_ranges("holidays.csv")
+    holiday_ranges = load_holiday_ranges("holidays.csv")[:-1]
 
     # going to running run_simulation function multiple times based on different class sizes
 
@@ -1766,7 +1766,7 @@ def main():
     x_labels = class_size + ["FY26"]
 
     compare_multiple_simulations_with_blocks(simulation_data, x_labels,percentages, not user_input["include_in_analysis"])
-    compare_multiple_simulations(simulation_data, x_labels,percentages, not user_input["include_in_analysis"])
+    # compare_multiple_simulations(simulation_data, x_labels,percentages, not user_input["include_in_analysis"])
 
 
 

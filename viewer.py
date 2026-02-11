@@ -265,13 +265,22 @@ def display_category(category):
                     if not lines:
                         continue
 
-                    cls_id = tree.insert(
-                        pct_id, "end",
-                        text=f"{cls_label}: {lines[0][0]} | {lines[0][1]}",
-                        open=True
-                    )
-                    for name, info in lines[1:]:
+                    # Insert class label only
+                    cls_id = tree.insert(pct_id, "end", text=cls_label, open=True)
+
+                    # Insert ALL resource lines under it
+                    for name, info in lines:
                         tree.insert(cls_id, "end", text=f"{name} | {info}")
+
+
+
+                    # cls_id = tree.insert(
+                    #     pct_id, "end",
+                    #     text=f"{cls_label}: {lines[0][0]} | {lines[0][1]}",
+                    #     open=True
+                    # )
+                    # for name, info in lines[1:]:
+                    #     tree.insert(cls_id, "end", text=f"{name} | {info}")
 
     populate_tree(tree1, selected_date1)
     populate_tree(tree2, selected_date2)
@@ -681,7 +690,7 @@ def main():
 
     category_var = tk.StringVar()
     category_dropdown = ttk.Combobox(row3, textvariable=category_var, state="readonly", width=20)
-    category_dropdown["values"] = ["students", "utd", "oft", "vtd", "mr", "aircraft", "instructor"]
+    category_dropdown["values"] = ["students", "utd", "oft", "vtd", "mr", "aircraft", "classroom", "instructor"]
     category_dropdown.set("Select category")
     category_dropdown.pack(side="left", padx=(37,0))
 
