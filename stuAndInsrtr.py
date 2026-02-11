@@ -63,7 +63,7 @@ class FlightStudent:
 
     # toString function
     def __str__(self):
-        return f"Student: {self.student_id}"
+        return f"Student: {self.completed_dates}"
     
     def __repr__(self):
         return str(self)
@@ -101,13 +101,13 @@ class FlightStudent:
         # note: only switches partners for syllabus 2 and 3 folks. We can change that up. 
         if sum(self.completed_blocks) == 6 and self.next_event_index == 0 and (self.syllabus_type == 2 or self.syllabus_type == 3):
             if self.has_partner():
-                print("time for new pairs")
+                # print("time for new pairs")
                 partner = self.get_partner()
-                print("partner: ", partner)
-                print("student: ", self)
+                # print("partner: ", partner)
+                # print("student: ", self)
                 self.remove_partner()
                 partner.remove_partner()
-                print(self.get_partner())
+                # print(self.get_partner())
         if sum(self.completed_blocks) == 7:
             self.completion_date = day
     

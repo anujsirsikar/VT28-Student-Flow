@@ -93,8 +93,6 @@ def current_active_students(students):
 def run_simulation(sim_start_date, days, percent_aero, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4, fixed_class_size, class_size):
     # sim_start_date = date(2025, 11, 24)   # year, month, day
     current_day = sim_start_date
-    result = []
-    daily_metrics = []
 
     # run the loop for the amount of days
     while days > 0:  
@@ -109,10 +107,6 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
                     new_students = []
 
                     increase = class_size
-                    if max_250:
-                        count = current_active_students(students)
-                        if count + increase > 250:
-                            increase = 0
 
                     for i in range(increase):
                         FlightStudent.student_id += 1
@@ -127,10 +121,8 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
                     if random.random() <= percent_aero:
                         stu.syllabus_type = 2
                 students.extend(new_students)
-            schedule, day_metrics = schedule_one_day(current_day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4)
+            schedule_one_day(current_day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4)
             # keep track of resource use and students here (print it out or something)
-            result.append(schedule)
-            daily_metrics.append(day_metrics)
         # else:
         #     print(current_day)
         days -= 1
@@ -141,21 +133,12 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
 
 
     ## format is list: schedule, list: students    
-    return result, {
-        "start_date": str(sim_start_date),
-        "days":daily_metrics}, students
+    return students
     
     # return result, students
 
 instructor_rate = 0.9
 instructor_daily_hours = 12
-
-# # helper function
-def increment_key(d, key):
-    if key in d:
-        d[key] += 1
-    else:
-        d[key] = 1
 
 # pair up students
 def pair_students(queue: dict):
@@ -166,8 +149,6 @@ def pair_students(queue: dict):
     for s, ev in queue.items():
         
         if s.has_partner() and s.get_partner() in queue and s.get_partner() not in used:
-            if queue[s] != queue[s.get_partner()]:
-                print("not scheduled for the same event!!")
             # print("already has partner")
             used.add(s)
             used.add(s.get_partner())
@@ -195,7 +176,7 @@ def pair_students(queue: dict):
 
 
 
-def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, successfull_events, day_metrics, sims_used, sim_type):
+def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, sim_type):
     # print("used_set: ", used_set)
     if s.has_partner():
         available_sims = []
@@ -206,28 +187,11 @@ def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, successfull_e
                     break
         if len(available_sims) == 2:
             
-            log_usage(
-                day_metrics["resources"][sim_type],
-                available_sims[0],
-                needed_time + Sim.break_time,
-                hours_available=Sim.daily_hours,
-                uses=1
-            )
-            log_usage(
-                day_metrics["resources"][sim_type],
-                available_sims[1],
-                needed_time+Sim.break_time,
-                hours_available=Sim.daily_hours,
-                uses=1
-            )
-
             for o in available_sims:
                 hours[o] -= (needed_time + Sim.break_time)
             partner = s.get_partner()
 
 
-            successfull_events.append([s,ev, str(day), available_sims[0]])
-            successfull_events.append([partner,ev, str(day), available_sims[1]])
             s.event_complete(day)
             partner.event_complete(day) ## here is where the error is occuring. why is this person complete if they are scheduling a sim??
             s.schedule_failed = False
@@ -236,26 +200,15 @@ def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, successfull_e
             # used_set.add(partner)
             used_set[s] = True
             used_set[partner] = True
-            increment_key(sims_used, available_sims[0])
-            increment_key(sims_used, available_sims[1])
             
 
-def schedule_sim(day, s, ev, sim_hours, needed_time, successfull_events, day_metrics, sims_used, sim_type):
+def schedule_sim(day, s, ev, sim_hours, needed_time, sim_type):
     for o in sim_hours:
         if needed_time <= sim_hours[o]:
             sim_hours[o] -= (needed_time + Sim.break_time)
             # schedule the student
-            log_usage(
-                day_metrics["resources"][sim_type],
-                o,
-                needed_time + Sim.break_time,
-                hours_available=Sim.daily_hours,
-                uses=1
-            )
-            successfull_events.append([s,ev, str(day), o])
             s.event_complete(day)
             s.schedule_failed = False
-            increment_key(sims_used, o)
             break
 
 
@@ -295,29 +248,12 @@ def select_classroom(event, needed_time, classrooms):
             
     return None
 
-def log_usage(bucket, resource, hours, hours_available=None, uses=1):
-    key = str(resource)
-
-    if key not in bucket:
-        bucket[key] = {
-            "hours_used": 0.0,
-            "hours_available": hours_available,
-            "uses": 0
-        }
-
-    bucket[key]["hours_used"] += hours
-    bucket[key]["uses"] += uses
-
-
 
 def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4):# grndSchool, contacts, aero, inst, forms, capstone):
     # print("------------ NEW DAY --------------", day)
     
     # dictionaries for each resource (including instructors)
     # the keys will be names of the resource while the value will be how many times they were used.
-    sims_used = {}
-    aircraft_used = {}
-    instructors_used = {}
 
     daily_student_distribution = {
             "Ground School": 0, 
@@ -328,38 +264,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             "Forms": 0, 
             "Capstone" : 0
         }
-    day_metrics = {
-        "date":str(day),
-
-        "students": {
-            "scheduled": [],
-            "waiting": [],
-            "completed": [],
-            "by_block": {},
-            "summary":{
-                "started": 0,
-                "completed": 0,
-                "remaining": 0
-            }
-        },
-
-        "resources": {
-            "utd": {},
-            "oft": {},
-            "vtd": {},
-            "mr": {},
-            "aircraft": {},
-            "classroom": {},
-            "instructor": {}
-        }
-    }
-
-    # print(" ")
-    # print("-------------NEW DAY----------------", day)
     
     # events that will be attempted to schedule for each student
     events_to_attempt = []
-    successfull_events = []
 
     students = sorted(
         students,
@@ -370,10 +277,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     # make this a dictionary where the key is a student and the value is their next event 
     forms_partner_queue = {}
     capstone_partner_queue = {}
-
-    # I don't think we actually need these
-    forms_pairs = []
-    capstone_pairs = []
 
     # used to track students that have already been scheduled
     already_used = {}
@@ -414,11 +317,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
                 events_to_attempt.append((s,nxt))
 
-                block_name = s.get_block()
                 
-                day_metrics["students"]["by_block"].setdefault(block_name, 0)
-                day_metrics["students"]["by_block"][block_name] += 1
-
                 already_used[s] = False
 
 
@@ -478,11 +377,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     forms_pairs = pair_students(forms_partner_queue)        # we don't actaully care about the pairs, as long as they exist
     capstone_pairs = pair_students(capstone_partner_queue)
     # print(forms_pairs)
-
-    print("capstone pairs",day)
-    for s in capstone_partner_queue:
-        print("s:", s, "partner: ", s.get_partner(), capstone_partner_queue[s])
-
 
     # instructors now
     # want to leave these as objects because we will need to check their quals later on and check onwings 
@@ -561,41 +455,34 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     uses = 1
                     time = needed_time
 
-                log_usage(
-                    day_metrics["resources"]["classroom"],
-                    c,
-                    time,
-                    Classroom.daily_hours,
-                    uses
-                )
                 s.event_complete(day)
-                successfull_events.append([s,ev,str(day), str(c)])
                 s.schedule_failed= False
                 already_used[s] = True
 
                 
             
         elif needed_resource == "utd":
-            schedule_sim(day, s, ev, utd_hours, needed_time, successfull_events, day_metrics, sims_used, "utd")
+            schedule_sim(day, s, ev, utd_hours, needed_time, "utd")
 
         elif needed_resource == "oft":
             if ev.block == 'forms':
-                schedule_partner_sim(day, s, ev, already_used, oft_hours, needed_time, successfull_events, day_metrics, sims_used, "oft")
+                schedule_partner_sim(day, s, ev, already_used, oft_hours, needed_time, "oft")
             elif ev.block == 'capstone':
-                schedule_partner_sim(day, s, ev,  already_used, oft_hours, needed_time, successfull_events, day_metrics, sims_used, "oft")
+                schedule_partner_sim(day, s, ev,  already_used, oft_hours, needed_time, "oft")
             else:
-                schedule_sim(day, s, ev, oft_hours, needed_time, successfull_events, day_metrics, sims_used, "oft")
+                schedule_sim(day, s, ev, oft_hours, needed_time, "oft")
 
         elif needed_resource == "vtd":
-            schedule_sim(day, s, ev, vtd_hours, needed_time, successfull_events, day_metrics, sims_used, "vtd")
+            schedule_sim(day, s, ev, vtd_hours, needed_time, "vtd")
                 
         elif needed_resource == "mr":
             if ev.block == 'forms':
-                schedule_partner_sim(day, s, ev,  already_used, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
+                schedule_partner_sim(day, s, ev,  already_used, mr_hours, needed_time, "mr")
+
             elif ev.block == 'capstone':
-                schedule_partner_sim(day, s, ev,  already_used, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
+                schedule_partner_sim(day, s, ev,  already_used, mr_hours, needed_time, "mr")
             else:
-                schedule_sim(day, s, ev, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
+                schedule_sim(day, s, ev, mr_hours, needed_time, "mr")
             
         else: ##aircraft
 
@@ -639,44 +526,11 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         for ac in available_aircraft:
                             aircraft_data[ac]["day_hours"] -= (needed_time + Aircraft.break_time)
                             aircraft_data[ac]["uses"] += 1
-                            increment_key(aircraft_used, ac)
                         for inst in available_instructors:
                             #print(inst)
                             instructor_data[inst]["hours"] -= (needed_time + Instructor.break_time)
                             instructor_data[inst]["uses"] += 1
-                            increment_key(instructors_used, inst)
     
-
-                        log_usage(
-                            day_metrics["resources"]["aircraft"],
-                            available_aircraft[0],
-                            needed_time + Aircraft.break_time,
-                            hours_available=Aircraft.daily_hours,
-                            uses=1
-                        )
-                        log_usage(
-                            day_metrics["resources"]["instructor"],
-                            available_instructors[0],
-                            needed_time + Instructor.break_time,
-                            hours_available=Instructor.daily_hours,
-                            uses=1
-                        )
-                        log_usage(
-                            day_metrics["resources"]["aircraft"],
-                            available_aircraft[1],
-                            needed_time + Aircraft.break_time,
-                            hours_available=Aircraft.daily_hours,
-                            uses=1
-                        )
-                        log_usage(
-                            day_metrics["resources"]["instructor"],
-                            available_instructors[1],
-                            needed_time + Instructor.break_time,
-                            hours_available=Instructor.daily_hours,
-                            uses=1
-                        )
-                        successfull_events.append([s, ev, str(day), "day", available_aircraft[0], available_instructors[0]])
-                        successfull_events.append([s.get_partner(), ev, str(day), "day", available_aircraft[1], available_instructors[1]])
 
                         partner = s.get_partner()
                         s.event_complete(day)
@@ -709,47 +563,14 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         for ac in available_aircraft:
                             aircraft_data[ac]["day_hours"] -= (needed_time + Aircraft.break_time)
                             aircraft_data[ac]["uses"] += 1
-                            increment_key(aircraft_used, ac)
                         for inst in available_instructors:
                             #print(inst)
                             instructor_data[inst]["hours"] -= (needed_time + Instructor.break_time)
                             instructor_data[inst]["uses"] += 1
-                            increment_key(instructors_used, inst)
     
-
-                        log_usage(
-                            day_metrics["resources"]["aircraft"],
-                            available_aircraft[0],
-                            needed_time + Aircraft.break_time,
-                            hours_available=Aircraft.daily_hours,
-                            uses=1
-                        )
-                        log_usage(
-                            day_metrics["resources"]["instructor"],
-                            available_instructors[0],
-                            needed_time + Instructor.break_time,
-                            hours_available=Instructor.daily_hours,
-                            uses=1
-                        )
-                        log_usage(
-                            day_metrics["resources"]["aircraft"],
-                            available_aircraft[1],
-                            needed_time+Aircraft.break_time,
-                            hours_available=Aircraft.daily_hours,
-                            uses=1
-                        )
-                        log_usage(
-                            day_metrics["resources"]["instructor"],
-                            available_instructors[1],
-                            needed_time + Instructor.break_time,
-                            hours_available=Instructor.daily_hours,
-                            uses=1
-                        )
 
                         partner = s.get_partner()
 
-                        successfull_events.append([s, ev, str(day), "day", available_aircraft[0], available_instructors[0]])
-                        successfull_events.append([partner, ev, str(day), "day", available_aircraft[1], available_instructors[1]])
                         s.event_complete(day)
                         partner.event_complete(day)
                         s.schedule_failed = False
@@ -780,28 +601,11 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         instructor_data[inst_found]["hours"] -= (needed_time + Instructor.break_time)
                         instructor_data[inst_found]["uses"] += 1
 
-                        log_usage(
-                            day_metrics["resources"]["aircraft"],
-                            aircraft_found,
-                            needed_time + Aircraft.break_time,
-                            hours_available=Aircraft.daily_hours,
-                            uses=1
-                        )
-                        log_usage(
-                            day_metrics["resources"]["instructor"],
-                            inst_found,
-                            needed_time + Instructor.break_time,
-                            hours_available=Instructor.daily_hours,
-                            uses=1
-                        )
-                        successfull_events.append([s,ev, str(day), "night",aircraft_found,inst_found])
                         s.event_complete(day)
                         s.schedule_failed = False
                         already_used[s] = True
                         aircraft_data[aircraft_found]["uses"] += 1
                         s.night_hours += needed_time
-                        increment_key(aircraft_used, aircraft_found)
-                        increment_key(instructors_used, inst_found)
                         continue
     
 
@@ -835,28 +639,12 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     aircraft_data[ac_found]["day_hours"] -= (needed_time + Aircraft.break_time)
                     instructor_data[inst_found]["hours"] -= (needed_time + Instructor.break_time)
                     instructor_data[inst_found]["uses"] += 1
-                    log_usage(
-                        day_metrics["resources"]["aircraft"],
-                        ac_found,
-                        needed_time+ Aircraft.break_time,
-                        hours_available=Aircraft.daily_hours,
-                        uses=1
-                    )
-                    log_usage(
-                        day_metrics["resources"]["instructor"],
-                        inst_found,
-                        needed_time+Aircraft.break_time,
-                        hours_available=Instructor.daily_hours,
-                        uses=1
-                    )
-                    successfull_events.append([s,ev, str(day), "day",ac_found,inst_found])
+                    
                     if ev != "warmup flight":
                         s.event_complete(day)
                     s.schedule_failed = False
                     already_used[s] = True
                     aircraft_data[ac_found]["uses"] += 1
-                    increment_key(aircraft_used, ac_found)
-                    increment_key(instructors_used, inst_found)
                     continue
                     
 
@@ -885,12 +673,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
         year_stats += 1
 
 
-    summary = fiscal_year_stats(year_stats, students, "year")
+    # summary = fiscal_year_stats(year_stats, students, "year")
 
-    day_metrics["students"]["summary"] = summary
-
-
-    return successfull_events, day_metrics
+    # day_metrics["students"]["summary"] = summary
 
 
 # FY number format YYYY, list of students
@@ -1218,85 +1003,6 @@ def ask_user():
         root.after(100, lambda: root.attributes("-topmost", False))
     ))
 
-    # ---------------- Question 1 ----------------
-    tk.Label(
-        root,
-        text="Would you like to include current students in simulation?",
-        font=("Arial", 12)
-    ).pack(pady=10)
-
-    choice = tk.StringVar(value="yes")
-
-    radio_frame = tk.Frame(root)
-    radio_frame.pack()
-
-    tk.Radiobutton(radio_frame, text="Yes", variable=choice, value="yes").pack(side="left", padx=10)
-    tk.Radiobutton(radio_frame, text="No", variable=choice, value="no").pack(side="left", padx=10)
-
-    # ---------------- Sliders ----------------
-    slider1_label = tk.Label(
-        root,
-        text="If no, how many initial students do you want to start with?",
-        fg="white"
-    )
-    slider1_label.pack(pady=(15, 0))
-
-    slider1 = tk.Scale(root, from_=0, to=150, orient="horizontal")
-    slider1.pack(fill="x", padx=100)
-
-    slider2_label = tk.Label(
-        root,
-        text="How many weeks would you like to run the simulation for?",
-        fg="white"
-    )
-    slider2_label.pack(pady=(10, 0))
-
-    slider2 = tk.Scale(root, from_=0, to=104, orient="horizontal")
-    slider2.set(52)
-    slider2.pack(fill="x", padx=100)
-
-    def toggle_sliders(*args):
-        if choice.get() == "yes":
-            slider1.set(0)
-            slider1.config(state="disabled")
-            slider1_label.config(fg="gray")
-        else:
-            slider1.config(state="normal")
-            slider1_label.config(fg="white")
-
-    choice.trace_add("write", toggle_sliders)
-    toggle_sliders()
-
-    # # ---------------- Question 2 ----------------
-    tk.Label(
-        root,
-        text="Do you want to include current students in average completion time analysis?",
-        font=("Arial", 12)
-    ).pack(pady=10)
-
-    choice2 = tk.StringVar(value="yes")
-
-    radio_frame2 = tk.Frame(root)
-    radio_frame2.pack()
-
-    tk.Radiobutton(radio_frame2, text="Yes", variable=choice2, value="yes").pack(side="left", padx=10)
-    tk.Radiobutton(radio_frame2, text="No", variable=choice2, value="no").pack(side="left", padx=10)
-
-
-    # # ---------------- Toggle Question ----------------
-    tk.Label(
-        root,
-        text="Would you like to MAX the ACTIVE students to 250?",
-        font=("Arial", 12)
-    ).pack(pady=10)
-
-    choice_tog1 = tk.StringVar(value="no")
-
-    radio_frame_tog = tk.Frame(root)
-    radio_frame_tog.pack()
-
-    tk.Radiobutton(radio_frame_tog, text="Yes", variable=choice_tog1, value="yes").pack(side="left", padx=10)
-    tk.Radiobutton(radio_frame_tog, text="No", variable=choice_tog1, value="no").pack(side="left", padx=10)
 
     # ============================================================
     # NEW QUESTION 3 — Class sizes (multi-select)
@@ -1331,18 +1037,6 @@ def ask_user():
         font=("Arial", 12)
     ).pack(pady=(20, 5))
 
-    tk.Label(
-        root,
-        text="Current syllabus: contacts -> aero -> instruments -> forms -> capstone",
-        font=("Arial", 10)
-    ).pack(pady=(20, 5))
-
-    tk.Label(
-        root,
-        text="Alternate syllabus: contacts -> aero -> forms -> instruments -> capstone",
-        font=("Arial", 10)
-    ).pack(pady=(20, 5))
-
     #percentages = [0, 5, 10, 15, 20]
     percentages = [0, 10, 25, 33, 50, 67, 75, 90, 100]
     percent_vars = {}
@@ -1363,12 +1057,6 @@ def ask_user():
 
     # ---------------- Confirm ----------------
     def confirm():
-        result["include_current_students"] = (choice.get() == "yes")
-        result["initial_students"] = slider1.get()
-        result["weeks"] = slider2.get()
-        result["double_schedule"] = (choice_tog1.get() == "yes")
-        result["include_in_analysis"] = (choice2.get() == "yes")
-
         # collect multi-select results
         selected_class_sizes = [size for size, var in class_size_vars.items() if var.get() == 1]
         selected_percentages = [p for p, var in percent_vars.items() if var.get() == 1]
@@ -1443,174 +1131,40 @@ def compute_average_waits(student_lists, remove_current_students=True, debug=Fal
     return average_waits
 
 
-# def get_average_waits(students):
 
 
 
+def plot_grouped_results(data_dict, xlabel = "Class Size", ylabel = "Wait time", title = "Monte Carlo Results"):
+    plt.figure()
 
-def compare_multiple_simulations(list_of_student_lists, class_up_size, percentages, remove_current_students=True, debug=False):
-    """
-    Plots multiple simulations side by side or in a grid for comparison.
-    
-    Parameters:
-    - list_of_student_lists: list of lists of student lists, e.g., [sim1_lists, sim2_lists, sim3_lists...]
-    - class_up_size: list of integers for x-axis (number of students per week)
-    - remove_current_students: bool, whether to exclude students with start_date < today
-    - debug: bool, whether to print debug info
-    """
-    
-    num_simulations = len(list_of_student_lists)
-    
-    # Determine subplot grid size (rows x cols)
-    cols = min(3, num_simulations)  # max 3 per row
-    rows = (num_simulations + cols - 1) // cols  # ceil division
-    
-    fig, axes = plt.subplots(rows, cols, figsize=(5*cols, 4*rows), sharey=True)
-    
-    # Flatten axes in case of multiple rows
-    if rows == 1 and cols == 1:
-        axes = np.array([axes])
-    else:
-        axes = np.array(axes).flatten()
-    
-    # Colors for plotting
-    colors = plt.cm.tab10.colors  # up to 10 distinct colors
-    
-    for idx, student_lists in enumerate(list_of_student_lists):
-        avg_waits = compute_average_waits(student_lists, remove_current_students, debug)
-        y = [val if val is not None else np.nan for val in avg_waits]
-        
-        axes[idx].plot(class_up_size, y, marker='o', linestyle='-', color=colors[idx % len(colors)])
-        axes[idx].set_title(f"Simulation {percentages[idx]}%")
-        axes[idx].set_xlabel("Number of students per week")
-        axes[idx].grid(True)
-        
-        if idx % cols == 0:
-            axes[idx].set_ylabel("Average total wait time (weeks)")
-    
-    # Hide any unused subplots
-    for j in range(num_simulations, len(axes)):
-        axes[j].axis('off')
-    
-    plt.suptitle("Average Total Wait Time Comparison")
-    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-    plt.show()
+    for key, points in data_dict.items():
+        # sort by x to avoid zig-zag lines
+        points = sorted(points, key=lambda t: t[0])
 
+        xs = [p[0] for p in points]
+        ys = [p[1] for p in points]
 
+        plt.plot(xs, ys, marker='o', label=str(key))
 
-
-def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_size, percentages,
-                                             remove_current_students=True,
-                                             debug=False):
-    """
-    Plots multiple simulations side by side for total wait time,
-    plus a stacked bar chart showing average wait time between blocks including start → first block.
-
-    Parameters:
-    - list_of_student_lists: list of student lists (one per simulation)
-    - class_up_size: list of integers for x-axis (number of students per run)
-    - block_names: list of names for each block (length = number of completed_dates)
-    - remove_current_students: bool, whether to exclude students with start_date < today
-    - debug: bool, whether to print debug info
-    """
-    block_names = ["Ground School", "Contacts", "Instrument Ground", "Instruments", "Aero", "Forms", "Capstone" ]
-    resource_names = {"classroom", "utd", "oft", "vtd", "mr", "aircraft"}
-    num_simulations = len(list_of_student_lists)
-    colors = plt.cm.tab10.colors  # up to 10 distinct colors for simulations
-    num_blocks = len(block_names)
-    block_colors = {
-    "Ground School": "#1f77b4",
-    "Contacts": "#ff7f0e",
-    "Instrument Ground": "#2ca02c",
-    "Instruments": "#d62728",
-    "Aero": "#9467bd",
-    "Forms": "#8c564b",
-    "Capstone": "#e377c2",
-}
-
-    ## THIS IS NOT THE BLOCK SPECIFIC ONE 
-    # Compute average waits for each simulation (total wait time)
-    avg_waits_all = [compute_average_waits(sim, remove_current_students, debug) for sim in list_of_student_lists]
-    print(avg_waits_all)
-
-    # --- Top: Plot average total wait times ---
-    fig, axes = plt.subplots(2, 1, figsize=(12,10))
-    for idx, avg_waits in enumerate(avg_waits_all):
-        axes[0].plot(class_up_size, avg_waits, marker='o', linestyle='-',
-                     color=colors[idx % len(colors)], label=f"Simulation {percentages[idx]}%")
-    
-    axes[0].set_xlabel("Number of students per week")
-    axes[0].set_ylabel("Average total wait time (weeks)")
-    axes[0].set_title("Average Total Wait Time Comparison")
-    axes[0].grid(True)
-    axes[0].legend()
-
-    # --- Bottom: Stacked bar chart per-block including start → first block ---
-    width = 0.8 / num_simulations  # bar width per simulation
-    x = np.arange(len(class_up_size))
-
-    for sim_idx, sim in enumerate(list_of_student_lists):
-        bottom = np.zeros(len(class_up_size))
-
-        for block_name in block_names:
-            waits = []
-            for run in sim:
-                run_waits = []
-
-                for s in run:
-
-                    # block_to_wait = dict(zip(SYLLABUS_BLOCKS[s.syllabus_type], s.block_wait_times))
-                    block_complete = dict(zip(SYLLABUS_BLOCKS[s.syllabus_type], s.completed_blocks))
-                    # print("block complete", block_complete)
-
-                    if block_name not in s.block_wait_times:
-                        continue
-                    
-                    # print("block wait times", s.block_wait_times)
-                    block_to_date = dict(zip(SYLLABUS_BLOCKS[s.syllabus_type], s.completed_dates))
-
-                    pre_sim = block_to_date[block_name] is not None and block_to_date[block_name] < START_DATE
-
-                    if not pre_sim and (block_complete[block_name] or s.block_wait_times[block_name] > 0):
-                        wait = s.block_wait_times[block_name]
-
-                        run_waits.append(wait)
-
-                # print(block_name)
-                # print(run_waits)
-                # print(sum(run_waits))
-
-                waits.append(sum(run_waits) / len(run_waits) if run_waits else 0)  
-
-            axes[1].bar(
-                x + sim_idx * width,
-                waits,
-                width=width,
-                bottom=bottom,
-                color=block_colors[block_name]
-            )
-            bottom += waits
-
-    legend_handles = [
-    Patch(facecolor=block_colors[name], label=name)
-    for name in block_names
-]
-
-    axes[1].legend(
-        handles=legend_handles,
-        bbox_to_anchor=(1.05, 1),
-        loc="upper left",
-        title="Blocks",
-    )
-    axes[1].set_xticks(x + width*(num_simulations-1)/2)
-    axes[1].set_xticklabels(class_up_size)
-    axes[1].set_xlabel("Class up size")
-    axes[1].set_ylabel("Average work days not scheduled by block (days)")
-    axes[1].set_title("Per-Block Average Wait Times. Each column represents syllabus percentage.")
-    axes[1].grid(True)
-
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    plt.legend(title="Group")
+    plt.grid(True)
     plt.tight_layout()
+
+    save_dir = "."
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"monte_carlo_{timestamp}.png"
+
+    full_path = os.path.join(save_dir, filename)
+
+    plt.savefig(full_path, dpi=300)
+
     plt.show()
+    print(f"Saved to: {full_path}")
+
 
 
 def main():
@@ -1666,107 +1220,36 @@ def main():
     user_input = ask_user()
     # print(user_input)
 
-    global max_250
-
-    max_250 = user_input["double_schedule"]
     
     instructors = load_instructors(os.path.join("instructors", "instructor_data.csv"))
 
     result = []
     simulation_data = []
     percentages = user_input["syllabus_two_percentages"]
+    class_size = user_input["class_sizes"]
 
-    base = "outputs"
+    run_count = 100
 
-    zero = 0
+    # format {percentone: data, percenttwo: data, ...}
+    data = {}
+    for p in percentages:
+        data[p] = []
+        for c in class_size:
+            average_for_class_size = 0
+            print("class size",c)
 
-    ###each loop runs a simulation with specific class size going to syllabus two
-    for i in range(len(percentages)):
-
-        student_lists = []
-        class_size = user_input["class_sizes"]
-
-        ### each loop runs one run with the specified class size. 
-        for j in range(len(class_size)):
-            students = []
-            FlightStudent.student_id = 0
-
-            if not user_input["include_current_students"]:
-
-                for m in range(int(user_input["initial_students"])):
-                    FlightStudent.student_id += 1
-                    new_student = FlightStudent(FlightStudent.student_id, m//8, START_DATE)
-                    if m % 10 == 1:
-                        new_student.syllabus_type = 2
-
-                    new_student.imported = False
-                    students.append(new_student) 
-            else:
+            for x in range(run_count):
+                students = []
+                FlightStudent.student_id = 0
                 students = load_students(os.path.join("students", "current_students.csv"))
+                computed_students = run_simulation(START_DATE, 365*1.5, p, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list,aircraft_list,classrooms_list, syllabus1,syllabus2,syllabus3,syllabus4,True,c)
+                average_for_class_size += compute_average_waits([computed_students], False)[0]
+            average_for_class_size = average_for_class_size/run_count
 
-            schedule, simulation_json, computed_students = run_simulation(START_DATE, (user_input["weeks"]*7), percentages[i] , students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, True, class_size[j])
-            result.append(schedule)
-            student_lists.append(copy.deepcopy(computed_students))
+            data[p].append((c,average_for_class_size))
 
-            pct_folder = os.path.join(base, f"pct{int(percentages[i])}")
-            class_folder = os.path.join(pct_folder, f"class{class_size[j]}")
-
-            os.makedirs(class_folder, exist_ok=True)
-
-            filename = os.path.join(class_folder, f"run_{zero:02d}.json")
-
-            with open(filename, "w") as f:
-                json.dump(simulation_json, f, indent=2)
-
-        students = []
-
-        if not user_input["include_current_students"]:
-
-                for m in range(int(user_input["initial_students"])):
-                    FlightStudent.student_id += 1
-                    new_student = FlightStudent(FlightStudent.student_id, m//8, START_DATE)
-                    if m % 10 == 1:
-                        new_student.syllabus_type = 2
-                    new_student.imported = False
-                    students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
-        else:
-            students = load_students(os.path.join("students", "current_students.csv"))
-
-        schedule, simulation_json, computed_students = run_simulation(START_DATE, (user_input["weeks"]*7), percentages[i], students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, False, 0)
-        result.append(schedule)
-        student_lists.append(copy.deepcopy(computed_students))
-
-        simulation_data.append(student_lists)
-
-        simulation_resource_waits = []
-        for y in simulation_data:
-            class_size_resource_waits = []
-            for x in y:
-                res_waits = {
-                    "classroom": 0,
-                    "utd": 0,
-                    "oft": 0,
-                    "vtd":0,
-                    "mr":0,
-                    "aircraft": 0
-                }
-                for stu in x:
-                    # print(stu.unscheduled_per_resource)
-                    for key in res_waits:
-                        res_waits[key] += stu.unscheduled_per_resource[key]
-
-                class_size_resource_waits.append(res_waits)
-            simulation_resource_waits.append(class_size_resource_waits)
-
-        print("simulation resource waits", simulation_resource_waits)
-
-
-    print(fiscal_year_stats(2026, simulation_data[0][0], "year"))
-
-    x_labels = class_size + ["FY26"]
-
-    compare_multiple_simulations_with_blocks(simulation_data, x_labels,percentages, not user_input["include_in_analysis"])
-    compare_multiple_simulations(simulation_data, x_labels,percentages, not user_input["include_in_analysis"])
+    print(data)
+    plot_grouped_results(data, title = f"Monte Carlo {run_count} runs per point")
 
 
 
