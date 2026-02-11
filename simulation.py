@@ -1778,6 +1778,7 @@ def main():
         maxed_instructors = []    # have 4 on wings
         s_diff = list(set(students) ^ set(paired_students))
         i_diff = list(set(instructors) ^ set(maxed_instructors))
+        # getting stuck in this loop
         while len(s_diff) != 0 and len(i_diff) != 0:
             for stu in students:
                 for instr in instructors:
