@@ -1780,6 +1780,7 @@ def main():
         i_diff = list(set(instructors) ^ set(maxed_instructors))
         # getting stuck in this loop
         while len(s_diff) != 0 and len(i_diff) != 0:
+            print("we in here??")
             for stu in students:
                 for instr in instructors:
                     if stu in paired_students or instr in maxed_instructors:
@@ -1792,6 +1793,7 @@ def main():
             i_diff = list(set(instructors) ^ set(maxed_instructors))
             if len(i_diff) == 0:
                 break
+            print(len(i_diff))
         # on-wing debugging...
         a = students
         b = paired_students
