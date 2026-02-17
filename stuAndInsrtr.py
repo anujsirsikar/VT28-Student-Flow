@@ -111,6 +111,8 @@ class FlightStudent:
                 # print(self.get_partner())
         if sum(self.completed_blocks) == 7:
             self.completion_date = day
+            teacher = self.on_wing 
+            teacher.drop_on_wing(self)
     
     
     def has_partner(self):
@@ -160,3 +162,7 @@ class Instructor:
     def add_on_wing(self, student):
         self.on_wings.append(student)
         student.on_wing = self
+    
+    def drop_on_wing(self, student):
+        self.on_wings.remove(student)
+        # not going to remove the on-wing from the completed student bc it shouldn't make a difference 

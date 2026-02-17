@@ -240,7 +240,7 @@ def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, successfull_e
             successfull_events.append([s,ev, str(day), available_sims[0]])
             successfull_events.append([partner,ev, str(day), available_sims[1]])
             s.event_complete(day)
-            partner.event_complete(day) ## here is where the error is occuring. why is this person complete if they are scheduling a sim??
+            partner.event_complete(day)
             s.schedule_failed = False
             partner.schedule_failed = False
             # used_set.add(s)
@@ -320,10 +320,36 @@ def log_usage(bucket, resource, hours, hours_available=None, uses=1):
     bucket[key]["uses"] += uses
 
 
+# each day this function will be called, checks to see if any instructors have space to take on a new on-wing
+def check_for_on_wings(students, instructors):
+    MAX_ON_WINGS = 4
+    for slot in range(MAX_ON_WINGS):
+        for instr in instructors:
+            if len(instr.on_wings) < 4:
+                
+                if len(instr.on_wings) > slot:
+                    continue
+
+                for stu in students:
+                    if hop_on_my_wing(instr, stu):
+                        break
+
+# for swapping instructors, if possible...
+'''
+this is tricky...
+only if on-wing is previously scheduled, see if the other student can complete the event with the current student's instr
+function returns boolean value
+'''
+def is_swap_possible():
+    pass
+
 
 def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4):# grndSchool, contacts, aero, inst, forms, capstone):
     # print("------------ NEW DAY --------------", day)
-    
+
+    # let's see if we can get some students paired with instructors
+    check_for_on_wings(students, instructors)
+
     # dictionaries for each resource (including instructors)
     # the keys will be names of the resource while the value will be how many times they were used.
     sims_used = {}
@@ -516,9 +542,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     # Build a quick lookup for block priority
     block_priority = {block: i for i, block in enumerate(ordered_blocks)}
 
-
-    # Not sure which one is better
-
     # this one does over ten sorted by block and under ten sorted by block 
     events_to_attempt.sort(
         key=lambda item: (
@@ -527,14 +550,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             block_priority.get(item[0].get_block(), float("inf"))
         )
     )
-
-    # this one does sorted by longest to shortest and then sorted by blck within that queue
-    #events_to_attempt.sort(
-    #    key=lambda item: (
-    #        -item[0].days_since_last_event,
-    #        block_priority.get(item[0].get_block(), float("inf"))
-    #    )
-    #)
 
 
     # looking at student and the event they are scheduled for
@@ -1714,36 +1729,34 @@ def main():
                     students.append(new_student) 
             else:
                 students = load_students(os.path.join("students", "current_students.csv"))
+            
 
-            # assign on-wings here...
-            paired_students = []
-            maxed_instructors = []    # have 4 on wings
-            s_diff = list(set(students) ^ set(paired_students))
-            i_diff = list(set(instructors) ^ set(maxed_instructors))
-            while len(s_diff) != 0 and len(i_diff) != 0:
-                for stu in students:
-                    for instr in instructors:
-                        if stu in paired_students or instr in maxed_instructors:
+            paired_students = set()
+            MAX_ON_WINGS = 4
+            for slot in range(MAX_ON_WINGS):
+                for instr in instructors:
+                    if len(paired_students) == len(students):
+                        break
+
+                    if len(instr.on_wings) > slot:
+                        continue
+
+                    for stu in students:
+                        if stu in paired_students:
                             continue
-                        if hop_on_my_wing(instr, stu):
-                            paired_students.append(stu)
-                            if len(instr.on_wings) == 4:
-                                maxed_instructors.append(instr)
-                s_diff = list(set(students) ^ set(paired_students))
-                i_diff = list(set(instructors) ^ set(maxed_instructors))
-                if len(i_diff) == 0:
-                    break
 
+                        if hop_on_my_wing(instr, stu):
+                            paired_students.add(stu)
+                            break
 
             # on-wing debugging...
             a = students
             b = paired_students
             diff = list(set(a) ^ set(b))
-            print("Students w/o on-wings: ", diff)
-            c = instructors
-            d = maxed_instructors
-            dif = list(set(c) ^ set(d))
-            print("inatructors not maxed: ", dif)
+            #print("Students w/o on-wings: ", diff)
+            #print(" ")
+            #for guy in instructors:
+            #    print(guy, " ", guy.on_wings)
 
             schedule, simulation_json, computed_students = run_simulation(START_DATE, (user_input["weeks"]*7), percentages[i] , students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, True, class_size[j])
             result.append(schedule)
@@ -1774,36 +1787,33 @@ def main():
             students = load_students(os.path.join("students", "current_students.csv"))
 
         # assign on-wings here...
-        paired_students = []
-        maxed_instructors = []    # have 4 on wings
-        s_diff = list(set(students) ^ set(paired_students))
-        i_diff = list(set(instructors) ^ set(maxed_instructors))
-        # getting stuck in this loop
-        while len(s_diff) != 0 and len(i_diff) != 0:
-            print("we in here??")
-            for stu in students:
-                for instr in instructors:
-                    if stu in paired_students or instr in maxed_instructors:
+        paired_students = set()
+        MAX_ON_WINGS = 4
+        for slot in range(MAX_ON_WINGS):
+            for instr in instructors:
+                if len(paired_students) == len(students):
+                    break
+
+                if len(instr.on_wings) > slot:
+                    continue
+
+                for stu in students:
+                    if stu in paired_students:
                         continue
+
                     if hop_on_my_wing(instr, stu):
-                        paired_students.append(stu)
-                        if len(instr.on_wings) == 4:
-                            maxed_instructors.append(instr)
-            s_diff = list(set(students) ^ set(paired_students))
-            i_diff = list(set(instructors) ^ set(maxed_instructors))
-            if len(i_diff) == 0:
-                break
-            print(len(i_diff))
-        # on-wing debugging...
+                        paired_students.add(stu)
+                        break
+
         a = students
         b = paired_students
         diff = list(set(a) ^ set(b))
-        print("Students w/o on-wings: ", diff)
+        #print("Students w/o on-wings: ", diff)
+        #rint(" ")
+        #for guy in instructors:
+        #    print(guy, " ", len(guy.on_wings))
 
-        c = instructors
-        d = maxed_instructors
-        dif = list(set(c) ^ set(d))
-        print("inatructors not maxed: ", dif)
+
 
         schedule, simulation_json, computed_students = run_simulation(START_DATE, (user_input["weeks"]*7), percentages[i], students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, False, 0)
         result.append(schedule)
