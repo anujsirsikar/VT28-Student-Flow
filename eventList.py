@@ -9,6 +9,7 @@ class Event:
         self.block = block 
         self.night_event = False
         self.can_be_night_event = True
+        self.on_wing = None     # can either be Yes, Preferred, or No
 
     def __str__(self):
         return self.name
