@@ -398,8 +398,17 @@ def fmt_class(cls):
 def on_pct_selected(_event=None):
     p = pct_var.get()
     # Filter classes for selected pct
-    classes_for_pct = sorted({cls for (pct, cls) in data_by_run.keys() if pct == p},
-                             key=lambda x: int(x.replace("class", "")) if x.startswith("class") else x)
+    # classes_for_pct = sorted({cls for (pct, cls) in data_by_run.keys() if pct == p},
+    #                          key=lambda x: int(x.replace("class", "")) if x.startswith("class") else x)
+    
+    classes_for_pct = sorted(
+        {cls for (pct, cls) in data_by_run.keys() if pct == p},
+        key=lambda x: (
+            0 if x.startswith("class") else 1,   # class entries first
+            int(x.replace("class", "")) if x.startswith("class") else x
+        )
+    )
+
     cls_dropdown["values"] = classes_for_pct
     cls_var.set("Select class")
 

@@ -90,22 +90,29 @@ def current_active_students(students):
     return count
 
 # SIMULATION LOGIC 
-def run_simulation(sim_start_date, days, percent_aero, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4, fixed_class_size, class_size):
+def run_simulation(sim_start_date, days, percent_aero, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4, class_size_type, class_size, monthly_class_size):
     # sim_start_date = date(2025, 11, 24)   # year, month, day
     current_day = sim_start_date
     result = []
     daily_metrics = []
 
+    
+
     # run the loop for the amount of days
     while days > 0:  
+
+        ## adding this now to account for every other week.
+        weeks_since_start = (current_day - sim_start_date).days // 7
+
         if students is None:
             break 
         if is_valid_day(current_day):
             # print("it is a valid day")
             # if it is a monday
-            if current_day.weekday() == 0:
+            # added it so that it only classes up on first monday and every other monday after that
+            if current_day.weekday() == 0 and weeks_since_start % 2 == 0:
                 # print("it is a monday")
-                if fixed_class_size:
+                if class_size_type == "fixed":
                     new_students = []
 
                     increase = class_size
@@ -120,8 +127,23 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
                         new_student.imported = False
                         new_students.append(new_student)
 
-                else:
+                elif class_size_type == "FY":
                     new_students = students_starting_weekly(os.path.join("students", "weekly_class_up_fy26.csv"), current_day)
+
+                # # # if the class size is the one with the monthly amounts
+                else: 
+                    new_students = []
+                    ## add the monthly class up numbers here
+                    month_index = current_day.month -1
+                    class_up_num = monthly_class_size[month_index]
+
+                    for i in range(class_up_num):
+                        FlightStudent.student_id += 1
+                        new_student = FlightStudent(FlightStudent.student_id, i//8, current_day)
+                        new_student.imported = False
+                        new_students.append(new_student)
+
+
                 # assign new_students to a syllabus 
                 for stu in new_students:
                     if random.random() <= percent_aero:
@@ -1201,12 +1223,129 @@ def set_bg(widget, color):
         set_bg(child, color)
 
 
+import tkinter as tk
+
+def month_class_size_selector(parent):
+    container = tk.Frame(parent)
+    container.pack(pady=10, fill="x")
+
+    # --- Header row with checkbox ---
+    header = tk.Frame(container)
+    header.pack(anchor="w")
+
+    use_monthly_var = tk.BooleanVar(value=False)
+
+    tk.Checkbutton(
+        header,
+        text="Use monthly class-up size",
+        variable=use_monthly_var
+    ).pack(side="left")
+
+    # --- Preset row ---
+    preset_frame = tk.Frame(container)
+    preset_frame.pack(anchor="w", pady=(5, 8))
+
+    tk.Label(preset_frame, text="Preset value:").pack(side="left")
+
+    preset_var = tk.IntVar(value=5)
+
+    # Validation: allow empty or integer >= 0
+    def validate_non_negative(P):
+        if P == "":
+            return True
+        try:
+            return int(P) >= 0
+        except ValueError:
+            return False
+
+    vcmd = (parent.register(validate_non_negative), "%P")
+
+    preset_spin = tk.Spinbox(
+        preset_frame,
+        from_=0,
+        to=500,
+        width=5,
+        textvariable=preset_var,
+        validate="key",
+        validatecommand=vcmd
+    )
+    preset_spin.pack(side="left", padx=5)
+
+    # --- Month grid ---
+    grid = tk.Frame(container)
+    grid.pack()
+
+    months = [
+        "Jan","Feb","Mar","Apr","May","Jun",
+        "Jul","Aug","Sep","Oct","Nov","Dec"
+    ]
+
+    month_vars = {}
+    month_entries = {}
+
+    for idx, m in enumerate(months):
+        r = idx // 6
+        c = idx % 6
+
+        cell = tk.Frame(grid, padx=4, pady=4)
+        cell.grid(row=r, column=c)
+
+        tk.Label(cell, text=m).pack()
+
+        var = tk.StringVar(value="5")
+        entry = tk.Entry(
+            cell,
+            textvariable=var,
+            width=4,
+            justify="center",
+            validate="key",
+            validatecommand=vcmd
+        )
+        entry.pack()
+
+        month_vars[m] = var
+        month_entries[m] = entry
+
+    # --- Apply preset to all months ---
+    def apply_preset(*_):
+        val = str(preset_var.get())
+        for v in month_vars.values():
+            v.set(val)
+
+    preset_var.trace_add("write", apply_preset)
+    apply_preset()
+
+    # --- Enable/disable logic ---
+    def toggle_enabled(*_):
+        state = "normal" if use_monthly_var.get() else "disabled"
+
+        for entry in month_entries.values():
+            entry.config(state=state)
+
+        preset_spin.config(state=state)
+
+    use_monthly_var.trace_add("write", toggle_enabled)
+    toggle_enabled()
+
+    # --- Getter to return clean ints ---
+    def get_values():
+        values = []
+        for m in months:
+            val = month_vars[m].get()
+            if val == "":
+                val = 0
+            values.append(int(val))
+        return values
+
+    return use_monthly_var, get_values
+
+
 def ask_user():
     result = {}
 
     root = tk.Tk()
     root.title("VT28 Scheduling Simulation")
-    root.geometry("640x700+0+0")
+    root.geometry("640x900+0+0")
     root.resizable(False, False)
 
     # bring window to front (temporarily)
@@ -1359,6 +1498,10 @@ def ask_user():
             variable=var
         ).pack(side="left", padx=8)
 
+    use_monthly_var, get_monthly_values = month_class_size_selector(root)
+
+    
+
     set_bg(root, "#2f528a")
 
     # ---------------- Confirm ----------------
@@ -1368,6 +1511,11 @@ def ask_user():
         result["weeks"] = slider2.get()
         result["double_schedule"] = (choice_tog1.get() == "yes")
         result["include_in_analysis"] = (choice2.get() == "yes")
+        # result["monthly_class_sizes"] = {
+        #     m: v.get() for m, v in month_vars.items()
+        # }
+        result["use_monthly_class_sizes"] = use_monthly_var.get()
+        result["monthly_class_sizes"] = get_monthly_values()
 
         # collect multi-select results
         selected_class_sizes = [size for size, var in class_size_vars.items() if var.get() == 1]
@@ -1666,6 +1814,10 @@ def main():
     user_input = ask_user()
     # print(user_input)
 
+    print(user_input["use_monthly_class_sizes"])
+    print(user_input["monthly_class_sizes"])
+
+
     global max_250
 
     max_250 = user_input["double_schedule"]
@@ -1704,7 +1856,7 @@ def main():
             else:
                 students = load_students(os.path.join("students", "current_students.csv"))
 
-            schedule, simulation_json, computed_students = run_simulation(START_DATE, (user_input["weeks"]*7), percentages[i] , students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, True, class_size[j])
+            schedule, simulation_json, computed_students = run_simulation(START_DATE, (user_input["weeks"]*7), percentages[i] , students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, "fixed", class_size[j], None)
             result.append(schedule)
             student_lists.append(copy.deepcopy(computed_students))
 
@@ -1719,7 +1871,7 @@ def main():
                 json.dump(simulation_json, f, indent=2)
 
         students = []
-
+        FlightStudent.student_id = 0
         if not user_input["include_current_students"]:
 
                 for m in range(int(user_input["initial_students"])):
@@ -1732,11 +1884,57 @@ def main():
         else:
             students = load_students(os.path.join("students", "current_students.csv"))
 
-        schedule, simulation_json, computed_students = run_simulation(START_DATE, (user_input["weeks"]*7), percentages[i], students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, False, 0)
+        schedule, simulation_json, computed_students = run_simulation(START_DATE, (user_input["weeks"]*7), percentages[i], students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, "FY", 0, None)
+        # ---- Save FY run to outputs ----
+        pct_folder = os.path.join(base, f"pct{int(percentages[i])}")
+        fy_folder = os.path.join(pct_folder, "FY")
+
+        os.makedirs(fy_folder, exist_ok=True)
+
+        filename = os.path.join(fy_folder, f"run_{zero:02d}.json")
+
+        with open(filename, "w") as f:
+            json.dump(simulation_json, f, indent=2)
+
         result.append(schedule)
         student_lists.append(copy.deepcopy(computed_students))
 
-        simulation_data.append(student_lists)
+        if not user_input["use_monthly_class_sizes"]:
+            simulation_data.append(student_lists)
+
+
+        if user_input["use_monthly_class_sizes"]:
+            students = []
+            FlightStudent.student_id = 0
+            if not user_input["include_current_students"]:
+
+                    for m in range(int(user_input["initial_students"])):
+                        FlightStudent.student_id += 1
+                        new_student = FlightStudent(FlightStudent.student_id, m//8, START_DATE)
+                        if m % 10 == 1:
+                            new_student.syllabus_type = 2
+                        new_student.imported = False
+                        students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
+            else:
+                students = load_students(os.path.join("students", "current_students.csv"))
+
+            schedule, simulation_json, computed_students = run_simulation(START_DATE, (user_input["weeks"]*7), percentages[i], students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list, aircraft_list, classrooms_list, syllabus1, syllabus2, syllabus3, syllabus4, "Variable", 0, user_input["monthly_class_sizes"])
+            # ---- Save Montly run to outputs ----
+            pct_folder = os.path.join(base, f"pct{int(percentages[i])}")
+            fy_folder = os.path.join(pct_folder, "Variable")
+
+            os.makedirs(fy_folder, exist_ok=True)
+
+            filename = os.path.join(fy_folder, f"run_{zero:02d}.json")
+
+            with open(filename, "w") as f:
+                json.dump(simulation_json, f, indent=2)
+
+            result.append(schedule)
+            student_lists.append(copy.deepcopy(computed_students))
+
+            simulation_data.append(student_lists)
+
 
         simulation_resource_waits = []
         for y in simulation_data:
@@ -1764,6 +1962,9 @@ def main():
     print(fiscal_year_stats(2026, simulation_data[0][0], "year"))
 
     x_labels = class_size + ["FY26"]
+
+    if user_input["use_monthly_class_sizes"]:
+        x_labels = x_labels + ["Variable"]
 
     compare_multiple_simulations_with_blocks(simulation_data, x_labels,percentages, not user_input["include_in_analysis"])
     # compare_multiple_simulations(simulation_data, x_labels,percentages, not user_input["include_in_analysis"])

@@ -95,13 +95,17 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
     current_day = sim_start_date
 
     # run the loop for the amount of days
-    while days > 0:  
+    while days > 0: 
+
+        ## adding this now to account for every other week.
+        weeks_since_start = (current_day - sim_start_date).days // 7
+
         if students is None:
             break 
         if is_valid_day(current_day):
             # print("it is a valid day")
             # if it is a monday
-            if current_day.weekday() == 0:
+            if current_day.weekday() == 0 and weeks_since_start % 2 == 0:
                 # print("it is a monday")
                 if fixed_class_size:
                     new_students = []
@@ -1003,9 +1007,8 @@ def ask_user():
         root.after(100, lambda: root.attributes("-topmost", False))
     ))
 
-
     # ============================================================
-    # NEW QUESTION 3 — Class sizes (multi-select)
+    # QUESTION 1 — Class sizes (multi-select)
     # ============================================================
     tk.Label(
         root,
@@ -1013,7 +1016,7 @@ def ask_user():
         font=("Arial", 12)
     ).pack(pady=(20, 5))
 
-    class_sizes = [0,2, 4, 5,6,7,8,10,13,15]
+    class_sizes = [0, 2, 4, 5, 6, 7, 8, 10, 13, 15]
     class_size_vars = {}
 
     class_size_frame = tk.Frame(root)
@@ -1029,7 +1032,7 @@ def ask_user():
         ).pack(side="left", padx=8)
 
     # ============================================================
-    # NEW QUESTION 4 — Percent syllabus two (multi-select)
+    # QUESTION 2 — Percent syllabus two (multi-select)
     # ============================================================
     tk.Label(
         root,
@@ -1037,7 +1040,6 @@ def ask_user():
         font=("Arial", 12)
     ).pack(pady=(20, 5))
 
-    #percentages = [0, 5, 10, 15, 20]
     percentages = [0, 10, 25, 33, 50, 67, 75, 90, 100]
     percent_vars = {}
 
@@ -1053,31 +1055,73 @@ def ask_user():
             variable=var
         ).pack(side="left", padx=8)
 
+    # ============================================================
+    # QUESTION 3 — Runs per class size (positive integer textbox)
+    # ============================================================
+    tk.Label(
+        root,
+        text="How many simulation runs per class size? (100 runs is about 20 seconds)",
+        font=("Arial", 12)
+    ).pack(pady=(20, 5))
+
+    runs_var = tk.StringVar(value="1")  # default value
+
+    # validation function
+    def validate_positive_int(P):
+        if P == "":
+            return True  # allow empty while typing
+        return P.isdigit() and int(P) > 0
+
+    vcmd_runs = (root.register(validate_positive_int), "%P")
+
+    runs_entry = tk.Entry(
+        root,
+        textvariable=runs_var,
+        validate="key",
+        validatecommand=vcmd_runs,
+        width=10,
+        justify="center"
+    )
+    runs_entry.pack()
+
     set_bg(root, "#2f528a")
 
-    # ---------------- Confirm ----------------
+    # ============================================================
+    # Confirm Button
+    # ============================================================
     def confirm():
-        # collect multi-select results
-        selected_class_sizes = [size for size, var in class_size_vars.items() if var.get() == 1]
-        selected_percentages = [p for p, var in percent_vars.items() if var.get() == 1]
+        selected_class_sizes = [
+            size for size, var in class_size_vars.items() if var.get() == 1
+        ]
+        selected_percentages = [
+            p for p, var in percent_vars.items() if var.get() == 1
+        ]
 
-        # apply defaults if none selected
+        # defaults if nothing selected
         if not selected_class_sizes:
             selected_class_sizes = []
 
         if not selected_percentages:
             selected_percentages = [0]
 
+        # handle runs per class size
+        runs_value = runs_var.get()
+        if runs_value == "":
+            runs_value = 1
+        else:
+            runs_value = int(runs_value)
+
         result["class_sizes"] = selected_class_sizes
         result["syllabus_two_percentages"] = selected_percentages
+        result["runs_per_class_size"] = runs_value
 
         root.destroy()
+
     tk.Button(root, text="Confirm", width=15, command=confirm).pack(pady=20)
 
     root.mainloop()
 
     return result
-
 
 # # ## student list in format 
 # # '''
@@ -1228,13 +1272,14 @@ def main():
     percentages = user_input["syllabus_two_percentages"]
     class_size = user_input["class_sizes"]
 
-    run_count = 100
+    run_count = user_input["runs_per_class_size"]
 
     # format {percentone: data, percenttwo: data, ...}
     data = {}
     for p in percentages:
         data[p] = []
         for c in class_size:
+            start_time = time.perf_counter()
             average_for_class_size = 0
             print("class size",c)
 
@@ -1245,6 +1290,10 @@ def main():
                 computed_students = run_simulation(START_DATE, 365*1.5, p, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list,aircraft_list,classrooms_list, syllabus1,syllabus2,syllabus3,syllabus4,True,c)
                 average_for_class_size += compute_average_waits([computed_students], False)[0]
             average_for_class_size = average_for_class_size/run_count
+
+            elapsed = time.perf_counter() - start_time   # end timer
+
+            print(f"Class size {c} completed in {elapsed:.2f} seconds")
 
             data[p].append((c,average_for_class_size))
 
