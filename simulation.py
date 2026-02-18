@@ -8,7 +8,7 @@ from collections import deque
 import time
 import sys
 from collections import defaultdict
-from eventList import getActivityTime, Event
+from eventList import get_activity_time, Event, is_on_wing_needed
 from stuAndInsrtr import FlightStudent, Instructor
 from resources import Classroom, Utd, Oft, Vtd, Mr, Aircraft, Sim
 import csv
@@ -104,7 +104,6 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
             # print("it is a valid day")
             # if it is a monday
             if current_day.weekday() == 0:
-                # print("it is a monday")
                 if fixed_class_size:
                     new_students = []
 
@@ -342,6 +341,51 @@ function returns boolean value
 '''
 def is_swap_possible():
     pass
+# ChatGPT's attempt:
+def try_swap_onwing(student, onwing, needed_time, instructor_data, already_used):
+    """
+    Returns instructor if swap is possible, else None
+    """
+
+    # Instructor must NOT:
+    # - Be flying with another onwing
+    # - Be flying forms
+    # - Be already used
+    # - Be over hours
+
+    if onwing in already_used:
+        return None
+
+    if instructor_data[onwing]["uses"] >= 4:
+        return None
+
+    if instructor_data[onwing]["hours"] < needed_time:
+        return None
+
+    # Custom flags you must already track somewhere:
+    if onwing.flying_other_onwing:
+        return None
+
+    if onwing.flying_forms:
+        return None
+
+    # Now check: is there another instructor
+    # who could take their currently assigned slot?
+
+    for other in instructor_data:
+        if other == onwing:
+            continue
+
+        if (
+            instructor_data[other]["hours"] >= needed_time and
+            instructor_data[other]["uses"] < 4 and
+            other not in already_used
+        ):
+            # swap possible
+            return onwing
+
+    return None
+
 
 
 def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4):# grndSchool, contacts, aero, inst, forms, capstone):
@@ -631,9 +675,69 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             if ev != "warmup flight" and ev.block == "instruments":
                 ## then it can be completed at night
                 can_be_night = True
+
+            # contacts
+            if ev != "warmup flight" and ev.block == "contacts":
+                # chatGPt attempt solution just to get me started...
+                if ev.requires_onwing:
+
+                    onwing = s.onwing_instructor
+
+                    # 1️⃣ Check aircraft first (normal logic)
+                    ac_found = None
+                    for ac in aircraft_data:
+                        if needed_time <= aircraft_data[ac]["day_hours"] and \
+                        aircraft_data[ac]["uses"] < Aircraft.uses_per_day:
+                            ac_found = ac
+                            break
+
+                    if not ac_found:
+                        continue  # no aircraft, fail immediately
+
+                    # 2️⃣ Check if onwing instructor is available
+                    if (
+                        instructor_data[onwing]["hours"] >= needed_time and
+                        instructor_data[onwing]["uses"] < 4 and
+                        onwing not in already_used
+                    ):
+                        inst_found = onwing
+
+                    else:
+                        # Try swap
+                        inst_found = try_swap_onwing(
+                            s,
+                            onwing,
+                            needed_time,
+                            instructor_data,
+                            already_used
+                        )
+
+                    if inst_found:
+                        # allocate resources exactly like your day logic
+                        aircraft_data[ac_found]["day_hours"] -= (needed_time + Aircraft.break_time)
+                        aircraft_data[ac_found]["uses"] += 1
+
+                        instructor_data[inst_found]["hours"] -= (needed_time + Instructor.break_time)
+                        instructor_data[inst_found]["uses"] += 1
+
+                        successfull_events.append(
+                            [s, ev, str(day), "day", ac_found, inst_found]
+                        )
+
+                        s.event_complete(day)
+                        already_used[s] = True
+
+                        increment_key(aircraft_used, ac_found)
+                        increment_key(instructors_used, inst_found)
+
+                        continue
+
+
+
+
+
             
             # forms
-            
             if ev != "warmup flight" and ev.block == "forms":
                 if s.has_partner():
                     available_aircraft = []
@@ -956,7 +1060,8 @@ def fiscal_year_stats(year, students, year_or_total):
 # reads in events from a csv file and makes event objects per block and puts that in a list
 def make_events(file_path, block):
     # keep track of each event's activity time
-    activity_time_dict = getActivityTime()
+    activity_time_dict = get_activity_time()
+    on_wing_need_dict = is_on_wing_needed()
     events = []
     # Read CSV into rows
     rows = []
@@ -977,6 +1082,11 @@ def make_events(file_path, block):
         total_time = data["time"]
         resource = data["resource"]
         events.append(Event(merged_name, day, resource, total_time, block))
+    # On-wing is only a thing in contacts (FAMs), so assign on-wing status to those events
+    if block == 'contacts':
+        for ev in events:
+            if ev.resource == 'aircraft':
+                ev.on_wing = on_wing_need_dict[ev]
     return events
 
 # makes a list of current students in the syllabus from a csv file 
