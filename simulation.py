@@ -1437,6 +1437,25 @@ def ask_user():
     tk.Radiobutton(radio_frame_tog, text="Yes", variable=choice_tog1, value="yes").pack(side="left", padx=10)
     tk.Radiobutton(radio_frame_tog, text="No", variable=choice_tog1, value="no").pack(side="left", padx=10)
 
+
+    ## toggle question two
+
+    # # ---------------- Toggle Question ----------------
+    tk.Label(
+        root,
+        text="Would you like to double up Sims?",
+        font=("Arial", 12)
+    ).pack(pady=10)
+
+    choice_tog2 = tk.StringVar(value="no")
+
+    radio_frame_tog2 = tk.Frame(root)
+    radio_frame_tog2.pack()
+
+    tk.Radiobutton(radio_frame_tog2, text="Yes", variable=choice_tog1, value="yes").pack(side="left", padx=10)
+    tk.Radiobutton(radio_frame_tog2, text="No", variable=choice_tog1, value="no").pack(side="left", padx=10)
+
+
     # ============================================================
     # NEW QUESTION 3 — Class sizes (multi-select)
     # ============================================================
@@ -1509,7 +1528,8 @@ def ask_user():
         result["include_current_students"] = (choice.get() == "yes")
         result["initial_students"] = slider1.get()
         result["weeks"] = slider2.get()
-        result["double_schedule"] = (choice_tog1.get() == "yes")
+        result["double_schedule"] = (choice_tog2.get() == "yes")
+        result["max_250"] = (choice_tog1.get() == "yes")
         result["include_in_analysis"] = (choice2.get() == "yes")
         # result["monthly_class_sizes"] = {
         #     m: v.get() for m, v in month_vars.items()
@@ -1814,13 +1834,13 @@ def main():
     user_input = ask_user()
     # print(user_input)
 
-    print(user_input["use_monthly_class_sizes"])
-    print(user_input["monthly_class_sizes"])
 
+    #### can use this variable to determine if sims should be double scheduled. 
+    double_schedule = user_input["double_schedule"]
 
     global max_250
 
-    max_250 = user_input["double_schedule"]
+    max_250 = user_input["max_250"]
     
     instructors = load_instructors(os.path.join("instructors", "instructor_data.csv"))
 
