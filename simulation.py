@@ -678,16 +678,18 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
             # contacts
             if ev != "warmup flight" and ev.block == "contacts":
-                # chatGPt attempt solution just to get me started...
-                if ev.requires_onwing:
 
-                    onwing = s.onwing_instructor
+                # add solo flight here w/o instructors 
+
+                # chatGPt attempt solution just to get me started...
+                if ev.on_wing == "yes":
+
+                    onwing = s.onwing
 
                     # 1️⃣ Check aircraft first (normal logic)
                     ac_found = None
                     for ac in aircraft_data:
-                        if needed_time <= aircraft_data[ac]["day_hours"] and \
-                        aircraft_data[ac]["uses"] < Aircraft.uses_per_day:
+                        if needed_time <= aircraft_data[ac]["day_hours"] and aircraft_data[ac]["uses"] < Aircraft.uses_per_day:
                             ac_found = ac
                             break
 
@@ -695,48 +697,41 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         continue  # no aircraft, fail immediately
 
                     # 2️⃣ Check if onwing instructor is available
-                    if (
-                        instructor_data[onwing]["hours"] >= needed_time and
-                        instructor_data[onwing]["uses"] < 4 and
-                        onwing not in already_used
-                    ):
+                    inst_found = None
+                    if (instructor_data[onwing]["hours"] >= needed_time and instructor_data[onwing]["uses"] < 4):
                         inst_found = onwing
-
                     else:
                         # Try swap
-                        inst_found = try_swap_onwing(
-                            s,
-                            onwing,
-                            needed_time,
-                            instructor_data,
-                            already_used
-                        )
+                        inst_found = try_swap_onwing(s, onwing, needed_time, instructor_data, already_used)
 
                     if inst_found:
                         # allocate resources exactly like your day logic
                         aircraft_data[ac_found]["day_hours"] -= (needed_time + Aircraft.break_time)
                         aircraft_data[ac_found]["uses"] += 1
-
                         instructor_data[inst_found]["hours"] -= (needed_time + Instructor.break_time)
                         instructor_data[inst_found]["uses"] += 1
-
-                        successfull_events.append(
-                            [s, ev, str(day), "day", ac_found, inst_found]
+                        log_usage(
+                        day_metrics["resources"]["aircraft"],
+                        ac_found,
+                        needed_time+ Aircraft.break_time,
+                        hours_available=Aircraft.daily_hours,
+                        uses=1
                         )
+                        log_usage(
+                            day_metrics["resources"]["instructor"],
+                            inst_found,
+                            needed_time+Aircraft.break_time,
+                            hours_available=Instructor.daily_hours,
+                            uses=1
+                        )
+                        successfull_events.append([s, ev, str(day), "day", ac_found, inst_found])
 
                         s.event_complete(day)
+                        s.schedule_failed = False
                         already_used[s] = True
-
                         increment_key(aircraft_used, ac_found)
                         increment_key(instructors_used, inst_found)
-
                         continue
-
-
-
-
-
-            
             # forms
             if ev != "warmup flight" and ev.block == "forms":
                 if s.has_partner():

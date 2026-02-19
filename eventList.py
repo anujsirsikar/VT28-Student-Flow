@@ -1,5 +1,6 @@
 # This code will address the flight schedule and different events and the resources they need
 
+
 class Event:
     def __init__(self, name, training_day, resource, activity_time, block):
         self.name = name # i.e. FAM2101, etc...
