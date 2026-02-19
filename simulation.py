@@ -102,7 +102,7 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
     while days > 0:  
 
         ## adding this now to account for every other week.
-        weeks_since_start = (current_day - sim_start_date).days // 7
+        weeks_since_start = (current_day - sim_start_date).days // 7 + 1
 
         if students is None:
             break 
