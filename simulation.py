@@ -1452,8 +1452,8 @@ def ask_user():
     radio_frame_tog2 = tk.Frame(root)
     radio_frame_tog2.pack()
 
-    tk.Radiobutton(radio_frame_tog2, text="Yes", variable=choice_tog1, value="yes").pack(side="left", padx=10)
-    tk.Radiobutton(radio_frame_tog2, text="No", variable=choice_tog1, value="no").pack(side="left", padx=10)
+    tk.Radiobutton(radio_frame_tog2, text="Yes", variable=choice_tog2, value="yes").pack(side="left", padx=10)
+    tk.Radiobutton(radio_frame_tog2, text="No", variable=choice_tog2, value="no").pack(side="left", padx=10)
 
 
     # ============================================================
