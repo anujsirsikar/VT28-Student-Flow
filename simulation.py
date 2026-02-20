@@ -950,29 +950,126 @@ def fiscal_year_stats(year, students, year_or_total):
 
 
 # reads in events from a csv file and makes event objects per block and puts that in a list
-def make_events(file_path, block):
+'''
+VT28 Rules on Doubling Events:
+- 42 and 43 hundred block events (instruments) can be doubled as well as the sims between them
+- Forms can have 2 doubled flights (2 out & in's)
+- Capstone can double the sims and then do 1 doubled flight (1 out & in)
+'''
+# Questions??? -> what's the normal down time between flights and then what's the time for sims?
+#              -> do we need to give students and instructors some "down time" in between events if they are doubling?
+def make_events(file_path, block, double_sim, double_flight):
     # keep track of each event's activity time
     activity_time_dict = getActivityTime()
-    events = []
-    # Read CSV into rows
+
+    # -------------------------------------------------
+    # 1️⃣ READ CSV INTO RAW ROWS
+    # -------------------------------------------------
     rows = []
     with open(file_path, "r") as f:
         next(f)  # skip header
         for line in f:
             event_id, training_day, resource = [x.strip() for x in line.split(",")]
             rows.append((event_id, int(training_day), resource))
-    # ---------- GROUP EVENTS BY TRAINING DAY ----------
+
+    # -------------------------------------------------
+    # 2️⃣ OPTIONAL MERGING (DOUBLING)
+    # -------------------------------------------------
+    def merge_row_pairs(rows, pairs):
+        rows = rows[:]  # work on a copy
+
+        for a, b in pairs:
+            row_a = next((r for r in rows if r[0] == a), None)
+            row_b = next((r for r in rows if r[0] == b), None)
+
+            if row_a and row_b:
+                merged_name = f"{a}/{b}"
+                merged_day = row_a[1]
+                merged_resource = row_a[2]
+
+                rows.remove(row_a)
+                rows.remove(row_b)
+                rows.append((merged_name, merged_day, merged_resource))
+
+        return rows
+
+    # ---------------- DOUBLING SIMS ----------------
+    if double_sim:
+        if block == "instruments":
+            pairs = [
+                ("I3201", "I3202"),
+                ("I3203", "I3204"),
+                ("I3205", "I3206"),
+            ]
+            rows = merge_row_pairs(rows, pairs)
+
+        elif block == "capstone":
+            pairs = [
+                ("CS2101", "CS2102"),
+                ("CS3101", "CS3102"),
+            ]
+            rows = merge_row_pairs(rows, pairs)
+
+    # ---------------- DOUBLING FLIGHTS ----------------
+    if double_flight:
+        if block == "instruments":
+            pairs = [
+                ("I4201", "I4202"),
+                ("I4203", "I4204"),
+                ("I4301", "I4302"),
+                ("I4303", "I4304"),
+            ]
+            rows = merge_row_pairs(rows, pairs)
+
+        elif block == "forms":
+            pairs = [
+                ("F4101", "F4102"),
+                ("F4103", "F4104"),
+            ]
+            rows = merge_row_pairs(rows, pairs)
+
+        elif block == "capstone":
+            pairs = [
+                ("CS4101", "CS4102"),
+            ]
+            rows = merge_row_pairs(rows, pairs)
+
+    # -------------------------------------------------
+    # 3️⃣ GROUP EVENTS BY TRAINING DAY
+    # -------------------------------------------------
     grouped = defaultdict(lambda: {"names": [], "resource": None, "time": 0.0})
+
     for event_id, day, resource in rows:
         grouped[day]["names"].append(event_id)
         grouped[day]["resource"] = resource
-        grouped[day]["time"] += activity_time_dict[event_id]
-    # ---------- CREATE FINAL COMBINED EVENT OBJECTS ----------
+
+        # if merged event (contains "/"), sum its components
+        if "/" in event_id:
+            total_time = sum(activity_time_dict[name] for name in event_id.split("/"))
+            if resource == "aircraft":
+                total_time += 0.5              # add half an hour for inbetween time for doubled flying events
+            if resource in {"utd", "oft", "vtd", "mr"}:
+                total_time += 0.2              # inbetween time for doubling up on sims 
+        else:
+            total_time = activity_time_dict[event_id]
+
+        grouped[day]["time"] += total_time
+
+    # -------------------------------------------------
+    # 4️⃣ CREATE FINAL EVENT OBJECTS
+    # -------------------------------------------------
+    events = []
+
     for day, data in sorted(grouped.items()):
         merged_name = "/".join(data["names"])
         total_time = data["time"]
         resource = data["resource"]
-        events.append(Event(merged_name, day, resource, total_time, block))
+        ev = Event(merged_name, day, resource, total_time, block)
+        if "/" in ev.name and ev.resource in {"aircraft","utd", "oft", "vtd", "mr"}:
+            ev.is_double = True
+        events.append(ev)
+    #for ev in events:
+    #    print(ev, " ", ev.activity_time)
     return events
 
 # makes a list of current students in the syllabus from a csv file 
@@ -1345,7 +1442,7 @@ def ask_user():
 
     root = tk.Tk()
     root.title("VT28 Scheduling Simulation")
-    root.geometry("640x900+0+0")
+    root.geometry("640x980+0+0")
     root.resizable(False, False)
 
     # bring window to front (temporarily)
@@ -1440,7 +1537,7 @@ def ask_user():
 
     ## toggle question two
 
-    # # ---------------- Toggle Question ----------------
+    # # ---------------- Toggle Question (sims) ----------------
     tk.Label(
         root,
         text="Would you like to double up Sims?",
@@ -1455,6 +1552,20 @@ def ask_user():
     tk.Radiobutton(radio_frame_tog2, text="Yes", variable=choice_tog2, value="yes").pack(side="left", padx=10)
     tk.Radiobutton(radio_frame_tog2, text="No", variable=choice_tog2, value="no").pack(side="left", padx=10)
 
+    # # ---------------- Toggle Question (flights) ----------------
+    tk.Label(
+        root,
+        text="Would you like to double up Flights?",
+        font=("Arial", 12)
+    ).pack(pady=10)
+
+    choice_tog3 = tk.StringVar(value="no")
+
+    radio_frame_tog3 = tk.Frame(root)
+    radio_frame_tog3.pack()
+
+    tk.Radiobutton(radio_frame_tog3, text="Yes", variable=choice_tog3, value="yes").pack(side="left", padx=10)
+    tk.Radiobutton(radio_frame_tog3, text="No", variable=choice_tog3, value="no").pack(side="left", padx=10)
 
     # ============================================================
     # NEW QUESTION 3 — Class sizes (multi-select)
@@ -1528,7 +1639,8 @@ def ask_user():
         result["include_current_students"] = (choice.get() == "yes")
         result["initial_students"] = slider1.get()
         result["weeks"] = slider2.get()
-        result["double_schedule"] = (choice_tog2.get() == "yes")
+        result["double_sim"] = (choice_tog2.get() == "yes")
+        result["double_flight"] = (choice_tog3.get() == "yes")
         result["max_250"] = (choice_tog1.get() == "yes")
         result["include_in_analysis"] = (choice2.get() == "yes")
         # result["monthly_class_sizes"] = {
@@ -1796,16 +1908,22 @@ def main():
 
     # going to running run_simulation function multiple times based on different class sizes
 
+    user_input = ask_user()
+
+    #### can use these variables to determine if sims and/or flights should be double scheduled. 
+    double_sim = user_input["double_sim"]
+    double_flight = user_input["double_flight"]
+
     # Initialize a list of event objects for each block
-    sysGrndSchoolEvents = make_events(os.path.join("data", "sysGrnd.csv"), "system ground")
+    sysGrndSchoolEvents = make_events(os.path.join("data", "sysGrnd.csv"), "system ground", double_sim, double_flight)
     # print("sys grnd: ", sysGrndSchoolEvents)
     # FAM1301, FAM4101, FAM4102, FAM4103, FAM4104, FAM4303, FAM4304 are the required onwing events
-    contactsEvents = make_events(os.path.join("data", "contacts.csv"), "contacts")
-    aeroEvents = make_events(os.path.join("data","aero.csv"), "contacts")
-    instrGrndSchoolEvents = make_events(os.path.join("data", "instrGrnd.csv"), "instrument ground")
-    instrumentsEvents = make_events(os.path.join("data", "instr.csv"), "instruments")
-    formsEvents = make_events(os.path.join("data", "forms.csv"), "forms")
-    capstoneEvents = make_events(os.path.join("data", "capstone.csv"), "capstone")
+    contactsEvents = make_events(os.path.join("data", "contacts.csv"), "contacts", double_sim, double_flight)
+    aeroEvents = make_events(os.path.join("data","aero.csv"), "contacts", double_sim, double_flight)
+    instrGrndSchoolEvents = make_events(os.path.join("data", "instrGrnd.csv"), "instrument ground", double_sim, double_flight)
+    instrumentsEvents = make_events(os.path.join("data", "instr.csv"), "instruments", double_sim, double_flight)
+    formsEvents = make_events(os.path.join("data", "forms.csv"), "forms", double_sim, double_flight)
+    capstoneEvents = make_events(os.path.join("data", "capstone.csv"), "capstone", double_sim, double_flight)
     
     # syllabus combinations (can add more)
     syllabus1 = [sysGrndSchoolEvents, contactsEvents, instrGrndSchoolEvents, instrumentsEvents, aeroEvents, formsEvents, capstoneEvents]
@@ -1831,12 +1949,7 @@ def main():
     FlightStudent.syllabus3 = syllabus3
     FlightStudent.syllabus4 = syllabus4
 
-    user_input = ask_user()
     # print(user_input)
-
-
-    #### can use this variable to determine if sims should be double scheduled. 
-    double_schedule = user_input["double_schedule"]
 
     global max_250
 
