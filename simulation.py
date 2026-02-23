@@ -227,20 +227,23 @@ def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, successfull_e
                 if len(available_sims) == 2:
                     break
         if len(available_sims) == 2:
+            used = 1
+            if ev.is_double:
+                used = 2
             
             log_usage(
                 day_metrics["resources"][sim_type],
                 available_sims[0],
                 needed_time + Sim.break_time,
                 hours_available=Sim.daily_hours,
-                uses=1
+                uses=used
             )
             log_usage(
                 day_metrics["resources"][sim_type],
                 available_sims[1],
                 needed_time+Sim.break_time,
                 hours_available=Sim.daily_hours,
-                uses=1
+                uses=used
             )
 
             for o in available_sims:
@@ -267,12 +270,15 @@ def schedule_sim(day, s, ev, sim_hours, needed_time, successfull_events, day_met
         if needed_time <= sim_hours[o]:
             sim_hours[o] -= (needed_time + Sim.break_time)
             # schedule the student
+            used = 1
+            if ev.is_double:
+                used=2
             log_usage(
                 day_metrics["resources"][sim_type],
                 o,
                 needed_time + Sim.break_time,
                 hours_available=Sim.daily_hours,
-                uses=1
+                uses=used
             )
             successfull_events.append([s,ev, str(day), o])
             s.event_complete(day)
@@ -632,6 +638,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             
             if ev != "warmup flight" and ev.block == "forms":
                 if s.has_partner():
+                    used = 1
+                    if ev.is_double:
+                        used=2
                     available_aircraft = []
                     available_instructors = []
                     for ac in aircraft_data:
@@ -674,28 +683,28 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                             available_aircraft[0],
                             needed_time + Aircraft.break_time,
                             hours_available=Aircraft.daily_hours,
-                            uses=1
+                            uses=used
                         )
                         log_usage(
                             day_metrics["resources"]["instructor"],
                             available_instructors[0],
                             needed_time + Instructor.break_time,
                             hours_available=Instructor.daily_hours,
-                            uses=1
+                            uses=used
                         )
                         log_usage(
                             day_metrics["resources"]["aircraft"],
                             available_aircraft[1],
                             needed_time + Aircraft.break_time,
                             hours_available=Aircraft.daily_hours,
-                            uses=1
+                            uses=used
                         )
                         log_usage(
                             day_metrics["resources"]["instructor"],
                             available_instructors[1],
                             needed_time + Instructor.break_time,
                             hours_available=Instructor.daily_hours,
-                            uses=1
+                            uses=used
                         )
                         successfull_events.append([s, ev, str(day), "day", available_aircraft[0], available_instructors[0]])
                         successfull_events.append([s.get_partner(), ev, str(day), "day", available_aircraft[1], available_instructors[1]])
@@ -711,6 +720,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         continue
             elif ev != "warmup flight" and ev.block == "capstone":
                 if s.has_partner():
+                    used = 1
+                    if ev.is_double:
+                        used = 2
                     available_aircraft = []
                     available_instructors = []
                     for ac in aircraft_data:
@@ -744,28 +756,28 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                             available_aircraft[0],
                             needed_time + Aircraft.break_time,
                             hours_available=Aircraft.daily_hours,
-                            uses=1
+                            uses=used
                         )
                         log_usage(
                             day_metrics["resources"]["instructor"],
                             available_instructors[0],
                             needed_time + Instructor.break_time,
                             hours_available=Instructor.daily_hours,
-                            uses=1
+                            uses=used
                         )
                         log_usage(
                             day_metrics["resources"]["aircraft"],
                             available_aircraft[1],
                             needed_time+Aircraft.break_time,
                             hours_available=Aircraft.daily_hours,
-                            uses=1
+                            uses=used
                         )
                         log_usage(
                             day_metrics["resources"]["instructor"],
                             available_instructors[1],
                             needed_time + Instructor.break_time,
                             hours_available=Instructor.daily_hours,
-                            uses=1
+                            uses=used
                         )
 
                         partner = s.get_partner()
@@ -782,6 +794,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         continue
             
             else:
+                used = 1
+                if ev != "warmup flight" and ev.is_double:
+                    used = 2
                 if can_be_night and s.night_hours < 3.4:
 
                     aircraft_found = None
@@ -807,14 +822,14 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                             aircraft_found,
                             needed_time + Aircraft.break_time,
                             hours_available=Aircraft.daily_hours,
-                            uses=1
+                            uses=used
                         )
                         log_usage(
                             day_metrics["resources"]["instructor"],
                             inst_found,
                             needed_time + Instructor.break_time,
                             hours_available=Instructor.daily_hours,
-                            uses=1
+                            uses=used
                         )
                         successfull_events.append([s,ev, str(day), "night",aircraft_found,inst_found])
                         s.event_complete(day)
@@ -862,14 +877,14 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         ac_found,
                         needed_time+ Aircraft.break_time,
                         hours_available=Aircraft.daily_hours,
-                        uses=1
+                        uses=used
                     )
                     log_usage(
                         day_metrics["resources"]["instructor"],
                         inst_found,
                         needed_time+Aircraft.break_time,
                         hours_available=Instructor.daily_hours,
-                        uses=1
+                        uses=used
                     )
                     successfull_events.append([s,ev, str(day), "day",ac_found,inst_found])
                     if ev != "warmup flight":
@@ -1443,7 +1458,7 @@ def ask_user():
     root = tk.Tk()
     root.title("VT28 Scheduling Simulation")
     root.geometry("640x980+0+0")
-    root.resizable(False, False)
+    root.resizable(True, True)
 
     # bring window to front (temporarily)
     root.update_idletasks()
@@ -1913,12 +1928,14 @@ def main():
     #### can use these variables to determine if sims and/or flights should be double scheduled. 
     double_sim = user_input["double_sim"]
     double_flight = user_input["double_flight"]
+    print("doubles", double_sim, double_flight)
 
     # Initialize a list of event objects for each block
     sysGrndSchoolEvents = make_events(os.path.join("data", "sysGrnd.csv"), "system ground", double_sim, double_flight)
     # print("sys grnd: ", sysGrndSchoolEvents)
     # FAM1301, FAM4101, FAM4102, FAM4103, FAM4104, FAM4303, FAM4304 are the required onwing events
     contactsEvents = make_events(os.path.join("data", "contacts.csv"), "contacts", double_sim, double_flight)
+    print(contactsEvents)
     aeroEvents = make_events(os.path.join("data","aero.csv"), "contacts", double_sim, double_flight)
     instrGrndSchoolEvents = make_events(os.path.join("data", "instrGrnd.csv"), "instrument ground", double_sim, double_flight)
     instrumentsEvents = make_events(os.path.join("data", "instr.csv"), "instruments", double_sim, double_flight)
