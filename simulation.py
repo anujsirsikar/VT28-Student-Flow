@@ -1935,7 +1935,6 @@ def main():
     # print("sys grnd: ", sysGrndSchoolEvents)
     # FAM1301, FAM4101, FAM4102, FAM4103, FAM4104, FAM4303, FAM4304 are the required onwing events
     contactsEvents = make_events(os.path.join("data", "contacts.csv"), "contacts", double_sim, double_flight)
-    print(contactsEvents)
     aeroEvents = make_events(os.path.join("data","aero.csv"), "contacts", double_sim, double_flight)
     instrGrndSchoolEvents = make_events(os.path.join("data", "instrGrnd.csv"), "instrument ground", double_sim, double_flight)
     instrumentsEvents = make_events(os.path.join("data", "instr.csv"), "instruments", double_sim, double_flight)
