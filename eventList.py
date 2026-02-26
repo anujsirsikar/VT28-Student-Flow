@@ -10,6 +10,7 @@ class Event:
         self.night_event = False
         self.can_be_night_event = True
         self.is_double = False
+        self.on_wing = None
 
     def __str__(self):
         return self.name
@@ -74,3 +75,20 @@ def getActivityTime():
     }
 
     return event_times
+
+
+# returns if the event must be flown with an on-wing or not
+def is_on_wing_needed():
+
+    # FAM4501 is a solo, so it doesn't require any instructor
+    # (that could be its own status -> "solo")
+
+    on_wing_needed = {
+        "FAM1301": "yes", "FAM4101": "yes",
+        "FAM4102": "yes", "FAM4103": "yes", "FAM4104": "yes", 
+        "FAM4201": "no", "FAM4202": "no", "FAM4203": "no",
+        "FAM4204": "no", "FAM4301": "no", "FAM4302": "no", "FAM4303": "yes",
+        "FAM4304": "yes", "FAM4490": "no", "FAM4501": "no",
+    }
+
+    return on_wing_needed

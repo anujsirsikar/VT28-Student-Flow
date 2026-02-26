@@ -8,7 +8,7 @@ from collections import deque
 import time
 import sys
 from collections import defaultdict
-from eventList import getActivityTime, Event
+from eventList import getActivityTime, Event, is_on_wing_needed
 from stuAndInsrtr import FlightStudent, Instructor
 from resources import Classroom, Utd, Oft, Vtd, Mr, Aircraft, Sim
 import csv
@@ -33,6 +33,7 @@ SYLLABUS_BLOCKS = {
 
 START_DATE = datetime.strptime("2025-11-23", "%Y-%m-%d").date()
 # START_DATE = date.today()
+
 
 # HELPER FUNCTIONS
 def is_valid_day(day):
@@ -89,15 +90,22 @@ def current_active_students(students):
 
     return count
 
+
+def clear_insts(insts):
+    for i in insts:
+        i.on_wings = []
+
+
 # SIMULATION LOGIC 
 def run_simulation(sim_start_date, days, percent_aero, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4, class_size_type, class_size, monthly_class_size):
     # sim_start_date = date(2025, 11, 24)   # year, month, day
     current_day = sim_start_date
     result = []
     daily_metrics = []
-
+    reset_on_wing()
+    clear_insts(instructors)
     
-
+    
     # run the loop for the amount of days
     while days > 0:  
 
@@ -337,6 +345,25 @@ def log_usage(bucket, resource, hours, hours_available=None, uses=1):
     bucket[key]["uses"] += uses
 
 
+def reset_on_wing():
+    Instructor.on_wing_start = 0
+
+def get_on_wing(instructors):
+
+    selected_inst = None
+    n = len(instructors)
+
+    for i in range(n):
+        index = (Instructor.on_wing_start + i) % n
+
+        if len(instructors[index].on_wings) < 4:
+            selected_inst = index
+            break
+
+    Instructor.on_wing_start = (Instructor.on_wing_start + 1) % len(instructors)
+    return selected_inst
+    
+
 
 def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4):# grndSchool, contacts, aero, inst, forms, capstone):
     # print("------------ NEW DAY --------------", day)
@@ -439,6 +466,22 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
                 nxt = syllabus[block][event]
             
+                if nxt.block == "contacts" and s.on_wing == None:
+                    new_on_wing = get_on_wing(instructors)
+
+                    if new_on_wing is not None:
+                        # print("scheduled new on wing", s,instructors[new_on_wing], nxt.block)
+                        s.on_wing = new_on_wing                   
+                        instructors[new_on_wing].on_wings.append(s)
+
+                elif nxt.block != "contacts" and s.on_wing is not None:
+                    # print("deleted on wing", s, instructors[s.on_wing], nxt.block,s.syllabus_type)
+                    instructors[s.on_wing].on_wings.remove(s)
+                    s.on_wing = None
+
+                # if s.on_wing is not None and nxt.block != "contacts":
+                #     print("not none", nxt.block)
+
 
                 events_to_attempt.append((s,nxt))
 
@@ -448,6 +491,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 day_metrics["students"]["by_block"][block_name] += 1
 
                 already_used[s] = False
+
+    # for i in instructors:
+    #     print(i.name, i.on_wings) 
 
 
     # print(events_to_attempt)
@@ -537,13 +583,36 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     # Not sure which one is better
 
     # this one does over ten sorted by block and under ten sorted by block 
+    # events_to_attempt.sort(
+    #     key=lambda item: (
+    #         item[0].days_since_last_event < 10,
+    #         -item[0].days_since_last_event,
+    #         block_priority.get(item[0].get_block(), float("inf"))
+    #     )
+    # )
+
     events_to_attempt.sort(
-        key=lambda item: (
-            item[0].days_since_last_event < 10,
-            -item[0].days_since_last_event,
-            block_priority.get(item[0].get_block(), float("inf"))
-        )
+    key=lambda item: (
+        0 if getattr(item[1], "on_wing", "no") == "yes"
+        else 1 if item[0].days_since_last_event > 10
+        else 2,
+        -item[0].days_since_last_event,
+        block_priority.get(item[0].get_block(), float("inf")),
     )
+
+
+
+    ## going to try to integrate it this way. only contacts people who have already failed get moved to front instead of every student
+    events_to_attempt.sort(
+    key=lambda item: (
+        0 if getattr(item[0], "on_wing_event_failed", False)
+        else 1 if item[0].days_since_last_event > 10
+        else 2,
+        -item[0].days_since_last_event,
+        block_priority.get(item[0].get_block(), float("inf")),
+    )
+)
+)
 
     # this one does sorted by longest to shortest and then sorted by blck within that queue
     #events_to_attempt.sort(
@@ -669,12 +738,12 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     if len(available_aircraft) == 2 and len(available_instructors) == 2:
                         for ac in available_aircraft:
                             aircraft_data[ac]["day_hours"] -= (needed_time + Aircraft.break_time)
-                            aircraft_data[ac]["uses"] += 1
+                            aircraft_data[ac]["uses"] += used
                             increment_key(aircraft_used, ac)
                         for inst in available_instructors:
                             #print(inst)
                             instructor_data[inst]["hours"] -= (needed_time + Instructor.break_time)
-                            instructor_data[inst]["uses"] += 1
+                            instructor_data[inst]["uses"] += used
                             increment_key(instructors_used, inst)
     
 
@@ -742,12 +811,12 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     if len(available_aircraft) == 2 and len(available_instructors) == 2:
                         for ac in available_aircraft:
                             aircraft_data[ac]["day_hours"] -= (needed_time + Aircraft.break_time)
-                            aircraft_data[ac]["uses"] += 1
+                            aircraft_data[ac]["uses"] += used
                             increment_key(aircraft_used, ac)
                         for inst in available_instructors:
                             #print(inst)
                             instructor_data[inst]["hours"] -= (needed_time + Instructor.break_time)
-                            instructor_data[inst]["uses"] += 1
+                            instructor_data[inst]["uses"] += used
                             increment_key(instructors_used, inst)
     
 
@@ -976,7 +1045,7 @@ VT28 Rules on Doubling Events:
 def make_events(file_path, block, double_sim, double_flight):
     # keep track of each event's activity time
     activity_time_dict = getActivityTime()
-
+    on_wing_need_dict = is_on_wing_needed()
     # -------------------------------------------------
     # 1️⃣ READ CSV INTO RAW ROWS
     # -------------------------------------------------
@@ -1085,6 +1154,14 @@ def make_events(file_path, block, double_sim, double_flight):
         events.append(ev)
     #for ev in events:
     #    print(ev, " ", ev.activity_time)
+
+
+    if block == "contacts":
+        for ev in events:
+            if ev.resource == "aircraft":
+                ev.on_wing = on_wing_need_dict[ev.name]
+
+
     return events
 
 # makes a list of current students in the syllabus from a csv file 
@@ -1935,7 +2012,11 @@ def main():
     # print("sys grnd: ", sysGrndSchoolEvents)
     # FAM1301, FAM4101, FAM4102, FAM4103, FAM4104, FAM4303, FAM4304 are the required onwing events
     contactsEvents = make_events(os.path.join("data", "contacts.csv"), "contacts", double_sim, double_flight)
-    aeroEvents = make_events(os.path.join("data","aero.csv"), "contacts", double_sim, double_flight)
+
+    for ev in contactsEvents:
+        print(ev.name, ev.on_wing)
+
+    aeroEvents = make_events(os.path.join("data","aero.csv"), "aero", double_sim, double_flight)
     instrGrndSchoolEvents = make_events(os.path.join("data", "instrGrnd.csv"), "instrument ground", double_sim, double_flight)
     instrumentsEvents = make_events(os.path.join("data", "instr.csv"), "instruments", double_sim, double_flight)
     formsEvents = make_events(os.path.join("data", "forms.csv"), "forms", double_sim, double_flight)

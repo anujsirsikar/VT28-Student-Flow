@@ -60,10 +60,12 @@ class FlightStudent:
         self.imported = True
         self.partner = None 
         self.schedule_failed = False 
+        self.on_wing = None
+        self.on_wing_event_failed = False
 
     # toString function
     def __str__(self):
-        return f"Student: {self.completed_dates}"
+        return str(self.student_id)
     
     def __repr__(self):
         return str(self)
@@ -83,6 +85,7 @@ class FlightStudent:
     def event_complete(self, day):
         syl = FlightStudent.syllabus1
         self.days_since_last_event = 0
+        self.on_wing_event_failed = False
         if self.syllabus_type == 2:
             syl = FlightStudent.syllabus2
         elif self.syllabus_type == 3:
@@ -132,11 +135,13 @@ class FlightStudent:
 class Instructor:
     failure_rate = 0.30                                    # only 70% of the instructors are available to instruct (30% chance they can't)
     daily_hours = 12
-    break_time = 0.5                                       # made this up bc it seems like it should be factored in.
+    break_time = 0.5     
+    on_wing_start = 0                                  # made this up bc it seems like it should be factored in.
     def __init__(self, name, section_lead, formation_q):
         self.name = name
         self.section_lead = section_lead                   # boolean value  (12)
         self.formation_q = formation_q                     # boolean value (I'm guessing this means formation qualified) (13)
+        self.on_wings = []
         
         # Add this later:
         # self.onwing = (studentID)  <- add this to the constructor's parameters
