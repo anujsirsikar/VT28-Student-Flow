@@ -591,28 +591,28 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     #     )
     # )
 
-    events_to_attempt.sort(
-    key=lambda item: (
-        0 if getattr(item[1], "on_wing", "no") == "yes"
-        else 1 if item[0].days_since_last_event > 10
-        else 2,
-        -item[0].days_since_last_event,
-        block_priority.get(item[0].get_block(), float("inf")),
-    )
-
+    # events_to_attempt.sort(
+    #     key=lambda item: (
+    #         0 if getattr(item[1], "on_wing", "no") == "yes"
+    #         else 1 if item[0].days_since_last_event > 10
+    #         else 2,
+    #         -item[0].days_since_last_event,
+    #         block_priority.get(item[0].get_block(), float("inf")),
+    #     )
+    # )
 
 
     ## going to try to integrate it this way. only contacts people who have already failed get moved to front instead of every student
     events_to_attempt.sort(
-    key=lambda item: (
-        0 if getattr(item[0], "on_wing_event_failed", False)
-        else 1 if item[0].days_since_last_event > 10
-        else 2,
-        -item[0].days_since_last_event,
-        block_priority.get(item[0].get_block(), float("inf")),
+        key=lambda item: (
+            0 if getattr(item[0], "on_wing_event_failed", False)
+            else 1 if item[0].days_since_last_event > 10
+            else 2,
+            -item[0].days_since_last_event,
+            block_priority.get(item[0].get_block(), float("inf")),
+        )
     )
-)
-)
+
 
     # this one does sorted by longest to shortest and then sorted by blck within that queue
     #events_to_attempt.sort(
@@ -695,6 +695,14 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 schedule_sim(day, s, ev, mr_hours, needed_time, successfull_events, day_metrics, sims_used, "mr")
             
         else: ##aircraft
+
+            instructor_data = dict(
+                sorted(
+                    instructor_data.items(),
+                    key=lambda item: item[1]["hours"],
+                    reverse=True
+                )
+            )
 
             aircraft_found = 0
             can_be_night = False
@@ -862,6 +870,75 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         # print(forms_students)
                         continue
             
+
+            elif ev != "warmup flight" and ev.on_wing == "solo":
+                # solo flight
+                aircraft_found = None
+                for ac in aircraft_data:
+                        if needed_time <= aircraft_data[ac]["night_hours"] and aircraft_data[ac]["uses"] < Aircraft.uses_per_day:
+                            aircraft_found = ac
+                            break
+                if aircraft_found:
+                    aircraft_data[ac_found]["day_hours"] -= (needed_time + Aircraft.break_time)
+                    log_usage(
+                        day_metrics["resources"]["aircraft"],
+                        ac_found,
+                        needed_time+ Aircraft.break_time,
+                        hours_available=Aircraft.daily_hours,
+                        uses=1
+                    )
+                    successfull_events.append([s,ev, str(day), "day",ac_found])
+                    s.event_complete(day)
+                    s.schedule_failed = False
+                    already_used[s] = True
+                    aircraft_data[ac_found]["uses"] += 1
+                    increment_key(aircraft_used, ac_found)
+                    continue
+
+            elif ev != "warmup flight" and ev.on_wing == "yes":
+                ## the student has moved on to day
+
+                ac_found = None
+                inst_found = None
+
+                for ac in aircraft_data:
+                    if needed_time <= aircraft_data[ac]["day_hours"] and aircraft_data[ac]["uses"] < Aircraft.uses_per_day:
+                        ac_found = ac
+                        break
+                
+                
+                if s.on_wing is not None and instructors[s.on_wing] in instructor_data and needed_time <= instructor_data[instructors[s.on_wing]]["hours"] and instructor_data[instructors[s.on_wing]]["uses"] < 4:
+                    inst_found = instructors[s.on_wing]
+
+                if ac_found and inst_found:
+                    aircraft_data[ac_found]["day_hours"] -= (needed_time + Aircraft.break_time)
+                    instructor_data[inst_found]["hours"] -= (needed_time + Instructor.break_time)
+                    instructor_data[inst_found]["uses"] += 1
+                    log_usage(
+                        day_metrics["resources"]["aircraft"],
+                        ac_found,
+                        needed_time+ Aircraft.break_time,
+                        hours_available=Aircraft.daily_hours,
+                        uses=1
+                    )
+                    log_usage(
+                        day_metrics["resources"]["instructor"],
+                        inst_found,
+                        needed_time+Aircraft.break_time,
+                        hours_available=Instructor.daily_hours,
+                        uses=1
+                    )
+                    successfull_events.append([s,ev, str(day), "on wing",ac_found,inst_found])
+                    s.event_complete(day)
+                    s.schedule_failed = False
+                    already_used[s] = True
+                    aircraft_data[ac_found]["uses"] += 1
+                    increment_key(aircraft_used, ac_found)
+                    increment_key(instructors_used, inst_found)
+                    continue
+                else:
+                    s.on_wing_event_failed = True
+
             else:
                 used = 1
                 if ev != "warmup flight" and ev.is_double:
@@ -884,7 +961,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     if aircraft_found and inst_found:
                         aircraft_data[aircraft_found]["night_hours"] -= (needed_time + Aircraft.break_time)
                         instructor_data[inst_found]["hours"] -= (needed_time + Instructor.break_time)
-                        instructor_data[inst_found]["uses"] += 1
+                        instructor_data[inst_found]["uses"] += used
 
                         log_usage(
                             day_metrics["resources"]["aircraft"],
@@ -904,7 +981,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         s.event_complete(day)
                         s.schedule_failed = False
                         already_used[s] = True
-                        aircraft_data[aircraft_found]["uses"] += 1
+                        aircraft_data[aircraft_found]["uses"] += used
                         s.night_hours += needed_time
                         increment_key(aircraft_used, aircraft_found)
                         increment_key(instructors_used, inst_found)
@@ -940,7 +1017,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 if ac_found and inst_found:
                     aircraft_data[ac_found]["day_hours"] -= (needed_time + Aircraft.break_time)
                     instructor_data[inst_found]["hours"] -= (needed_time + Instructor.break_time)
-                    instructor_data[inst_found]["uses"] += 1
+                    instructor_data[inst_found]["uses"] += used
                     log_usage(
                         day_metrics["resources"]["aircraft"],
                         ac_found,
@@ -958,9 +1035,11 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     successfull_events.append([s,ev, str(day), "day",ac_found,inst_found])
                     if ev != "warmup flight":
                         s.event_complete(day)
+                    else:
+                        s.days_since_last_event = 0
                     s.schedule_failed = False
                     already_used[s] = True
-                    aircraft_data[ac_found]["uses"] += 1
+                    aircraft_data[ac_found]["uses"] += used
                     increment_key(aircraft_used, ac_found)
                     increment_key(instructors_used, inst_found)
                     continue
@@ -2071,7 +2150,7 @@ def main():
         ### each loop runs one run with the specified class size. 
         for j in range(len(class_size)):
             students = []
-            FlightStudent.student_id = 0
+            FlightStudent.STATIC_ID = 0
 
             if not user_input["include_current_students"]:
 
@@ -2101,6 +2180,7 @@ def main():
                 json.dump(simulation_json, f, indent=2)
 
         students = []
+        FlightStudent.STATIC_ID = 0
         FlightStudent.student_id = 0
         if not user_input["include_current_students"]:
 
@@ -2135,6 +2215,7 @@ def main():
 
         if user_input["use_monthly_class_sizes"]:
             students = []
+            FlightStudent.STATIC_ID = 0
             FlightStudent.student_id = 0
             if not user_input["include_current_students"]:
 

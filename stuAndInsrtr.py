@@ -21,9 +21,11 @@ class FlightStudent:
     s4 = ["Ground School", "Contacts", "Aero", "Instrument Ground", "Instruments", "Forms", "Capstone"]     # most common
 
     student_id = 0
+    STATIC_ID = 0
 
     def __init__(self, student_id, class_id, start_date):
-        self.student_id = student_id
+        self.student_id = FlightStudent.STATIC_ID
+        FlightStudent.STATIC_ID += 1
         self.class_id = class_id
         self.start_date = start_date
         self.days_since_last_event = 0             # lastCompletedEventDate - currentDate. If it's >= 15, they need a warmup flight
