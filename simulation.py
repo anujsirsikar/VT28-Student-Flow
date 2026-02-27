@@ -567,7 +567,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     instructor_data = { instructor:
                        {
                            "hours": Instructor.daily_hours,
-                           "uses": 0
+                           "uses": 0,
+                           "contact flights": 0
                        }
                        for instructor in instructors_available}
 
@@ -871,7 +872,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         continue
             
 
-            elif ev != "warmup flight" and ev.on_wing == "solo":
+            #elif ev != "warmup flight" and ev.on_wing == "solo":
+            elif ev != "warmup flight" and ev == "FAM4501":
                 # solo flight
                 aircraft_found = None
                 for ac in aircraft_data:
@@ -907,13 +909,14 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         break
                 
                 
-                if s.on_wing is not None and instructors[s.on_wing] in instructor_data and needed_time <= instructor_data[instructors[s.on_wing]]["hours"] and instructor_data[instructors[s.on_wing]]["uses"] < 4:
+                if s.on_wing is not None and instructors[s.on_wing] in instructor_data and needed_time <= instructor_data[instructors[s.on_wing]]["hours"] and instructor_data[instructors[s.on_wing]]["uses"] < 4 and instructor_data[instructors[s.on_wing]]["contact flights"] < 2:
                     inst_found = instructors[s.on_wing]
 
                 if ac_found and inst_found:
                     aircraft_data[ac_found]["day_hours"] -= (needed_time + Aircraft.break_time)
                     instructor_data[inst_found]["hours"] -= (needed_time + Instructor.break_time)
                     instructor_data[inst_found]["uses"] += 1
+                    instructor_data[inst_found]["contact flights"] += 1
                     log_usage(
                         day_metrics["resources"]["aircraft"],
                         ac_found,
@@ -1011,6 +1014,11 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 
                 for inst in instructor_data:
                     if needed_time <= instructor_data[inst]["hours"] and instructor_data[inst]["uses"] < 4:
+                        if ev != "warmup flight":
+                            if ev.block == "contacts" and ev.is_double and instructor_data[inst]["contact flights"] >= 1:      # do we need this??
+                                continue
+                            elif ev.block == "contacts" and instructor_data[inst]["contact flights"] >= 2:
+                                continue
                         inst_found = inst
                         break
 
@@ -1018,6 +1026,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     aircraft_data[ac_found]["day_hours"] -= (needed_time + Aircraft.break_time)
                     instructor_data[inst_found]["hours"] -= (needed_time + Instructor.break_time)
                     instructor_data[inst_found]["uses"] += used
+                    if ev != "warmup flight" and ev.block == "contacts":
+                        instructor_data[inst_found]["contact flights"] += used
                     log_usage(
                         day_metrics["resources"]["aircraft"],
                         ac_found,
