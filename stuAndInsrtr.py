@@ -22,9 +22,12 @@ class FlightStudent:
 
     student_id = 0
     STATIC_ID = 0
+    LEAVE_PERIOD = 0   
 
     def __init__(self, student_id, class_id, start_date):
         self.student_id = FlightStudent.STATIC_ID
+        self.leave_period = FlightStudent.LEAVE_PERIOD
+        FlightStudent.LEAVE_PERIOD = 2 if FlightStudent.LEAVE_PERIOD == 1 else 1
         FlightStudent.STATIC_ID += 1
         self.class_id = class_id
         self.start_date = start_date

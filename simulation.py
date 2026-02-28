@@ -95,6 +95,47 @@ def clear_insts(insts):
     for i in insts:
         i.on_wings = []
 
+def load_leave_ranges(csv_path):
+    """
+    Returns:
+    {
+        1: [(start, end), (start, end), ...],
+        2: [(start, end), (start, end), ...]
+    }
+    """
+    leave_ranges = {}
+
+    with open(csv_path, newline="") as f:
+        reader = csv.reader(f)
+        for row in reader:
+            if len(row) < 3:
+                continue
+
+            label = row[0].strip().lower()  # "holiday leave 1"
+            start = datetime.strptime(row[1].strip(), "%Y-%m-%d").date()
+            end = datetime.strptime(row[2].strip(), "%Y-%m-%d").date()
+
+            number = int(label.split()[-1])  # extracts 1 or 2
+
+            # Append instead of overwrite
+            leave_ranges.setdefault(number, []).append((start, end))
+
+    return leave_ranges
+
+def is_in_leave_range(leave_ranges, leave_number, check_date):
+    """
+    Returns True if the given date falls in ANY range
+    for that leave number (across all fiscal years)
+    """
+    if leave_number not in leave_ranges:
+        return False
+
+    for start, end in leave_ranges[leave_number]:
+        if start <= check_date <= end:
+            return True
+
+    return False
+
 
 # SIMULATION LOGIC 
 def run_simulation(sim_start_date, days, percent_aero, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4, class_size_type, class_size, monthly_class_size):
@@ -452,7 +493,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
 
         #if they are not done then check if they need a warmup event. then assign the student and their event to the list.
-        if s.completion_date is None:
+        on_leave = is_in_leave_range(leave_ranges, s.leave_period, day)
+
+        if s.completion_date is None and not on_leave:
             if s.days_since_last_event >= 15:
                 events_to_attempt.append((s,"warmup flight"))
                 already_used[s] = False
@@ -592,15 +635,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     #     )
     # )
 
-    # events_to_attempt.sort(
-    #     key=lambda item: (
-    #         0 if getattr(item[1], "on_wing", "no") == "yes"
-    #         else 1 if item[0].days_since_last_event > 10
-    #         else 2,
-    #         -item[0].days_since_last_event,
-    #         block_priority.get(item[0].get_block(), float("inf")),
-    #     )
-    # )
+
 
 
     ## going to try to integrate it this way. only contacts people who have already failed get moved to front instead of every student
@@ -2083,9 +2118,10 @@ def main():
     mr_sims = "mr"
     aircrafts = "aircraft"
 
-    global holiday_ranges
+    global holiday_ranges,leave_ranges
 
-    holiday_ranges = load_holiday_ranges("holidays.csv")[:-1]
+    holiday_ranges = load_holiday_ranges("holidays.csv")
+    leave_ranges = load_leave_ranges("holiday_leave.csv")
 
     # going to running run_simulation function multiple times based on different class sizes
 
