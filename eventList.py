@@ -88,7 +88,7 @@ def is_on_wing_needed():
         "FAM4102": "yes", "FAM4103": "yes", "FAM4104": "yes", 
         "FAM4201": "no", "FAM4202": "no", "FAM4203": "no",
         "FAM4204": "no", "FAM4301": "no", "FAM4302": "no", "FAM4303": "yes",
-        "FAM4304": "yes", "FAM4490": "no", "FAM4501": "no",
+        "FAM4304": "yes", "FAM4490": "no", "FAM4501": "solo",
     }
 
     return on_wing_needed
