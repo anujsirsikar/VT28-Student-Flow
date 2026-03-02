@@ -37,28 +37,6 @@ START_DATE = datetime.strptime("2025-11-23", "%Y-%m-%d").date()
 # HELPER FUNCTIONS
 def is_valid_day(day):
     # not a weekend, 96 (long weekend), or a holiday period
-    '''
-    Thanksgiving -> 27-30nov25
-    Christmas -> 25-28dec25
-    New Years -> 01-04jan26
-    July 4th -> 03-06jul26
-    Columbus day -> 11-13oct25
-    MLK day -> 17-19jan26
-    President's day -> 14-16Feb26
-    Memorial day -> 23-25may26
-    Juneteenth -> 19-21jun26
-    Labor day -> 5-7sep26
-    Veterans day -> 11nov25 
-
-    Holiday leave periods:
-    1) 15dec-28dec
-    2) 29dec-11jan
-
-    '''
-    # IMPORTANT: maybe we only assign student the first holiday period of leave or we assign half the first period 
-    #            and the other half the second period of leave. We can swap each time we class someone up or there 
-    #            could be an even more effecient way. But then we would also have to note which leave period the 
-    #            student falls into as a parameter for this function. 
     """
     Returns True if the given date (a datetime.date object) is a valid working day.
     Invalid days include:

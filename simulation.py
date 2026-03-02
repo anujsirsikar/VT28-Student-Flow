@@ -1,6 +1,8 @@
 # @author Anuj Sirsikar and Timothy Kedrowski and Lauren Leckelt
 # simulates a student going through the primary syllabus in flight school
 
+## Feel free to contact for questions: LLECKELT@GMAIL.COM
+
 
 import datetime
 from datetime import date, timedelta, datetime, date as date_type
