@@ -2132,7 +2132,7 @@ def main():
     #### can use these variables to determine if sims and/or flights should be double scheduled. 
     double_sim = user_input["double_sim"]
     double_flight = user_input["double_flight"]
-    print("doubles", double_sim, double_flight)
+    # print("doubles", double_sim, double_flight)
 
     # Initialize a list of event objects for each block
     sysGrndSchoolEvents = make_events(os.path.join("data", "sysGrnd.csv"), "system ground", double_sim, double_flight)
@@ -2140,8 +2140,8 @@ def main():
     # FAM1301, FAM4101, FAM4102, FAM4103, FAM4104, FAM4303, FAM4304 are the required onwing events
     contactsEvents = make_events(os.path.join("data", "contacts.csv"), "contacts", double_sim, double_flight)
 
-    for ev in contactsEvents:
-        print(ev.name, ev.on_wing)
+    # for ev in contactsEvents:
+        # print(ev.name, ev.on_wing)
 
     aeroEvents = make_events(os.path.join("data","aero.csv"), "aero", double_sim, double_flight)
     instrGrndSchoolEvents = make_events(os.path.join("data", "instrGrnd.csv"), "instrument ground", double_sim, double_flight)
@@ -2315,10 +2315,10 @@ def main():
                 class_size_resource_waits.append(res_waits)
             simulation_resource_waits.append(class_size_resource_waits)
 
-        print("simulation resource waits", simulation_resource_waits)
+        # print("simulation resource waits", simulation_resource_waits)
 
 
-    print(fiscal_year_stats(2026, simulation_data[0][0], "year"))
+    # print(fiscal_year_stats(2026, simulation_data[0][0], "year"))
 
     x_labels = class_size + ["FY26"]
 
