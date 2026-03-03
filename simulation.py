@@ -1,9 +1,9 @@
 # @author Anuj Sirsikar and Timothy Kedrowski and Lauren Leckelt
-# simulates a student going through the primary syllabus in flight school
+# simulates students going through the primary syllabus in flight school
 
-## Feel free to contact for questions: LLECKELT@GMAIL.COM
+## Feel free to contact for questions (but only very importtant questions): LLECKELT@GMAIL.COM or anuj.sirsikar@gmail.com 
 
-
+# libraries
 import datetime
 from datetime import date, timedelta, datetime, date as date_type
 from collections import deque
@@ -25,7 +25,7 @@ import json
 from matplotlib.patches import Patch
 from holiday_loader import load_holiday_ranges
 
-
+# different syllabus orders
 SYLLABUS_BLOCKS = {
         1: ["Ground School", "Contacts", "Instrument Ground", "Instruments", "Aero", "Forms", "Capstone" ],
         2: ["Ground School", "Contacts", "Aero", "Forms", "Instrument Ground", "Instruments", "Capstone" ],
@@ -33,35 +33,14 @@ SYLLABUS_BLOCKS = {
         4: ["Ground School", "Contacts", "Aero", "Instrument Ground", "Instruments", "Forms", "Capstone" ]
     }
 
+
+# start date should be in accordance with loaded in student data
 START_DATE = datetime.strptime("2025-11-23", "%Y-%m-%d").date()
 # START_DATE = date.today()
 
 
 # HELPER FUNCTIONS
 def is_valid_day(day):
-    # not a weekend, 96 (long weekend), or a holiday period
-    '''
-    Thanksgiving -> 27-30nov25
-    Christmas -> 25-28dec25
-    New Years -> 01-04jan26
-    July 4th -> 03-06jul26
-    Columbus day -> 11-13oct25
-    MLK day -> 17-19jan26
-    President's day -> 14-16Feb26
-    Memorial day -> 23-25may26
-    Juneteenth -> 19-21jun26
-    Labor day -> 5-7sep26
-    Veterans day -> 11nov25 
-
-    Holiday leave periods:
-    1) 15dec-28dec
-    2) 29dec-11jan
-
-    '''
-    # IMPORTANT: maybe we only assign student the first holiday period of leave or we assign half the first period 
-    #            and the other half the second period of leave. We can swap each time we class someone up or there 
-    #            could be an even more effecient way. But then we would also have to note which leave period the 
-    #            student falls into as a parameter for this function. 
     """
     Returns True if the given date (a datetime.date object) is a valid working day.
     Invalid days include:
@@ -77,26 +56,29 @@ def is_valid_day(day):
     m, d = day.month, day.day
     # --- Holiday ranges (month/day, month/day) ---
     # holiday_ranges = load_holiday_ranges("holidays.csv")
-
     for dates in holiday_ranges:
         if (dates["start"]<= day <= dates["end"]):
             return False
     return True
 
 
+# returns number of students not yet complete with primary 
 def current_active_students(students):
     count = 0
     for s in students:
         if None in s.completed_dates:
             count+=1
-
     return count
 
 
+# removes all on wing students for a given instructor
 def clear_insts(insts):
     for i in insts:
         i.on_wings = []
 
+
+# loads in leave ranges from a csv file
+# should make a csv file for each fiscal year
 def load_leave_ranges(csv_path):
     """
     Returns:
@@ -106,23 +88,19 @@ def load_leave_ranges(csv_path):
     }
     """
     leave_ranges = {}
-
     with open(csv_path, newline="") as f:
         reader = csv.reader(f)
         for row in reader:
             if len(row) < 3:
                 continue
-
             label = row[0].strip().lower()  # "holiday leave 1"
             start = datetime.strptime(row[1].strip(), "%Y-%m-%d").date()
             end = datetime.strptime(row[2].strip(), "%Y-%m-%d").date()
-
             number = int(label.split()[-1])  # extracts 1 or 2
-
             # Append instead of overwrite
             leave_ranges.setdefault(number, []).append((start, end))
-
     return leave_ranges
+
 
 def is_in_leave_range(leave_ranges, leave_number, check_date):
     """
@@ -131,63 +109,54 @@ def is_in_leave_range(leave_ranges, leave_number, check_date):
     """
     if leave_number not in leave_ranges:
         return False
-
     for start, end in leave_ranges[leave_number]:
         if start <= check_date <= end:
             return True
-
     return False
 
 
 # SIMULATION LOGIC 
+'''
+This function is where the simulation takes place. It runs the a single day function over
+and over again for a given amount of days (default is 52 weeks). 
+Return: a list called 'result' which includes the date and students scheduled that day 
+'''
 def run_simulation(sim_start_date, days, percent_aero, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4, class_size_type, class_size, monthly_class_size):
-    # sim_start_date = date(2025, 11, 24)   # year, month, day
     current_day = sim_start_date
     result = []
     daily_metrics = []
     reset_on_wing()
     clear_insts(instructors)
-    
-    
     # run the loop for the amount of days
     while days > 0:  
-
         ## adding this now to account for every other week.
         weeks_since_start = (current_day - sim_start_date).days // 7 + 1
-
         if students is None:
             break 
         if is_valid_day(current_day):
-            # print("it is a valid day")
-            # if it is a monday
             # added it so that it only classes up on first monday and every other monday after that
             if current_day.weekday() == 0 and weeks_since_start % 2 == 0:
                 # print("it is a monday")
                 if class_size_type == "fixed":
                     new_students = []
-
                     increase = class_size
                     if max_250:
                         count = current_active_students(students)
                         if count + increase > 250:
                             increase = 0
-
                     for i in range(increase):
                         FlightStudent.student_id += 1
                         new_student = FlightStudent(FlightStudent.student_id, i//8, current_day)
                         new_student.imported = False
                         new_students.append(new_student)
-
                 elif class_size_type == "FY":
                     new_students = students_starting_weekly(os.path.join("students", "weekly_class_up_fy26.csv"), current_day)
-
                 # # # if the class size is the one with the monthly amounts
                 else: 
                     new_students = []
                     ## add the monthly class up numbers here
                     month_index = current_day.month -1
                     class_up_num = monthly_class_size[month_index]
-
                     for i in range(class_up_num):
                         FlightStudent.student_id += 1
                         new_student = FlightStudent(FlightStudent.student_id, i//8, current_day)
@@ -205,23 +174,14 @@ def run_simulation(sim_start_date, days, percent_aero, students, instructors, ut
             result.append(schedule)
             daily_metrics.append(day_metrics)
         # else:
-        #     print(current_day)
         days -= 1
         current_day += timedelta(days=1)
-
-        # for s in students:
-        #     print(s.block_wait_times)
-
 
     ## format is list: schedule, list: students    
     return result, {
         "start_date": str(sim_start_date),
         "days":daily_metrics}, students
     
-    # return result, students
-
-instructor_rate = 0.9
-instructor_daily_hours = 12
 
 # # helper function
 def increment_key(d, key):
@@ -235,13 +195,9 @@ def pair_students(queue: dict):
     pairs = []
     used = set()
 
-    # print(queue.items())
     for s, ev in queue.items():
         
         if s.has_partner() and s.get_partner() in queue and s.get_partner() not in used:
-            # if queue[s] != queue[s.get_partner()]:
-                # print("not scheduled for the same event!!")
-            # print("already has partner")
             used.add(s)
             used.add(s.get_partner())
             pairs.append((s, s.get_partner(), ev, queue[s.get_partner()]))
@@ -256,20 +212,15 @@ def pair_students(queue: dict):
                     continue
 
                 if tev == ev:
-                    # print("assigning new partner")
-                    # print(ev)
                     used.add(s)
                     used.add(t)
                     s.assign_partner(t)
-                    #pairs.append((s, t, ev, queue[s.get_partner()]))
                     pairs.append((s, t, ev, tev))
                     break
     return pairs
 
-
-
+# schedules sim events that require a partner
 def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, successfull_events, day_metrics, sims_used, sim_type):
-    # print("used_set: ", used_set)
     if s.has_partner():
         available_sims = []
         for o in hours:
@@ -300,22 +251,18 @@ def schedule_partner_sim(day, s, ev, used_set, hours, needed_time, successfull_e
             for o in available_sims:
                 hours[o] -= (needed_time + Sim.break_time)
             partner = s.get_partner()
-
-
             successfull_events.append([s,ev, str(day), available_sims[0]])
             successfull_events.append([partner,ev, str(day), available_sims[1]])
             s.event_complete(day)
-            partner.event_complete(day) ## here is where the error is occuring. why is this person complete if they are scheduling a sim??
+            partner.event_complete(day) 
             s.schedule_failed = False
             partner.schedule_failed = False
-            # used_set.add(s)
-            # used_set.add(partner)
             used_set[s] = True
             used_set[partner] = True
             increment_key(sims_used, available_sims[0])
             increment_key(sims_used, available_sims[1])
             
-
+# schedules a sim event for a single student
 def schedule_sim(day, s, ev, sim_hours, needed_time, successfull_events, day_metrics, sims_used, sim_type):
     for o in sim_hours:
         if needed_time <= sim_hours[o]:
@@ -337,10 +284,7 @@ def schedule_sim(day, s, ev, sim_hours, needed_time, successfull_events, day_met
             increment_key(sims_used, o)
             break
 
-
-
-
-
+# check classrooms already in use if the given event is taking place in any of them
 def class_in_progress(event, classrooms):
     ## check every classroom
     for c in classrooms:
@@ -354,9 +298,10 @@ def class_in_progress(event, classrooms):
                 classrooms[c]["string_diff"] += 1
                 classrooms[c]["active_events"][key] = classrooms[c]["active_events"][event]
                 del classrooms[c]["active_events"][event]
-
     return None
 
+# assigns a ground school event a classroom
+# if class exists then adds to it or starts a class in a new classroom if possible
 def select_classroom(event, needed_time, classrooms):
     class_exists = class_in_progress(event, classrooms)
 
@@ -374,6 +319,7 @@ def select_classroom(event, needed_time, classrooms):
             
     return None
 
+# helps to record the usage of resources to be tracked in a seperate file
 def log_usage(bucket, resource, hours, hours_available=None, uses=1):
     key = str(resource)
 
@@ -391,8 +337,8 @@ def log_usage(bucket, resource, hours, hours_available=None, uses=1):
 def reset_on_wing():
     Instructor.on_wing_start = 0
 
-def get_on_wing(instructors):
 
+def get_on_wing(instructors):
     selected_inst = None
     n = len(instructors)
 
@@ -407,7 +353,12 @@ def get_on_wing(instructors):
     return selected_inst
     
 
-
+'''
+This is the main function!!!
+This function goes through one day, scheduling as many students as possible
+The simulation just runs this function for each day of the simulation
+Return: a list of scheduled events and the metrics for the day (like number of students, etc...)
+'''
 def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, classroom, syllabus1, syllabus2, syllabus3, syllabus4):# grndSchool, contacts, aero, inst, forms, capstone):
     # print("------------ NEW DAY --------------", day)
     
@@ -451,9 +402,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             "instructor": {}
         }
     }
-
-    # print(" ")
-    # print("-------------NEW DAY----------------", day)
     
     # events that will be attempted to schedule for each student
     events_to_attempt = []
@@ -477,8 +425,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     already_used = {}
 
     for s in students:
-
-
         # just assume that each kid starts out with the assumption that they will not be scheduled 
         s.schedule_failed = True    
 
@@ -524,10 +470,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     instructors[s.on_wing].on_wings.remove(s)
                     s.on_wing = None
 
-                # if s.on_wing is not None and nxt.block != "contacts":
-                #     print("not none", nxt.block)
-
-
                 events_to_attempt.append((s,nxt))
 
                 block_name = s.get_block()
@@ -537,19 +479,12 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
                 already_used[s] = False
 
-    # for i in instructors:
-    #     print(i.name, i.on_wings) 
-
-
-    # print(events_to_attempt)
-
     # Filter out failed devices. Note this changes every day
     working_utds = [sim for sim in utd if random.random() > Sim.failure_rate]
     working_ofts = [sim for sim in oft if random.random() > Sim.failure_rate]
     working_vtds = [sim for sim in vtd if random.random() > Sim.failure_rate]
     working_mrs  = [sim for sim in mr  if random.random() > Sim.failure_rate]
     working_aircraft = [ac for ac in aircraft if random.random() > Aircraft.failure_rate]
-
 
     ## these are objects where the mapping is Object: hours ex. UTD object: 17.5
     utd_hours = {sim: Sim.daily_hours for sim in working_utds}
@@ -580,13 +515,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
         for c in classroom
     }
 
-    
-
     # Make the partner pairs for the day
     for s, ev in events_to_attempt:
-
-        
-
         if ev == "warmup flight":
             continue
         if ev.block == "forms":
@@ -596,19 +526,11 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
     forms_pairs = pair_students(forms_partner_queue)        # we don't actaully care about the pairs, as long as they exist
     capstone_pairs = pair_students(capstone_partner_queue)
-    # print(forms_pairs)
-
-    # print("capstone pairs",day)
-    # for s in capstone_partner_queue:
-        # print("s:", s, "partner: ", s.get_partner(), capstone_partner_queue[s])
-
 
     # instructors now
     # want to leave these as objects because we will need to check their quals later on and check onwings 
     ## these are objects where the mapping is Object: hours ex. UTD object: 17.5
     instructors_available = [instructor for instructor in instructors if random.random() > Instructor.failure_rate]
-    # instructor_hours = {instructor: [Instructor.daily_hours,0] for instructor in instructors_available}
-
     instructor_data = { instructor:
                        {
                            "hours": Instructor.daily_hours,
@@ -617,28 +539,12 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                        }
                        for instructor in instructors_available}
 
-
     # re-sort the students based on which block has the most students
     # blocks are sorted by most amount of students to least 
     ordered_blocks = sorted(daily_student_distribution, key=daily_student_distribution.get, reverse=True)
     
     # Build a quick lookup for block priority
     block_priority = {block: i for i, block in enumerate(ordered_blocks)}
-
-
-    # Not sure which one is better
-
-    # this one does over ten sorted by block and under ten sorted by block 
-    # events_to_attempt.sort(
-    #     key=lambda item: (
-    #         item[0].days_since_last_event < 10,
-    #         -item[0].days_since_last_event,
-    #         block_priority.get(item[0].get_block(), float("inf"))
-    #     )
-    # )
-
-
-
 
     ## going to try to integrate it this way. only contacts people who have already failed get moved to front instead of every student
     events_to_attempt.sort(
@@ -650,16 +556,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
             block_priority.get(item[0].get_block(), float("inf")),
         )
     )
-
-
-    # this one does sorted by longest to shortest and then sorted by blck within that queue
-    #events_to_attempt.sort(
-    #    key=lambda item: (
-    #        -item[0].days_since_last_event,
-    #        block_priority.get(item[0].get_block(), float("inf"))
-    #    )
-    #)
-
 
     # looking at student and the event they are scheduled for
     for s, ev in events_to_attempt:
@@ -692,7 +588,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 else:
                     classroom_data[c]["hours"] -= needed_time
                     classroom_data[c]["active_events"][ev] = 1
-                    # classroom_data[c]["uses"] += 1
                     uses = 1
                     time = needed_time
 
@@ -708,8 +603,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 s.schedule_failed= False
                 already_used[s] = True
 
-                
-            
         elif needed_resource == "utd":
             schedule_sim(day, s, ev, utd_hours, needed_time, successfull_events, day_metrics, sims_used, "utd")
 
@@ -750,7 +643,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 can_be_night = True
             
             # forms
-            
             if ev != "warmup flight" and ev.block == "forms":
                 if s.has_partner():
                     used = 1
@@ -779,20 +671,16 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         # Stop once we have both roles
                         if section_lead_found and formation_q_found:
                             break
-                    # print(available_aircraft)
-                    # print(available_instructors)
                     if len(available_aircraft) == 2 and len(available_instructors) == 2:
                         for ac in available_aircraft:
                             aircraft_data[ac]["day_hours"] -= (needed_time + Aircraft.break_time)
                             aircraft_data[ac]["uses"] += used
                             increment_key(aircraft_used, ac)
                         for inst in available_instructors:
-                            #print(inst)
                             instructor_data[inst]["hours"] -= (needed_time + Instructor.break_time)
                             instructor_data[inst]["uses"] += used
                             increment_key(instructors_used, inst)
     
-
                         log_usage(
                             day_metrics["resources"]["aircraft"],
                             available_aircraft[0],
@@ -823,7 +711,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         )
                         successfull_events.append([s, ev, str(day), "day", available_aircraft[0], available_instructors[0]])
                         successfull_events.append([s.get_partner(), ev, str(day), "day", available_aircraft[1], available_instructors[1]])
-
                         partner = s.get_partner()
                         s.event_complete(day)
                         partner.event_complete(day)
@@ -831,7 +718,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         partner.schedule_failed = False
                         already_used[s] = True
                         already_used[partner] = True
-                        # print(forms_students)
                         continue
             elif ev != "warmup flight" and ev.block == "capstone":
                 if s.has_partner():
@@ -845,27 +731,21 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                             available_aircraft.append(ac)
                             if len(available_aircraft) == 2:
                                 break
-                
                     for inst in instructor_data:
                         if needed_time <= instructor_data[inst]["hours"] and instructor_data[inst]["uses"] < 4:
                             available_instructors.append(inst)
                             if len(available_instructors) == 2:
                                     break
-                         
-                    # print(available_aircraft)
-                    # print(available_instructors)
                     if len(available_aircraft) == 2 and len(available_instructors) == 2:
                         for ac in available_aircraft:
                             aircraft_data[ac]["day_hours"] -= (needed_time + Aircraft.break_time)
                             aircraft_data[ac]["uses"] += used
                             increment_key(aircraft_used, ac)
                         for inst in available_instructors:
-                            #print(inst)
                             instructor_data[inst]["hours"] -= (needed_time + Instructor.break_time)
                             instructor_data[inst]["uses"] += used
                             increment_key(instructors_used, inst)
     
-
                         log_usage(
                             day_metrics["resources"]["aircraft"],
                             available_aircraft[0],
@@ -894,9 +774,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                             hours_available=Instructor.daily_hours,
                             uses=used
                         )
-
                         partner = s.get_partner()
-
                         successfull_events.append([s, ev, str(day), "day", available_aircraft[0], available_instructors[0]])
                         successfull_events.append([partner, ev, str(day), "day", available_aircraft[1], available_instructors[1]])
                         s.event_complete(day)
@@ -905,11 +783,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         partner.schedule_failed = False
                         already_used[s] = True
                         already_used[partner] = True
-                        # print(forms_students)
                         continue
-            
 
-            #elif ev != "warmup flight" and ev.on_wing == "solo":
             elif ev != "warmup flight" and ev == "FAM4501":
                 # solo flight
                 aircraft_found = None
@@ -936,15 +811,12 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
             elif ev != "warmup flight" and ev.on_wing == "yes":
                 ## the student has moved on to day
-
                 ac_found = None
                 inst_found = None
-
                 for ac in aircraft_data:
                     if needed_time <= aircraft_data[ac]["day_hours"] and aircraft_data[ac]["uses"] < Aircraft.uses_per_day:
                         ac_found = ac
                         break
-                
                 
                 if s.on_wing is not None and instructors[s.on_wing] in instructor_data and needed_time <= instructor_data[instructors[s.on_wing]]["hours"] and instructor_data[instructors[s.on_wing]]["uses"] < 4 and instructor_data[instructors[s.on_wing]]["contact flights"] < 2:
                     inst_found = instructors[s.on_wing]
@@ -1027,7 +899,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                         increment_key(instructors_used, inst_found)
                         continue
     
-
                 # was getting an error so changed ev.names to ev
                 running_out_of_events = (ev == "I4490" or ev == "N4101" or ev == "FAM4601")
 
@@ -1036,11 +907,8 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 # if they are running out of events to get night hours
                 if ev == "FAM4601" or (s.night_hours < 5 and running_out_of_events):
                     continue
-
-                
                 
                 ## the student has moved on to day
-
                 ac_found = None
                 inst_found = None
 
@@ -1052,7 +920,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                 for inst in instructor_data:
                     if needed_time <= instructor_data[inst]["hours"] and instructor_data[inst]["uses"] < 4:
                         if ev != "warmup flight":
-                            if ev.block == "contacts" and ev.is_double and instructor_data[inst]["contact flights"] >= 1:      # do we need this??
+                            if ev.block == "contacts" and ev.is_double and instructor_data[inst]["contact flights"] >= 1:    
                                 continue
                             elif ev.block == "contacts" and instructor_data[inst]["contact flights"] >= 2:
                                 continue
@@ -1091,41 +959,31 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     increment_key(instructors_used, inst_found)
                     continue
                     
-
-
     # now deal with students that failed today 
     for s in students:
-
         if s.schedule_failed and s.get_block() != "complete":
             s.days_since_last_event += 1
             s.total_wait_time += 1
             s.block_wait_times[s.get_block()] += 1
-
             block,event = s.next_event()
             # get the event from the sylllabus
             syllabus = [syllabus1, syllabus2, syllabus3, syllabus4][s.syllabus_type-1]
-
             nxt = syllabus[block][event]
-
             resource = nxt.resource
-
-
             s.unscheduled_per_resource[resource] += 1    # need a way to figure out the resource type 
-
     year_stats = day.year
     if day.month in [11,12]:
         year_stats += 1
-
 
     summary = fiscal_year_stats(year_stats, students, "year")
 
     day_metrics["students"]["summary"] = summary
 
-
     return successfull_events, day_metrics
 
 
 # FY number format YYYY, list of students
+# returns how many students started, completed, and are still in primary at end of the fiscal year
 def fiscal_year_stats(year, students, year_or_total):
     started = 0
     completed = 0
@@ -1156,9 +1014,6 @@ def fiscal_year_stats(year, students, year_or_total):
     }
 
 
-
-
-
 # reads in events from a csv file and makes event objects per block and puts that in a list
 '''
 VT28 Rules on Doubling Events:
@@ -1168,6 +1023,7 @@ VT28 Rules on Doubling Events:
 '''
 # Questions??? -> what's the normal down time between flights and then what's the time for sims?
 #              -> do we need to give students and instructors some "down time" in between events if they are doubling?
+# (this function is more chatGPT heavy)
 def make_events(file_path, block, double_sim, double_flight):
     # keep track of each event's activity time
     activity_time_dict = getActivityTime()
@@ -1278,15 +1134,11 @@ def make_events(file_path, block, double_sim, double_flight):
         if "/" in ev.name and ev.resource in {"aircraft","utd", "oft", "vtd", "mr"}:
             ev.is_double = True
         events.append(ev)
-    #for ev in events:
-    #    print(ev, " ", ev.activity_time)
-
 
     if block == "contacts":
         for ev in events:
             if ev.resource == "aircraft":
                 ev.on_wing = on_wing_need_dict[ev.name]
-
 
     return events
 
@@ -1324,7 +1176,6 @@ def load_students(file_path):
                     if last_date is None or date > last_date:
                         last_date = date
                         last_event = key
-                        #print(last_event)
 
             # Create student object
             student = FlightStudent(student_id, class_id, start_date)
@@ -1353,8 +1204,6 @@ def load_students(file_path):
                 # Initialize timeline fields
                 student.last_completed_event_date = last_date
                 student.days_since_last_event = (START_DATE - student.last_completed_event_date).days
-                #print("last comp event: ", last_event)
-                #print(last_date)
                 found = False 
                 for block_index, block in enumerate(sys1):
                     for event_index, event in enumerate(block):
@@ -1365,7 +1214,7 @@ def load_students(file_path):
                             break
                     if found:
                         break
-                
+        
                 # Figure out which syllabus the student is using
                 # For syllabus 1:
                 # 0 = sys grnd
@@ -1475,11 +1324,10 @@ def load_students(file_path):
             
             student_list.append(student)
     FlightStudent.student_id = len(student_list)+5
-
-
     return student_list
 
-#write now, don't care if they're status is 'suspended'. As long as they have something, we will count them as qualified
+# loads in and create instructor objects from a csv file with their names and quals
+#right now, don't care if they're status is 'suspended'. As long as they have something, we will count them as qualified
 def load_instructors(file_path):
     instructor_list = []
     with open(file_path, newline="", encoding="utf-8") as csvfile:
@@ -1499,7 +1347,7 @@ def load_instructors(file_path):
             instructor_list.append(instructor)
     return instructor_list
 
-# this function will be called every monday
+# this function will be called every other monday
 # Note: make sure dates can be compared (same format)
 # This function creates a list of new students that will be added (.extend) to the student list
 # It will be called in the run_simulation function
@@ -1532,6 +1380,10 @@ def students_starting_weekly(file_path, date):
     return new_students
     
 
+'''
+Most of the following functions create the user interface that the user interacts with
+when they run this python file. The user has a lot of options to customize the type of simulation they run.
+'''
 def set_bg(widget, color):
     widget.configure(bg=color)
     for child in widget.winfo_children():
@@ -1848,8 +1700,6 @@ def ask_user():
 
     use_monthly_var, get_monthly_values = month_class_size_selector(root)
 
-    
-
     set_bg(root, "#2f528a")
 
     # ---------------- Confirm ----------------
@@ -1861,9 +1711,6 @@ def ask_user():
         result["double_flight"] = (choice_tog3.get() == "yes")
         result["max_250"] = (choice_tog1.get() == "yes")
         result["include_in_analysis"] = (choice2.get() == "yes")
-        # result["monthly_class_sizes"] = {
-        #     m: v.get() for m, v in month_vars.items()
-        # }
         result["use_monthly_class_sizes"] = use_monthly_var.get()
         result["monthly_class_sizes"] = get_monthly_values()
 
@@ -1887,7 +1734,6 @@ def ask_user():
     root.mainloop()
 
     return result
-
 
 # # ## student list in format 
 # # '''
@@ -1939,12 +1785,6 @@ def compute_average_waits(student_lists, remove_current_students=True, debug=Fal
 
 
     return average_waits
-
-
-# def get_average_waits(students):
-
-
-
 
 def compare_multiple_simulations(list_of_student_lists, class_up_size, percentages, remove_current_students=True, debug=False):
     """
@@ -2059,12 +1899,10 @@ def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_siz
 
                     # block_to_wait = dict(zip(SYLLABUS_BLOCKS[s.syllabus_type], s.block_wait_times))
                     block_complete = dict(zip(SYLLABUS_BLOCKS[s.syllabus_type], s.completed_blocks))
-                    # print("block complete", block_complete)
 
                     if block_name not in s.block_wait_times:
                         continue
                     
-                    # print("block wait times", s.block_wait_times)
                     block_to_date = dict(zip(SYLLABUS_BLOCKS[s.syllabus_type], s.completed_dates))
 
                     pre_sim = block_to_date[block_name] is not None and block_to_date[block_name] < START_DATE
@@ -2073,10 +1911,6 @@ def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_siz
                         wait = s.block_wait_times[block_name]
 
                         run_waits.append(wait)
-
-                # print(block_name)
-                # print(run_waits)
-                # print(sum(run_waits))
 
                 waits.append(sum(run_waits) / len(run_waits) if run_waits else 0)  
 
@@ -2110,7 +1944,9 @@ def compare_multiple_simulations_with_blocks(list_of_student_lists, class_up_siz
     plt.tight_layout()
     plt.show()
 
-
+'''
+This is the main function where everything comes together.
+'''
 def main():
     # Resources
     classrooms = "classroom"
@@ -2132,17 +1968,11 @@ def main():
     #### can use these variables to determine if sims and/or flights should be double scheduled. 
     double_sim = user_input["double_sim"]
     double_flight = user_input["double_flight"]
-    # print("doubles", double_sim, double_flight)
 
     # Initialize a list of event objects for each block
     sysGrndSchoolEvents = make_events(os.path.join("data", "sysGrnd.csv"), "system ground", double_sim, double_flight)
-    # print("sys grnd: ", sysGrndSchoolEvents)
     # FAM1301, FAM4101, FAM4102, FAM4103, FAM4104, FAM4303, FAM4304 are the required onwing events
     contactsEvents = make_events(os.path.join("data", "contacts.csv"), "contacts", double_sim, double_flight)
-
-    # for ev in contactsEvents:
-        # print(ev.name, ev.on_wing)
-
     aeroEvents = make_events(os.path.join("data","aero.csv"), "aero", double_sim, double_flight)
     instrGrndSchoolEvents = make_events(os.path.join("data", "instrGrnd.csv"), "instrument ground", double_sim, double_flight)
     instrumentsEvents = make_events(os.path.join("data", "instr.csv"), "instruments", double_sim, double_flight)
@@ -2157,7 +1987,6 @@ def main():
     syllabus3 = [sysGrndSchoolEvents, contactsEvents, instrGrndSchoolEvents, instrumentsEvents, formsEvents, aeroEvents, capstoneEvents]
     syllabus4 = [sysGrndSchoolEvents, contactsEvents, aeroEvents, instrGrndSchoolEvents, instrumentsEvents, formsEvents, capstoneEvents]
 
-
     # Resources
     classrooms_list = [Classroom(f"CL{i+1}") for i in range(6)]
     utd_sims_list = [Utd(f"UTD{i+1}") for i in range(6)]
@@ -2167,13 +1996,10 @@ def main():
     aircraft_list = [Aircraft(f"AC{i+1}") for i in range(18)]
 
     # Run the simulation
-    # run_simulation(students, syllabus).syllabus1 = syllabus1
     FlightStudent.syllabus1 = syllabus1
     FlightStudent.syllabus2 = syllabus2
     FlightStudent.syllabus3 = syllabus3
     FlightStudent.syllabus4 = syllabus4
-
-    # print(user_input)
 
     global max_250
 
@@ -2238,7 +2064,7 @@ def main():
                     if m % 10 == 1:
                         new_student.syllabus_type = 2
                     new_student.imported = False
-                    students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
+                    students.append(new_student)
         else:
             students = load_students(os.path.join("students", "current_students.csv"))
 
@@ -2273,7 +2099,7 @@ def main():
                         if m % 10 == 1:
                             new_student.syllabus_type = 2
                         new_student.imported = False
-                        students.append(new_student) # **IMPORTANT: change what i is being divided by to control class size (i.e. how many people are starting each week)
+                        students.append(new_student)
             else:
                 students = load_students(os.path.join("students", "current_students.csv"))
 
@@ -2308,17 +2134,11 @@ def main():
                     "aircraft": 0
                 }
                 for stu in x:
-                    # print(stu.unscheduled_per_resource)
                     for key in res_waits:
                         res_waits[key] += stu.unscheduled_per_resource[key]
 
                 class_size_resource_waits.append(res_waits)
             simulation_resource_waits.append(class_size_resource_waits)
-
-        # print("simulation resource waits", simulation_resource_waits)
-
-
-    # print(fiscal_year_stats(2026, simulation_data[0][0], "year"))
 
     x_labels = class_size + ["FY26"]
 
@@ -2326,9 +2146,6 @@ def main():
         x_labels = x_labels + ["Variable"]
 
     compare_multiple_simulations_with_blocks(simulation_data, x_labels,percentages, not user_input["include_in_analysis"])
-    # compare_multiple_simulations(simulation_data, x_labels,percentages, not user_input["include_in_analysis"])
-
-
 
 if __name__ == "__main__":
     main()

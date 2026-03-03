@@ -1,5 +1,5 @@
 # @author Anuj Sirsikar and Timothy Kedrowski and Lauren Leckelt
-# simulates a student going through the primary syllabus in flight school
+# runs the simulation a lot more times to get a better idea of the true numbers (average of many iterations)
 
 ## Feel free to contact for questions: LLECKELT@GMAIL.COM
 

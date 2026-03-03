@@ -1,4 +1,6 @@
-# This code will address the flight schedule and different events and the resources they need
+# Below is the class for events. Events are their own object.
+# the two functions below the class are useful when making the events in simulation.py and assigning an event its activity time and then 
+# for the contact flying events, whether or not the flight requires the student to fly with their onwing.
 
 class Event:
     def __init__(self, name, training_day, resource, activity_time, block):

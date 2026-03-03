@@ -1,4 +1,5 @@
 # Take care of all the resources, and what defines them
+# a resource is anything that an event can take place in.
 # Note: these things can't be used everyday (usually just mon-fri)
 
 class Classroom():
@@ -15,7 +16,9 @@ class Classroom():
 
     def __repr__(self):
         return self.name
-  
+
+
+# there are different types of sims like OFTs, VTDs, UTDs, and MRs
 class Sim():
     amount = 32
     daily_hours = 17.5                       # 0530 to 2300
@@ -56,7 +59,6 @@ class Mr(Sim):                           # subclass of Sim
         super().__init__()
         self.name = name
 
-# Subclass of Mediums
 class Aircraft():
     amount = 18
     daily_hours = 16                     # 11 for the day and 5 for the night (0700 to 2300)
@@ -77,5 +79,3 @@ class Aircraft():
     
     def __repr__(self):
         return str(self)
-
-# now can write all the functions that alter the resources

@@ -1,20 +1,16 @@
 # take care of the "people" here
+# Classes anf functions for the flight students and their instructors
 
 from collections import deque
 from datetime import date
 
-
 class FlightStudent:
     # constructor
-
     syllabus1 = []
     syllabus2 = []
     syllabus3 = []
     syllabus4 = []
 
-    
-
-    # can get rid of this late r
     s1 = ["Ground School", "Contacts", "Instrument Ground", "Instruments", "Aero", "Forms", "Capstone"]
     s2 = ["Ground School", "Contacts", "Aero", "Forms", "Instrument Ground", "Instruments", "Capstone"]     # second most common
     s3 = ["Ground School", "Contacts", "Instrument Ground", "Instruments", "Forms", "Aero", "Capstone"]
@@ -34,7 +30,6 @@ class FlightStudent:
         self.days_since_last_event = 0             # lastCompletedEventDate - currentDate. If it's >= 15, they need a warmup flight
         self.total_wait_time = 0                   # total days waiting due to resource shortage (weekdays only)
         self.last_completed_event_date = None
-        # self.status = "active"   # active, completed, med down, leave, (pool?), waiting
         self.completion_date = None
         self.completed_blocks = [0,0,0,0,0,0,0]    # 0 = uncompleted, 1 = completed
         self.completed_dates = [None, None, None, None, None, None, None]  
@@ -60,7 +55,6 @@ class FlightStudent:
         self.next_event_index = 0                  # index into flattened syllabus events
         self.Aero_first = True                     # do we need this????
         self.night_hours = 0                       # need at least 5 hours of night flying
-        # should we include a student failu/setre rate?
         self.syllabus_type = 4 # 4 = normal, 2 = Aero and Forms and then instruments
         self.imported = True
         self.partner = None 
@@ -86,7 +80,7 @@ class FlightStudent:
         else:
             return [FlightStudent.s1, FlightStudent.s2, FlightStudent.s3, FlightStudent.s4][self.syllabus_type-1][self.current_block]
 
-
+    # gets called once a student completes a certain event
     def event_complete(self, day):
         syl = FlightStudent.syllabus1
         self.days_since_last_event = 0
@@ -109,16 +103,11 @@ class FlightStudent:
         # note: only switches partners for syllabus 2 and 3 folks. We can change that up. 
         if sum(self.completed_blocks) == 6 and self.next_event_index == 0 and (self.syllabus_type == 2 or self.syllabus_type == 3):
             if self.has_partner():
-                # print("time for new pairs")
                 partner = self.get_partner()
-                # print("partner: ", partner)
-                # print("student: ", self)
                 self.remove_partner()
                 partner.remove_partner()
-                # print(self.get_partner())
         if sum(self.completed_blocks) == 7:
             self.completion_date = day
-    
     
     def has_partner(self):
         if self.partner == None:
@@ -136,33 +125,19 @@ class FlightStudent:
     def remove_partner(self):
         self.partner = None
   
-
+# instructors now...
 class Instructor:
     failure_rate = 0.30                                    # only 70% of the instructors are available to instruct (30% chance they can't)
     daily_hours = 12
     break_time = 0.5     
-    on_wing_start = 0                                  # made this up bc it seems like it should be factored in.
+    on_wing_start = 0                                      # made this up bc it seems like it should be factored in.
     def __init__(self, name, section_lead, formation_q):
         self.name = name
         self.section_lead = section_lead                   # boolean value  (12)
         self.formation_q = formation_q                     # boolean value (I'm guessing this means formation qualified) (13)
         self.on_wings = []
-        
-        # Add this later:
-        # self.onwing = (studentID)  <- add this to the constructor's parameters
-        # should instructors have a status too?
 
     def __str__(self):
-        '''
-        if self.section_lead and self.formation_q:
-            return f"Instructor: {self.name}, qualled in both"
-        elif self.section_lead:
-            return f"Instructor: {self.name}, section lead"
-        elif self.formation_q:
-            return f"Instructor: {self.name}, formation q"
-        else:
-            return f"Instructor: {self.name}"
-        '''
         return f"Instructor: {self.name}"
     
     def __repr__(self):
