@@ -1,4 +1,9 @@
-
+'''
+Running this file allows the user to step through and compare specific days
+to see which resources were used (etc...) and to get the full picture of 
+what took place each day. How many students were scheduled and how many aircraft
+were used for example. 
+'''
 import tkinter as tk
 from tkinter import ttk
 from tkcalendar import Calendar
@@ -9,14 +14,11 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-
 # Global Variables
 selected_date1 = None
 selected_date2 = None
 data_by_date = {}
 valid_dates = set()
-
-
 
 def open_calendar(label, date_number):
     global selected_date1, selected_date2
@@ -53,15 +55,9 @@ def open_calendar(label, date_number):
         if date not in valid_dates:
             print("Selected date has no data:", date)
             return
-    
-        # if date_number == 1:
-        #     selected_date1 = date
-        # else:
-        #     selected_date2 = date
 
         set_date(date_number, date, label)
         win.destroy()
-
 
         print("Selected date saved:", date)
         label.config(text=f"Selected Date {date_number}: {date}")
@@ -72,7 +68,6 @@ def open_calendar(label, date_number):
             display_category(current_category)
 
     ttk.Button(win, text="Confirm", command=confirm_date).pack(pady=5)
-
 
 
 def load_simulation_data(base_dir="outputs"):
@@ -286,101 +281,6 @@ def display_category(category):
     populate_tree(tree2, selected_date2)
 
 
-
-
-# # ---------------- Display category ----------------
-# def display_category(category):
-#     for tree in [tree1, tree2]:
-#         for item in tree.get_children():
-#             tree.delete(item)
-
-#     # Helper to populate a treeview for a given date
-#     def populate_tree(tree, date):
-#         if not date:
-#             return
-#         runs = data_by_date.get(date, [])
-#         if not runs:
-#             return
-#         grouped = {}
-#         for run in runs:
-#             pct = run["pct"]
-#             cls = run["class"]
-#             day = run["day"]
-#             grouped.setdefault(pct, {}).setdefault(cls, [])
-
-#             if category == "students":
-#                 blocks = day.get("students", {}).get("by_block", {})
-#                 summary = day.get("students", {}).get("summary", {})  # NEW
-#                 for k, v in blocks.items():
-#                     grouped[pct][cls].append((k, v))
-                
-#                 grouped[pct][cls]["summary"] = summary  # NEW
-                
-#             else:
-#                 resources = day.get("resources", {}).get(category, {})
-#                 for name, vals in resources.items():
-#                     grouped[pct][cls].append((
-#                         name,
-#                         f"used (hours) ={vals['hours_used']:.2f} avail (hours) ={vals['hours_available']:.2f} uses={vals['uses']}"
-#                     ))
-
-#         for pct in sorted(grouped):
-#             try:
-#                 pct_num = int(pct.replace("pct",""))
-#                 pct_label = f"Percentage {pct_num}%"
-#             except:
-#                 pct_label = pct
-#             pct_id = tree.insert("", "end", text=pct_label, open=True)
-#             for cls in sorted(grouped[pct]):
-#                 try:
-#                     cls_num = int(cls.replace("class",""))
-#                     cls_label = f"Class up size: {cls_num}"
-#                 except:
-#                     cls_label = cls
-
-#                 # if category == "students":
-#                 #     blocks = grouped[pct][cls]["blocks"]
-#                 #     summary = grouped[pct][cls]["summary"]
-
-#                 #     total = sum(v for _, v in blocks)
-#                 #     cls_id = tree.insert(pct_id, "end", text=f"{cls_label}: SIT: {total}", open=True)
-#                 #     for block, val in grouped[pct][cls]:
-#                 #         tree.insert(cls_id, "end", text=f"{block}: {val}")
-
-
-#                 #     # NEW: summary at bottom
-#                 #     if summary:
-#                 #         tree.insert(cls_id, "end", text="---")  # optional separator
-#                 #         tree.insert(cls_id, "end", text=f"Started: {summary.get('started', 0)}")
-#                 #         tree.insert(cls_id, "end", text=f"Completed: {summary.get('completed', 0)}")
-#                 #         tree.insert(cls_id, "end", text=f"Remaining: {summary.get('remaining', 0)}")
-#                 if category == "students":
-#                     blocks = day.get("students", {}).get("by_block", {})
-#                     summary = day.get("students", {}).get("summary", {})
-
-#                     grouped.setdefault(pct, {})
-#                     # Force correct shape (dict), even if something old put a list here
-#                     if cls not in grouped[pct] or not isinstance(grouped[pct][cls], dict):
-#                         grouped[pct][cls] = {"blocks": [], "summary": {}}
-
-#                     for k, v in blocks.items():
-#                         grouped[pct][cls]["blocks"].append((k, v))
-
-#                     grouped[pct][cls]["summary"] = summary
-
-
-                    
-#                 else:
-#                     if not grouped[pct][cls]:
-#                         continue
-#                     cls_id = tree.insert(pct_id, "end", text=f"{cls_label}: {grouped[pct][cls][0][0]} | {grouped[pct][cls][0][1]}", open=True)
-#                     for name, info in grouped[pct][cls][1:]:
-#                         tree.insert(cls_id, "end", text=f"{name} | {info}")
-
-#     populate_tree(tree1, selected_date1)
-#     populate_tree(tree2, selected_date2)
-
-
 def fmt_pct(pct):
     try:
         return f"Percentage {int(pct.replace('pct', ''))}%"
@@ -398,8 +298,6 @@ def fmt_class(cls):
 def on_pct_selected(_event=None):
     p = pct_var.get()
     # Filter classes for selected pct
-    # classes_for_pct = sorted({cls for (pct, cls) in data_by_run.keys() if pct == p},
-    #                          key=lambda x: int(x.replace("class", "")) if x.startswith("class") else x)
     
     classes_for_pct = sorted(
         {cls for (pct, cls) in data_by_run.keys() if pct == p},
@@ -608,7 +506,6 @@ def main():
     valid_dates = set(data_by_date.keys())
     sorted_valid_dates = sorted(valid_dates)
     data_by_run = build_run_index(data_by_date)
-    # print("Valid dates loaded:", sorted(valid_dates))
 
     root = tk.Tk()
     root.title("Simulation Viewer")
@@ -744,9 +641,6 @@ def main():
     tree2.bind("<MouseWheel>", on_mousewheel)
 
     root.mainloop()
-
-
-
 
 if __name__ == "__main__":
     main()
