@@ -692,16 +692,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
     
 
                         partner = s.get_partner()
-
-                        partner_pairs.append((s,partner,ev))
-
-                        if partner.current_block > 6:
-                            print(partner_pairs)
-                            print("prev pairs", prev_partner_pairs)
-                            print(partner.current_block, "this is the error")
-                            print(partner.next_event())
-                            print(s.next_event())
-
                         s.event_complete(day)
                         
                         partner.event_complete(day)
@@ -839,7 +829,6 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     continue
                     
 
-    prev_partner_pairs = partner_pairs
     # now deal with students that failed today 
     for s in students:
 
@@ -1502,7 +1491,7 @@ def ask_user():
         font=("Arial", 12)
     ).pack(pady=(20, 5))
 
-    class_sizes = [0,2, 4, 5,6,7,8,10,13,15]
+    class_sizes = [0,2, 4, 5,6,7,8,9,10,11,12,13,15]
     class_size_vars = {}
 
     class_size_frame = tk.Frame(root)
@@ -1643,8 +1632,10 @@ def compute_average_waits(student_lists, remove_current_students=True, debug=Fal
 
 
 
-def plot_grouped_results(data_dict, xlabel = "Class Size", ylabel = "Wait time", title = "Monte Carlo Results"):
+def plot_grouped_results(data_dict, xlabel = "Class Size", ylabel = "Wait time", title = "Monte Carlo Results", variable = False):
     plt.figure()
+
+    all_xs = set()
 
     for key, points in data_dict.items():
         # sort by x to avoid zig-zag lines
@@ -1653,7 +1644,18 @@ def plot_grouped_results(data_dict, xlabel = "Class Size", ylabel = "Wait time",
         xs = [p[0] for p in points]
         ys = [p[1] for p in points]
 
+        all_xs.update(xs)
+
         plt.plot(xs, ys, marker='o', label=str(key))
+
+    if variable:
+        xs_sorted = sorted(all_xs)
+        xlabels = [str(x) for x in xs_sorted]
+
+        if xlabels:
+            xlabels[-1] = "variable"  # replace last label
+
+        plt.xticks(xs_sorted, xlabels)
 
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
@@ -1674,13 +1676,9 @@ def plot_grouped_results(data_dict, xlabel = "Class Size", ylabel = "Wait time",
     plt.show()
     print(f"Saved to: {full_path}")
 
-prev_partner_pairs = []
-
 def main():
 
-    global prev_partner_pairs
 
-    prev_partner_pairs = []
     # Resources
     classrooms = "classroom"
     utd_sims = "utd"
@@ -1778,7 +1776,7 @@ def main():
 
             start_time = time.perf_counter()
             average_for_class_size = 0
-            print("class size",c)
+            print("class size variable")
             
             for x in range(run_count):
                 students = []
@@ -1794,13 +1792,28 @@ def main():
 
             print(f"Class size variable completed in {elapsed:.2f} seconds")
 
-            data[p].append((100,average_for_class_size))
+            data[p].append((class_size[-1]+1,average_for_class_size))
 
+    double_sim = user_input["double_sim"]
+    double_flight = user_input["double_flight"] 
+    max_250 = user_input["max_250"]
 
+    specs = []
+    if double_sim:
+        specs.append("double sim")
+    if double_flight:
+        specs.append("double flights")
+    if max_250:
+        specs.append("max 250")
 
+    if len(specs) == 0:
+        specs.append("none")
+
+    sep = ", "
+    spec_string = sep.join(specs)
 
     print(data)
-    plot_grouped_results(data, title = f"Monte Carlo {run_count} runs per point")
+    plot_grouped_results(data, title = f"Monte Carlo {run_count} runs per point. Specifications: {spec_string}", variable = user_input["use_monthly_class_sizes"])
 
 
 

@@ -92,6 +92,10 @@ class FlightStudent:
         elif self.syllabus_type == 4:
             syl = FlightStudent.syllabus4
 
+        if self.get_block() == "complete":
+            print("called event_complete on a complete student")
+            return
+
         if len(syl[self.current_block])-1 <= self.next_event_index:
             self.completed_blocks[self.current_block] = 1
             self.completed_dates[self.current_block] = day
