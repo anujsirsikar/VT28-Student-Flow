@@ -479,6 +479,10 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
                 already_used[s] = False
 
+
+
+    # print(events_to_attempt)
+
     # Filter out failed devices. Note this changes every day
     working_utds = [sim for sim in utd if random.random() > Sim.failure_rate]
     working_ofts = [sim for sim in oft if random.random() > Sim.failure_rate]

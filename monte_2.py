@@ -530,9 +530,9 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
 
     # looking at student and the event they are scheduled for
+    partner_pairs = []
     for s, ev in events_to_attempt:
 
-        partner_pairs = []
         # if they have already been scheduled. For instance a partner for forms or capstone
         if already_used.get(s, False):
             continue
@@ -695,10 +695,15 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
 
                         partner_pairs.append((s,partner,ev))
 
-                        s.event_complete(day)
                         if partner.current_block > 6:
                             print(partner_pairs)
+                            print("prev pairs", prev_partner_pairs)
                             print(partner.current_block, "this is the error")
+                            print(partner.next_event())
+                            print(s.next_event())
+
+                        s.event_complete(day)
+                        
                         partner.event_complete(day)
                         s.schedule_failed = False
                         partner.schedule_failed = False
@@ -834,7 +839,7 @@ def schedule_one_day(day, students, instructors, utd, oft, vtd, mr, aircraft, cl
                     continue
                     
 
-
+    prev_partner_pairs = partner_pairs
     # now deal with students that failed today 
     for s in students:
 
@@ -1669,8 +1674,13 @@ def plot_grouped_results(data_dict, xlabel = "Class Size", ylabel = "Wait time",
     plt.show()
     print(f"Saved to: {full_path}")
 
+prev_partner_pairs = []
 
 def main():
+
+    global prev_partner_pairs
+
+    prev_partner_pairs = []
     # Resources
     classrooms = "classroom"
     utd_sims = "utd"
@@ -1751,7 +1761,7 @@ def main():
 
             for x in range(run_count):
                 students = []
-                FlightStudent.student_id = 0
+                FlightStudent.STATIC_ID = 0
                 students = load_students(os.path.join("students", "current_students.csv"))
                 computed_students = run_simulation(START_DATE, 365*1.5, p, students, instructors, utd_sims_list, oft_sims_list, vtd_sims_list, mr_sims_list,aircraft_list,classrooms_list, syllabus1,syllabus2,syllabus3,syllabus4,"fixed",c,None)
                 average_for_class_size += compute_average_waits([computed_students], False)[0]
