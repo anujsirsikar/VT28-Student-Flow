@@ -637,8 +637,16 @@ def main():
         tree2.yview_scroll(int(-1*(event.delta/120)), "units")
         return "break"
 
-    tree1.bind("<MouseWheel>", on_mousewheel)
-    tree2.bind("<MouseWheel>", on_mousewheel)
+    # Bind scrolling ONLY when mouse is over a tree
+    def bind_tree_scroll(widget):
+        widget.bind("<Enter>", lambda e: root.bind_all("<MouseWheel>", on_mousewheel))
+        widget.bind("<Leave>", lambda e: root.unbind_all("<MouseWheel>"))
+
+    bind_tree_scroll(tree1)
+    bind_tree_scroll(tree2) 
+
+    # tree1.bind("<MouseWheel>", on_mousewheel)
+    # tree2.bind("<MouseWheel>", on_mousewheel)
 
     root.mainloop()
 
